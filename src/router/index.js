@@ -151,7 +151,38 @@ export const asyncRouterMap = [
       }
     ]
   },
-
+  {
+    path: '/shop',
+    component: Layout,
+    redirect: 'noredirect',
+    alwaysShow: true,
+    name: 'shopManage',
+    meta: {
+      title: '门店管理',
+      icon: 'chart'
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/shop/list'),
+        name: 'list',
+        meta: {
+          title: '门店列表',
+          noCache: true
+        }
+      },
+      {
+        path: 'member',
+        component: () => import('@/views/shop/member'),
+        name: 'member',
+        meta: {
+          perms: ['GET /admin/brand/list'],
+          title: '门店角色',
+          noCache: true
+        }
+      }
+    ]
+  },
   {
     path: '/mall',
     component: Layout,
