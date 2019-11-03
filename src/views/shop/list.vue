@@ -5,9 +5,9 @@
     <div class="filter-container">
       <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入门店名称"/>
       <el-select v-model="listQuery.status" clearable class="filter-item" placeholder="请选择">
-        <el-option :value="1" label="正在运营"/>
+        <el-option :value="0" label="正在运营"/>
+        <el-option :value="1" label="歇业"/>
         <el-option :value="2" label="正在装修"/>
-        <el-option :value="3" label="歇业"/>
       </el-select>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
@@ -29,42 +29,38 @@
 
       <el-table-column align="center" label="运营状态" prop="status">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.isNew ? 'success' : 'error' ">{{ scope.row.isNew ? '新品' : '非新品' }}</el-tag>
+          <el-tag :type="scope.row.status != 1 ? 'success' : 'error' ">{{ consStatus[scope.row.status]}}</el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" prop="ops">
+      <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.isNew ? 'success' : 'error' ">{{ scope.row.isNew ? '新品' : '非新品' }}</el-tag>
+          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">详情</el-button>
+          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!--<pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />-->
 
-    <el-tooltip placement="top" content="返回顶部">
+<!--    <el-tooltip placement="top" content="返回顶部">
       <back-to-top :visibility-height="100" />
-    </el-tooltip>
+    </el-tooltip>-->
 
   </div>
 </template>
 
 <script>
-import ElSelectDropdown from 'element-ui/packages/select/src/select-dropdown'
+  import ElSelectDropdown from 'element-ui/packages/select/src/select-dropdown'
+  import { listShop, deleteShop } from '@/api/shop'
 export default {
   name: 'ShopList',
   components: { ElSelectDropdown },
   data() {
     return {
-      list: [{
-        name: '门店1',
-        address: '深圳市',
-        addTime: '2019-11-01 12:12:02',
-        status: 1,
-        ops: ['详情']
-      }],
+      list: [],
       total: 0,
-      listLoading: true,
+      listLoading: false,
       listQuery: {
         page: 1,
         limit: 20,
@@ -75,7 +71,63 @@ export default {
       },
       goodsDetail: '',
       detailDialogVisible: false,
-      downloadLoading: false
+      downloadLoading: false,
+      consStatus:['正在营业', '歇业', '正在装修']
+    }
+  },
+  created() {
+    this.getList()
+  },
+  methods: {
+    getList() {
+      this.listLoading = true
+      listShop(this.listQuery).then(response => {
+        this.list = response.data.data.list
+        this.total = response.data.data.total
+        this.listLoading = false
+      }).catch(() => {
+        this.list = []
+        this.total = 0
+        this.listLoading = false
+      })
+    },
+    handleFilter() {
+      this.listQuery.page = 1
+      this.getList()
+    },
+    handleCreate() {
+      this.$router.push({ path: '/shop/create' })
+    },
+    handleUpdate(row) {
+      this.$router.push({ path: '/shop/edit', query: { id: row.shopId }})
+    },
+    showDetail(detail) {
+      this.goodsDetail = detail
+      this.detailDialogVisible = true
+    },
+    handleDelete(row) {
+      deleteShop(row.shopId).then(response => {
+        this.$notify.success({
+          title: '成功',
+          message: '删除成功'
+        })
+        const index = this.list.indexOf(row)
+        this.list.splice(index, 1)
+      }).catch(response => {
+        this.$notify.error({
+          title: '失败',
+          message: response.data.errmsg
+        })
+      })
+    },
+    handleDownload() {
+      this.downloadLoading = true
+      import('@/vendor/Export2Excel').then(excel => {
+        const tHeader = ['门店名称', '门店地址', '门店店长', '成员', '添加时间', '运营状态']
+        const filterVal = ['name', 'address', 'shopkeeper', 'members', 'addTime', 'status']
+        excel.export_json_to_excel2(tHeader, this.list, filterVal, '门店信息')
+        this.downloadLoading = false
+      })
     }
   }
 }

@@ -48,31 +48,43 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" property="iconUrl" label="分享图">
+<!--      <el-table-column align="center" property="iconUrl" label="分享图">
         <template slot-scope="scope">
           <img :src="scope.row.shareUrl" width="40">
         </template>
-      </el-table-column>
+      </el-table-column>-->
 
-      <el-table-column align="center" label="详情" prop="detail">
+<!--      <el-table-column align="center" label="详情" prop="detail">
         <template slot-scope="scope">
           <el-dialog :visible.sync="detailDialogVisible" title="商品详情">
             <div v-html="goodsDetail"/>
           </el-dialog>
           <el-button type="primary" size="mini" @click="showDetail(scope.row.detail)">查看</el-button>
         </template>
-      </el-table-column>
+      </el-table-column>-->
 
-      <el-table-column align="center" label="专柜价格" prop="counterPrice"/>
+      <!--<el-table-column align="center" label="专柜价格" prop="counterPrice"/>-->
 
-      <el-table-column align="center" label="当前价格" prop="retailPrice"/>
+      <el-table-column align="center" label="价格" prop="retailPrice"/>
 
-      <el-table-column align="center" label="是否新品" prop="isNew">
+      <el-table-column align="center" label="货号" prop="goodsNum"/>
+
+      <el-table-column align="center" label="标签">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.isNew ? 'success' : 'error' ">{{ scope.row.isNew ? '新品' : '非新品' }}</el-tag>
+          <el-tag :type="scope.row.isNew ? 'success' : 'error' ">新品</el-tag>
+          <el-tag :type="scope.row.isHot ? 'success' : 'error' ">热品</el-tag>
+          <el-tag :type="scope.row.isOnSale ? 'success' : 'error' ">在售</el-tag>
         </template>
       </el-table-column>
 
+<!--
+      <el-table-column align="center" label="是否新品">
+        <template slot-scope="scope">
+          <el-tag :type="scope.row.isNew ? 'success' : 'error' ">{{ scope.row.isNew ? '新品' : '非新品' }}</el-tag>
+          <el-tag :type="scope.row.isHot ? 'success' : 'error' ">{{ scope.row.isHot ? '热品' : '非热品' }}</el-tag>
+          <el-tag :type="scope.row.isOnSale ? 'success' : 'error' ">{{ scope.row.isOnSale ? '在售' : '未售' }}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="是否热品" prop="isHot">
         <template slot-scope="scope">
           <el-tag :type="scope.row.isHot ? 'success' : 'error' ">{{ scope.row.isHot ? '热品' : '非热品' }}</el-tag>
@@ -83,7 +95,15 @@
         <template slot-scope="scope">
           <el-tag :type="scope.row.isOnSale ? 'success' : 'error' ">{{ scope.row.isOnSale ? '在售' : '未售' }}</el-tag>
         </template>
-      </el-table-column>
+      </el-table-column>-->
+
+      <el-table-column align="center" label="上架时间" prop="addTime">2019-11-02</el-table-column>
+
+      <el-table-column align="center" label="库存" prop="storeCount">100</el-table-column>
+
+      <el-table-column align="center" label="销量" prop="sales">100</el-table-column>
+
+      <el-table-column align="center" label="审核状态" prop="status">已审核</el-table-column>
 
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -153,8 +173,16 @@ export default {
     getList() {
       this.listLoading = true
       listGoods(this.listQuery).then(response => {
+        console.log(response.data.data.list);
         this.list = response.data.data.list
         this.total = response.data.data.total
+        this.list.forEach(function(p, index) {
+          p.storeCount = 100 + index
+          p.sales = 30 + index
+          p.status = '已审核'
+          p.goodsNum = 'T' + 100 + index
+        })
+
         this.listLoading = false
       }).catch(() => {
         this.list = []

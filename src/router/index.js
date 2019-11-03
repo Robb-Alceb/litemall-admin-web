@@ -65,7 +65,7 @@ export const constantRouterMap = [
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: '首页', icon: 'dashboard', noCache: true }
+        meta: { title: '系统首页', icon: 'dashboard', noCache: true }
       }
     ]
   }
@@ -78,112 +78,7 @@ export default new Router({
 })
 
 export const asyncRouterMap = [
-  {
-    path: '/user',
-    component: Layout,
-    redirect: 'noredirect',
-    alwaysShow: true,
-    name: 'userManage',
-    meta: {
-      title: '用户管理',
-      icon: 'chart'
-    },
-    children: [
-      {
-        path: 'user',
-        component: () => import('@/views/user/user'),
-        name: 'user',
-        meta: {
-          perms: ['GET /admin/user/list'],
-          title: '会员管理',
-          noCache: true
-        }
-      },
-      {
-        path: 'address',
-        component: () => import('@/views/user/address'),
-        name: 'address',
-        meta: {
-          perms: ['GET /admin/address/list'],
-          title: '收货地址',
-          noCache: true
-        }
-      },
-      {
-        path: 'collect',
-        component: () => import('@/views/user/collect'),
-        name: 'collect',
-        meta: {
-          perms: ['GET /admin/collect/list'],
-          title: '会员收藏',
-          noCache: true
-        }
-      },
-      {
-        path: 'footprint',
-        component: () => import('@/views/user/footprint'),
-        name: 'footprint',
-        meta: {
-          perms: ['GET /admin/footprint/list'],
-          title: '会员足迹',
-          noCache: true
-        }
-      },
-      {
-        path: 'history',
-        component: () => import('@/views/user/history'),
-        name: 'history',
-        meta: {
-          perms: ['GET /admin/history/list'],
-          title: '搜索历史',
-          noCache: true
-        }
-      },
-      {
-        path: 'feedback',
-        component: () => import('@/views/user/feedback'),
-        name: 'feedback',
-        meta: {
-          perms: ['GET /admin/feedback/list'],
-          title: '意见反馈',
-          noCache: true
-        }
-      }
-    ]
-  },
-  {
-    path: '/shop',
-    component: Layout,
-    redirect: 'noredirect',
-    alwaysShow: true,
-    name: 'shopManage',
-    meta: {
-      title: '门店管理',
-      icon: 'chart'
-    },
-    children: [
-      {
-        path: 'list',
-        component: () => import('@/views/shop/list'),
-        name: 'list',
-        meta: {
-          title: '门店列表',
-          noCache: true
-        }
-      },
-      {
-        path: 'member',
-        component: () => import('@/views/shop/member'),
-        name: 'member',
-        meta: {
-          perms: ['GET /admin/brand/list'],
-          title: '门店角色',
-          noCache: true
-        }
-      }
-    ]
-  },
-  {
+  /*{
     path: '/mall',
     component: Layout,
     redirect: 'noredirect',
@@ -254,8 +149,61 @@ export const asyncRouterMap = [
         }
       }
     ]
+  },*/
+  {
+    path: '/shop',
+    component: Layout,
+    redirect: 'noredirect',
+    alwaysShow: true,
+    name: 'shopManage',
+    meta: {
+      title: '门店管理',
+      icon: 'chart'
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/shop/list'),
+        name: 'list',
+        meta: {
+          title: '门店列表',
+          noCache: true
+        }
+      },
+      {
+        path: 'edit',
+        component: () => import('@/views/shop/edit'),
+        name: 'editShop',
+        meta: {
+          perms: ['GET /shop/list'],
+          title: '编辑门店',
+          noCache: true
+        },
+        hidden: true
+      },
+      {
+        path: 'create',
+        component: () => import('@/views/shop/create'),
+        name: 'createShop',
+        meta: {
+          perms: ['GET /shop/list'],
+          title: '新增',
+          noCache: true
+        },
+        hidden: true
+      },
+      {
+        path: 'members',
+        component: () => import('@/views/shop/members'),
+        name: 'members',
+        meta: {
+          perms: ['GET /admin/brand/list'],
+          title: '门店角色',
+          noCache: true
+        }
+      }
+    ]
   },
-
   {
     path: '/goods',
     component: Layout,
@@ -310,6 +258,117 @@ export const asyncRouterMap = [
       }
     ]
   },
+
+  {
+    path: '/order',
+    component: Layout,
+    redirect: 'noredirect',
+    alwaysShow: true,
+    name: 'order',
+    meta: {
+      title: '订单管理',
+      icon: 'chart'
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/order/list'),
+        name: 'orderList',
+        meta: {
+          perms: ['GET /admin/goods/list', 'POST /admin/goods/delete'],
+          title: '订单列表',
+          noCache: true
+        }
+      }
+    ]
+  },
+  {
+    path: '/repertory',
+    component: Layout,
+    redirect: 'noredirect',
+    alwaysShow: true,
+    name: 'repertory',
+    meta: {
+      title: '库存管理',
+      icon: 'chart'
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/repertory/list'),
+        name: 'repertoryList',
+        meta: {
+          perms: ['GET /admin/goods/list', 'POST /admin/goods/delete'],
+          title: '库存列表',
+          noCache: true
+        }
+      }
+    ]
+  },
+  {
+    path: '/user',
+    component: Layout,
+    redirect: 'noredirect',
+    alwaysShow: true,
+    name: 'userManage',
+    meta: {
+      title: '用户管理',
+      icon: 'chart'
+    },
+    children: [
+      {
+        path: 'user',
+        component: () => import('@/views/user/user'),
+        name: 'user',
+        meta: {
+          perms: ['GET /admin/user/list'],
+          title: '会员管理',
+          noCache: true
+        }
+      },
+      {
+        path: 'address',
+        component: () => import('@/views/user/address'),
+        name: 'address',
+        meta: {
+          perms: ['GET /admin/address/list'],
+          title: '收货地址',
+          noCache: true
+        }
+      },
+      {
+        path: 'collect',
+        component: () => import('@/views/user/collect'),
+        name: 'collect',
+        meta: {
+          perms: ['GET /admin/collect/list'],
+          title: '会员收藏',
+          noCache: true
+        }
+      },
+      {
+        path: 'footprint',
+        component: () => import('@/views/user/footprint'),
+        name: 'footprint',
+        meta: {
+          perms: ['GET /admin/footprint/list'],
+          title: '会员足迹',
+          noCache: true
+        }
+      },
+      {
+        path: 'history',
+        component: () => import('@/views/user/history'),
+        name: 'history',
+        meta: {
+          perms: ['GET /admin/history/list'],
+          title: '搜索历史',
+          noCache: true
+        }
+      }
+    ]
+  },
+
   {
     path: '/promotion',
     component: Layout,
@@ -317,7 +376,7 @@ export const asyncRouterMap = [
     alwaysShow: true,
     name: 'promotionManage',
     meta: {
-      title: '推广管理',
+      title: '活动管理',
       icon: 'chart'
     },
     children: [
@@ -408,13 +467,102 @@ export const asyncRouterMap = [
   },
 
   {
+    path: '/statistics',
+    component: Layout,
+    redirect: 'noredirect',
+    alwaysShow: true,
+    name: 'statistics',
+    meta: {
+      title: '统计分析',
+      icon: 'chart'
+    },
+    children: [
+      {
+        path: 'order',
+        component: () => import('@/views/statistics/order'),
+        name: 'orderStatistics',
+        meta: {
+          perms: ['GET /admin/admin/list', 'POST /admin/admin/create', 'POST /admin/admin/update', 'POST /admin/admin/delete'],
+          title: '订单统计',
+          noCache: true
+        }
+      },
+      {
+        path: 'goods',
+        component: () => import('@/views/statistics/goods'),
+        name: 'goodsStatistics',
+        meta: {
+          perms: ['GET /admin/admin/list', 'POST /admin/admin/create', 'POST /admin/admin/update', 'POST /admin/admin/delete'],
+          title: '商品统计',
+          noCache: true
+        }
+      },
+      {
+        path: 'user',
+        component: () => import('@/views/statistics/user'),
+        name: 'userStatistics',
+        meta: {
+          perms: ['GET /admin/admin/list', 'POST /admin/admin/create', 'POST /admin/admin/update', 'POST /admin/admin/delete'],
+          title: '用户统计',
+          noCache: true
+        }
+      }
+    ]
+  },
+  {
+    path: '/notice',
+    component: Layout,
+    redirect: 'noredirect',
+    alwaysShow: true,
+    name: 'notice',
+    meta: {
+      title: '消息通知',
+      icon: 'chart'
+    },
+    children: [
+      {
+        path: 'system',
+        // component: () => import('@/views/notice/home'),
+        name: 'system',
+        meta: {
+          perms: ['GET /admin/admin/list', 'POST /admin/admin/create', 'POST /admin/admin/update', 'POST /admin/admin/delete'],
+          title: '系统消息',
+          noCache: true
+        }
+      }
+    ]
+  },
+  {
+    path: '/feedback',
+    component: Layout,
+    redirect: 'noredirect',
+    alwaysShow: true,
+    name: 'feedback',
+    meta: {
+      title: '用户反馈',
+      icon: 'chart'
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/feedback/list'),
+        name: 'feedbackList',
+        meta: {
+          perms: ['GET /admin/admin/list', 'POST /admin/admin/create', 'POST /admin/admin/update', 'POST /admin/admin/delete'],
+          title: '反馈列表',
+          noCache: true
+        }
+      }
+    ]
+  },
+  {
     path: '/sys',
     component: Layout,
     redirect: 'noredirect',
     alwaysShow: true,
     name: 'sysManage',
     meta: {
-      title: '系统管理',
+      title: '系统设置',
       icon: 'chart'
     },
     children: [
@@ -460,7 +608,7 @@ export const asyncRouterMap = [
       }
     ]
   },
-
+/*
   {
     path: '/config',
     component: Layout,
@@ -557,8 +705,8 @@ export const asyncRouterMap = [
         }
       }
     ]
-  },
-  {
+  },*/
+  /*{
     path: 'external-link',
     component: Layout,
     redirect: 'noredirect',
@@ -598,7 +746,7 @@ export const asyncRouterMap = [
         meta: { title: '快递鸟', icon: 'link' }
       }
     ]
-  },
+  },*/
   {
     path: '/profile',
     component: Layout,
