@@ -39,3 +39,27 @@ export function deleteAdmin(data) {
     data
   })
 }
+
+export function getShopkeeper(shopId) {
+  return request({
+    url: '/shop/shopkeeper',
+    method: 'get',
+    params: { shopId }
+  })
+}
+
+export function getShopManager(shopId) {
+  return request({
+    url: '/shop/manager',
+    method: 'get',
+    params: { shopId }
+  })
+}
+
+export function getShopMembers(shopId) {
+  return request({
+    url: '/shop/members',
+    method: 'get',
+    params: { shopId }
+  })
+}

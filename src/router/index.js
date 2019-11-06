@@ -78,7 +78,7 @@ export default new Router({
 })
 
 export const asyncRouterMap = [
-  /*{
+  /* {
     path: '/mall',
     component: Layout,
     redirect: 'noredirect',
@@ -194,13 +194,14 @@ export const asyncRouterMap = [
       },
       {
         path: 'members',
-        component: () => import('@/views/shop/members'),
+        component: () => import('@/views/sys/admin/admin'),
         name: 'members',
         meta: {
-          perms: ['GET /admin/brand/list'],
+          perms: [],
           title: '门店角色',
           noCache: true
-        }
+        },
+        hidden: true
       }
     ]
   },
@@ -568,7 +569,7 @@ export const asyncRouterMap = [
     children: [
       {
         path: 'admin',
-        component: () => import('@/views/sys/admin'),
+        component: () => import('@/views/sys/admin/admin'),
         name: 'admin',
         meta: {
           perms: ['GET /admin/admin/list', 'POST /admin/admin/create', 'POST /admin/admin/update', 'POST /admin/admin/delete'],
@@ -608,7 +609,7 @@ export const asyncRouterMap = [
       }
     ]
   },
-/*
+  /*
   {
     path: '/config',
     component: Layout,
@@ -706,7 +707,7 @@ export const asyncRouterMap = [
       }
     ]
   },*/
-  /*{
+  /* {
     path: 'external-link',
     component: Layout,
     redirect: 'noredirect',
