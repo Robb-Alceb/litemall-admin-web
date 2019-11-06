@@ -260,12 +260,13 @@ export default {
       })
     },
     handleUpdate(row) {
-      this.dataForm = Object.assign({}, row)
+/*      this.dataForm = Object.assign({}, row)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
-      })
+      })*/
+      this.$router.push({ path: '/sys/admin/edit' ,query: { id: row.id }})
     },
     updateData() {
       this.$refs['dataForm'].validate(valid => {

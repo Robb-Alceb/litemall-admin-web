@@ -163,7 +163,7 @@ export const asyncRouterMap = [
     children: [
       {
         path: 'list',
-        component: () => import('@/views/shop/list'),
+        component: Layout,
         name: 'list',
         meta: {
           title: '门店列表',
@@ -573,9 +573,32 @@ export const asyncRouterMap = [
         name: 'admin',
         meta: {
           perms: ['GET /admin/admin/list', 'POST /admin/admin/create', 'POST /admin/admin/update', 'POST /admin/admin/delete'],
-          title: '管理员',
+          title: '管理员列表',
           noCache: true
         }
+      },
+      {
+        path: 'admin/edit',
+        component: () => import('@/views/sys/admin/edit'),
+        name: 'adminEdit',
+        meta: {
+          perms: [ 'POST /admin/admin/update'],
+          title: '编辑管理员',
+          noCache: true
+        },
+        hidden: true
+      },
+      {
+        path: 'admin/create',
+        component: () => import('@/views/sys/admin/create'),
+        name: 'adminEdit',
+        meta: {
+          perms: [ 'POST /admin/admin/create'],
+          title: '新增管理员',
+          noCache: true
+        },
+        hidden: true
+
       },
       {
         path: 'log',
@@ -592,10 +615,21 @@ export const asyncRouterMap = [
         component: () => import('@/views/sys/role'),
         name: 'role',
         meta: {
-          perms: ['GET /admin/role/list', 'POST /admin/role/create', 'POST /admin/role/update', 'POST /admin/role/delete', 'GET /admin/role/permissions', 'POST /admin/role/permissions'],
-          title: '角色管理',
+          perms: ['GET /admin/role/list', 'POST /admin/role/create', 'POST /admin/role/update', 'POST /admin/role/delete'],
+          title: '角色列表',
           noCache: true
         }
+      },
+      {
+        path: 'role/edit',
+        component: () => import('@/views/sys/role'),
+        name: 'role',
+        meta: {
+          perms: ['GET /admin/role/permissions', 'POST /admin/role/permissions'],
+          title: '角色权限',
+          noCache: true
+        },
+        hidden: true
       },
       {
         path: 'os',

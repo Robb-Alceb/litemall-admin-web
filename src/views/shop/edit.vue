@@ -2,7 +2,10 @@
   <div class="app-container">
 
     <el-card class="box-card">
-      <h3>门店详情</h3>
+      <div slot="header" class="clearfix">
+        <span>卡片名称</span>
+        <el-button style="float: right; padding: 3px 0" type="text" @click="members()">查看成员</el-button>
+      </div>
       <el-form ref="shop" :rules="rules" :model="shop" label-width="150px">
         <el-form-item label="门店名称" prop="name">
           <el-input v-model="shop.name"/>
@@ -11,27 +14,15 @@
           <el-input v-model="shop.address"/>
         </el-form-item>
         <el-form-item label="门店经理" prop="shopManager">
-          <el-col :span="11">
-            <el-input v-model="shopManager.nickName" placeholder="从成员列表中设置账号为门店经理"/>
-          </el-col>
-          <el-col :span="2"/>
-          <el-col :span="11">
-            <el-button type="primary" size="mini" @click="members()">店员列表</el-button>
-          </el-col>
+            <el-input v-model="shopManager.nickName" :disabled="true" placeholder="从成员列表中设置账号为门店经理"/>
         </el-form-item>
         <el-form-item label="联系电话" prop="tel">
           <el-input v-model="shop.tel" placeholder="13000000000"/>
         </el-form-item>
         <el-form-item label="门店店长" prop="shopkeeper">
-          <el-col :span="11">
-            <el-input v-model="shopkeeper.nickName" disabled="disabled" placeholder="从成员列表中设置账号为门店店长"/>
-          </el-col>
-          <el-col :span="2"/>
-
+            <el-input v-model="shopkeeper.nickName" :disabled="true" placeholder="从成员列表中设置账号为门店店长"/>
         </el-form-item>
         <el-form-item label="服务时间">
-          <!--          <el-input v-model="shop.timeRange" placeholder="早8:00 晚22:00">
-          </el-input>-->
           <el-col :span="6">
             <el-form-item prop="date1">
               <el-time-picker v-model="shop.openTime" format="HH:mm" value-format="HH:mm" placeholder="早" style="width: 100%;"/>
@@ -111,6 +102,8 @@ export default {
   },
   created() {
     this.init()
+
+
   },
   methods: {
     init: function() {
@@ -122,29 +115,30 @@ export default {
         console.log(this.shop)
         console.log(response.data.data)
         this.shop = response.data.data
-        this.types = this.shop.types
-        if (this.shop.types && this.shop.types.indexOf(0) > -1) {
-          this.inside = true
-        }
-        if (this.shop.types && this.shop.types.indexOf(1) > -1) {
-          this.outside = true
+        if(this.shop.types){
+          this.shop.types = this.shop.types.map(function(type){
+            return JSON.stringify(type);
+          })
         }
       }).catch(() => {
         this.list = []
         this.total = 0
         this.listLoading = false
       })
-
       // 店长
-      getShopkeeper(shopId).then(function(res) {
-        this.shopkeeper = res.data.data
+      getShopkeeper(shopId).then(res=> {
+        if(res.data.data){
+          this.shopkeeper = res.data.data
+        }
       }).catch(() => {
 
       })
 
       // 经理
-      getShopManager(shopId).then(function(res) {
-        this.shopManager = res.data.data
+      getShopManager(shopId).then(res=> {
+        if(res.data.data){
+          this.shopManager = res.data.data
+        }
       }).catch(() => {
 
       })
@@ -153,9 +147,11 @@ export default {
       this.$router.push({ path: '/shop/list' })
     },
     handleEdit: function() {
-      this.types = this.types.map(function(type) {
-        return parseInt(type)
-      })
+      if(this.shop.types){
+        this.shop.types = this.shop.types.map(function(type) {
+          return parseInt(type)
+        })
+      }
       const finalGoods = {
         litemallShop: this.shop,
         shopManagerId: this.shopManager.id,

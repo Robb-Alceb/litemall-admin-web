@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="app-container">
     <el-card class="box-card">
       <h3>用户详情</h3>
-      <el-form ref="dataForm" :rules="rules" :model="admmin" label-width="150px">
-        <el-form-item label="用户名称" prop="nickname">
-          <el-input v-model="admin.nickname"/>
+      <el-form ref="dataForm" :rules="rules" :model="admin" label-width="150px">
+        <el-form-item label="用户名称" prop="nickName">
+          <el-input v-model="admin.nickName"/>
         </el-form-item>
         <el-form-item label="用户头像" prop="avatar">
           <el-upload
@@ -24,14 +24,16 @@
         <el-form-item label="联系电话" prop="mobile">
           <el-input v-model="admin.mobile"/>
         </el-form-item>
-        <el-form-item label="成员角色" prop="role">
-          <el-select v-model="roles">
-            <el-option property="name"/>
-          </el-select>
+        <el-form-item label="成员角色" prop="roleIds">
+          <el-col>
+            <el-select  v-model="admin.roleIds" multiple collapse-tags>
+              <el-option v-for="item in roles" :value="item.value" :label="item.label"/>
+            </el-select>
+          </el-col>
         </el-form-item>
         <el-form-item label="所属门店" prop="shop">
-          <el-select multiple >
-            <el-option property="name"/>
+          <el-select v-model="admin.shopId">
+            <el-option v-for="item in shops" :value="item.shopId" :label="item.name"/>
           </el-select>
         </el-form-item>
         <el-form-item label="登录账号" prop="username">
@@ -43,9 +45,9 @@
         <el-form-item label="确认密码" prop="name">
           <el-input v-model="admin.confirm"/>
         </el-form-item>
-        <el-form-item>
+<!--        <el-form-item>
           <el-input v-model="admin.desc" type="textarea"/>
-        </el-form-item>
+        </el-form-item>-->
       </el-form>
     </el-card>
 
@@ -84,15 +86,18 @@
 
 <script>
 import { uploadPath } from '@/api/storage'
-import { updateAdmin, readminAdmin } from '@/api/admin'
+import { updateAdmin, readAdmin } from '@/api/admin'
 import { roleOptions } from '@/api/role'
+import { getToken } from '@/utils/auth'
+import { listShop } from '@/api/shop'
 export default {
   name: 'Edit',
   data() {
     return {
       uploadPath,
       admin: {},
-      roles: {},
+      roles: [],
+      shops: [],
       rules: {
         username: [
           { required: true, message: '管理员名称不能为空', trigger: 'blur' }
@@ -107,19 +112,28 @@ export default {
     roleOptions(shopId).then(res => {
       this.roles = res.data.data.list
     })
+    listShop().then(res=>{
+      this.shops = res.data.data.list
+    })
+  },
+  computed: {
+    headers() {
+      return {
+        'X-Litemall-Admin-Token': getToken()
+      }
+    }
   },
   methods: {
     initData() {
-      const adminId = this.$route.query.id
-      if (!adminId) {
+      const id = this.$route.query.id
+      if (!id) {
         return
       }
-      const ops = { id: adminId }
-      readminAdmin(ops).then((res) => {
-        this.admin = res.data.data.admin
+      readAdmin(id).then((res) => {
+        this.admin = res.data.data
       })
     },
-    updateData() {
+    handleEdit() {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
           updateAdmin(this.dataForm)
@@ -145,6 +159,12 @@ export default {
             })
         }
       })
+    },
+    uploadAvatar: function(response) {
+      this.dataForm.avatar = response.data.url
+    },
+    handleCancel(){
+      this.$router.push({ path: '/sys/admin'})
     }
   }
 }

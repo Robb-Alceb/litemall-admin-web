@@ -16,11 +16,11 @@ export function createAdmin(data) {
   })
 }
 
-export function readminAdmin(data) {
+export function readAdmin(id) {
   return request({
-    url: '/admin/readmin',
+    url: '/admin/read',
     method: 'get',
-    data
+    params:{id}
   })
 }
 
@@ -42,7 +42,7 @@ export function deleteAdmin(data) {
 
 export function getShopkeeper(shopId) {
   return request({
-    url: '/shop/shopkeeper',
+    url: '/admin/shop/shopkeeper',
     method: 'get',
     params: { shopId }
   })
@@ -50,7 +50,7 @@ export function getShopkeeper(shopId) {
 
 export function getShopManager(shopId) {
   return request({
-    url: '/shop/manager',
+    url: '/admin/shop/manager',
     method: 'get',
     params: { shopId }
   })
@@ -58,7 +58,7 @@ export function getShopManager(shopId) {
 
 export function getShopMembers(shopId) {
   return request({
-    url: '/shop/members',
+    url: '/admin/shop/members',
     method: 'get',
     params: { shopId }
   })
