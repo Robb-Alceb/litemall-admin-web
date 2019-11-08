@@ -227,6 +227,16 @@ export const asyncRouterMap = [
         }
       },
       {
+        path: 'category',
+        component: () => import('@/views/mall/category'),
+        name: 'category',
+        meta: {
+          perms: ['GET /admin/category/list', 'POST /admin/category/create', 'GET /admin/category/read', 'POST /admin/category/update', 'POST /admin/category/delete'],
+          title: '商品分类',
+          noCache: true
+        }
+      },
+      {
         path: 'create',
         component: () => import('@/views/goods/create'),
         name: 'goodsCreate',
@@ -280,7 +290,28 @@ export const asyncRouterMap = [
           title: '订单列表',
           noCache: true
         }
+      },
+      {
+        path: 'detail',
+        component: () => import('@/views/order/detail'),
+        name: 'orderDetail',
+        meta: {
+          perms: ['GET /admin/goods/read'],
+          title: '订单详情',
+          noCache: true
+        },
+        hidden: true
       }
+      /*      {
+        path: 'order',
+        component: () => import('@/views/mall/order'),
+        name: 'order',
+        meta: {
+          perms: ['GET /admin/order/list', 'GET /admin/order/detail', 'POST /admin/order/ordership', 'POST /admin/order/orderrefund', 'POST /admin/order/orderreply'],
+          title: '订单管理',
+          noCache: true
+        }
+      }*/
     ]
   },
   {
