@@ -3,7 +3,7 @@
 
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span>卡片名称</span>
+        <span>门店编辑</span>
         <el-button style="float: right; padding: 3px 0" type="text" @click="members()">查看成员</el-button>
       </div>
       <el-form ref="shop" :rules="rules" :model="shop" label-width="150px">
@@ -173,7 +173,7 @@ export default {
         })
     },
     members() {
-      this.$router.push({ path: '/shop/members', query: { id: this.shop.shopId }})
+      this.$router.push({ path: '/shop/members', query: { shopId: this.shop.id }})
     }
   }
 }

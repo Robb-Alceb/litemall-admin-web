@@ -9,36 +9,13 @@
       <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
     </div>
 
-    <!-- 查询结果 -->
-    <!--<el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-      <el-table-column align="center" label="管理员ID" prop="id" sortable/>
-
-      <el-table-column align="center" label="管理员名称" prop="username"/>
-
-      <el-table-column align="center" label="管理员头像" prop="avatar">
-        <template slot-scope="scope">
-          <img v-if="scope.row.avatar" :src="scope.row.avatar" width="40">
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="管理员角色" prop="roleIds">
-        <template slot-scope="scope">
-          <el-tag v-for="roleId in scope.row.roleIds" :key="roleId" type="primary" style="margin-right: 20px;"> {{ formatRole(roleId) }} </el-tag>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="操作" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button v-permission="['POST /admin/admin/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button v-permission="['POST /admin/admin/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>-->
 
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
 
-      <el-table-column align="center" label="员工名称" prop="username"/>
+      <el-table-column align="center" label="员工名称" prop="nickName"/>
+
+      <el-table-column align="center" label="登录账号" prop="username"/>
 
       <el-table-column align="center" label="联系地址" prop="address"/>
 
@@ -55,7 +32,6 @@
       <el-table-column align="center" label="操作" width="300" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button type="warning" size="mini" @click="permissionUpdate(scope.row)">权限</el-button>
           <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -151,6 +127,7 @@ export default {
         page: 1,
         limit: 20,
         username: undefined,
+        shopId: null,
         sort: 'add_time',
         order: 'desc'
       },
@@ -202,6 +179,10 @@ export default {
     },
     getList() {
       this.listLoading = true
+      if(this.$route.query.shopId){
+        let shopId  = this.$route.query.shopId;
+        this.listQuery.shopId = shopId;
+      }
       listAdmin(this.listQuery)
         .then(response => {
           this.list = response.data.data.list
@@ -231,12 +212,14 @@ export default {
       this.dataForm.avatar = response.data.url
     },
     handleCreate() {
-      this.resetForm()
+/*      this.resetForm()
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
-      })
+      })*/
+
+      this.$router.push({ path: '/sys/admin/create',query: { shopId: this.listQuery.shopId }})
     },
     createData() {
       this.$refs['dataForm'].validate(valid => {
@@ -266,7 +249,7 @@ export default {
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })*/
-      this.$router.push({ path: '/sys/admin/edit' ,query: { id: row.id }})
+      this.$router.push({ path: '/sys/admin/edit' ,query: { id: row.id, shopId: this.listQuery.shopId }})
     },
     updateData() {
       this.$refs['dataForm'].validate(valid => {

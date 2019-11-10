@@ -36,14 +36,20 @@
             <el-option v-for="item in shops" :value="item.shopId" :label="item.name"/>
           </el-select>
         </el-form-item>
+
         <el-form-item label="登录账号" prop="username">
-          <el-input v-model="admin.username"/>
+          <el-col :span="6">
+            <el-input v-model="admin.username" :disabled="true"/>
+          </el-col>
+          <el-col :span="6" align="center">
+            <el-button @click="updatePasswordVisible = true">修改密码</el-button>
+          </el-col>
         </el-form-item>
-        <el-form-item label="登录密码" prop="name">
-          <el-input v-model="admin.password"/>
+        <el-form-item label="登录密码" prop="password" v-show="updatePasswordVisible">
+          <el-input v-model="admin.password" show-password/>
         </el-form-item>
-        <el-form-item label="确认密码" prop="name">
-          <el-input v-model="admin.confirm"/>
+        <el-form-item label="确认密码" prop="validatePassword" v-show="updatePasswordVisible">
+          <el-input v-model="validatePassword" show-password/>
         </el-form-item>
 <!--        <el-form-item>
           <el-input v-model="admin.desc" type="textarea"/>
@@ -90,20 +96,27 @@ import { updateAdmin, readAdmin } from '@/api/admin'
 import { roleOptions } from '@/api/role'
 import { getToken } from '@/utils/auth'
 import { listShop } from '@/api/shop'
+let validatePass = (rule, value, callback) => {
+  if (value === '') {
+    callback(new Error('请再次输入密码'));
+  } else if (value !== this.admin.password) {
+    callback(new Error('两次输入密码不一致!'));
+  } else {
+    callback();
+  }
+};
 export default {
   name: 'Edit',
   data() {
+
     return {
       uploadPath,
       admin: {},
       roles: [],
       shops: [],
-      rules: {
-        username: [
-          { required: true, message: '管理员名称不能为空', trigger: 'blur' }
-        ],
-        password: [{ required: true, message: '密码不能为空', trigger: 'blur' }]
-      }
+      validatePassword: null,
+      updatePasswordVisible: false,
+      rules:{}
     }
   },
   created() {
@@ -131,21 +144,25 @@ export default {
       }
       readAdmin(id).then((res) => {
         this.admin = res.data.data
+        this.validatePassword = this.admin.password
       })
     },
     handleEdit() {
+      if(this.updatePasswordVisible){
+        this.rules = {
+          password: [
+            { required: true, message: '管理员名称不能为空', trigger: 'blur' },
+            { min: 6, max: 16, message: '密码长度在 6 到 16 个字符', trigger: 'blur' }
+          ],
+          validatePass: [
+            { validator: validatePass, trigger: 'blur' }
+          ]
+        }
+      }
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
-          updateAdmin(this.dataForm)
+          updateAdmin(this.admin)
             .then(() => {
-              for (const v of this.list) {
-                if (v.id === this.dataForm.id) {
-                  const index = this.list.indexOf(v)
-                  this.list.splice(index, 1, this.dataForm)
-                  break
-                }
-              }
-              this.dialogFormVisible = false
               this.$notify.success({
                 title: '成功',
                 message: '更新管理员成功'

@@ -71,33 +71,22 @@
 
       <el-table-column align="center" label="标签">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.isNew ? 'success' : 'error' ">新品</el-tag>
-          <el-tag :type="scope.row.isHot ? 'success' : 'error' ">热品</el-tag>
-          <el-tag :type="scope.row.isOnSale ? 'success' : 'error' ">在售</el-tag>
+          <el-row>
+            <span>上架:</span>
+            <el-switch :disabled="true" v-model="scope.row.isOnSale" :active-value="true" :nactive-value="false" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          </el-row>
+          <el-row>
+            <span>新品:</span>
+            <el-switch :disabled="true" v-model="scope.row.isNew" :active-value="true" :nactive-value="false" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          </el-row>
+          <el-row>
+            <span>推荐:</span>
+            <el-switch :disabled="true" v-model="scope.row.isHot" :active-value="true" :nactive-value="false" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          </el-row>
         </template>
       </el-table-column>
 
-<!--
-      <el-table-column align="center" label="是否新品">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.isNew ? 'success' : 'error' ">{{ scope.row.isNew ? '新品' : '非新品' }}</el-tag>
-          <el-tag :type="scope.row.isHot ? 'success' : 'error' ">{{ scope.row.isHot ? '热品' : '非热品' }}</el-tag>
-          <el-tag :type="scope.row.isOnSale ? 'success' : 'error' ">{{ scope.row.isOnSale ? '在售' : '未售' }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="是否热品" prop="isHot">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.isHot ? 'success' : 'error' ">{{ scope.row.isHot ? '热品' : '非热品' }}</el-tag>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="是否在售" prop="isOnSale">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.isOnSale ? 'success' : 'error' ">{{ scope.row.isOnSale ? '在售' : '未售' }}</el-tag>
-        </template>
-      </el-table-column>-->
-
-      <el-table-column align="center" label="上架时间" prop="addTime">2019-11-02</el-table-column>
+      <el-table-column align="center" label="上架时间" prop="addTime"></el-table-column>
 
       <el-table-column align="center" label="库存" prop="storeCount">100</el-table-column>
 

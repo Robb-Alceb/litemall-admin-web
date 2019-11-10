@@ -174,7 +174,7 @@ const statusMap = {
 }
 
 export default {
-  name: 'Detail',
+  name: 'orderDetail',
   filters: {
     orderStatusFilter(status) {
       return statusMap[status]

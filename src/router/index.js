@@ -163,7 +163,7 @@ export const asyncRouterMap = [
     children: [
       {
         path: 'list',
-        component: Layout,
+        component: () => import('@/views/shop/list'),
         name: 'list',
         meta: {
           title: '门店列表',
@@ -188,6 +188,17 @@ export const asyncRouterMap = [
         meta: {
           perms: ['GET /shop/list'],
           title: '新增',
+          noCache: true
+        },
+        hidden: true
+      },
+      {
+        path: 'overview',
+        component: () => import('@/views/shop/overview'),
+        name: 'shopOverview',
+        meta: {
+          perms: [],
+          title: '门店概览',
           noCache: true
         },
         hidden: true
@@ -296,8 +307,19 @@ export const asyncRouterMap = [
         component: () => import('@/views/order/detail'),
         name: 'orderDetail',
         meta: {
-          perms: ['GET /admin/goods/read'],
+          perms: ['GET /admin/order/read'],
           title: '订单详情',
+          noCache: true
+        },
+        hidden: true
+      },
+      {
+        path: 'print',
+        component: () => import('@/views/order/print'),
+        name: 'orderPrint',
+        meta: {
+          perms: ['GET /admin/order/read'],
+          title: '订单打印',
           noCache: true
         },
         hidden: true
