@@ -239,7 +239,7 @@ export const asyncRouterMap = [
       },
       {
         path: 'category',
-        component: () => import('@/views/mall/category'),
+        component: () => import('@/views/goods/category'),
         name: 'category',
         meta: {
           perms: ['GET /admin/category/list', 'POST /admin/category/create', 'GET /admin/category/read', 'POST /admin/category/update', 'POST /admin/category/delete'],

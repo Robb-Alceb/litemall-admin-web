@@ -31,7 +31,9 @@
 
       <el-table-column align="center" label="级别" prop="level">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.level === 'L1' ? 'primary' : 'info' ">{{ scope.row.level === 'L1' ? '一级类目' : '二级类目' }}</el-tag>
+          <el-tag v-if="scope.row.level === 'L1'" type="primary">一级类目</el-tag>
+          <el-tag v-if="scope.row.level === 'L2'" type="info">二级类目</el-tag>
+          <el-tag v-if="scope.row.level === 'L3'" type="primary">三级类目</el-tag>
         </template>
       </el-table-column>
 
@@ -56,12 +58,16 @@
           <el-select v-model="dataForm.level" @change="onLevelChange">
             <el-option label="一级类目" value="L1"/>
             <el-option label="二级类目" value="L2"/>
+            <el-option label="三级类目" value="L3"/>
           </el-select>
         </el-form-item>
         <el-form-item v-if="dataForm.level === 'L2'" label="父类目" prop="pid">
           <el-select v-model="dataForm.pid">
             <el-option v-for="item in catL1" :key="item.value" :label="item.label" :value="item.value"/>
           </el-select>
+        </el-form-item>
+        <el-form-item label="父类目" v-show="dataForm.level === 'L3'">
+          <el-cascader :options="categoryList" v-model="categoryIds" expand-trigger="hover" @change="handleCategoryChange"/>
         </el-form-item>
         <el-form-item label="类目图标" prop="iconUrl">
           <el-upload
@@ -134,15 +140,20 @@
 import { listCategory, listCatL1, createCategory, updateCategory, deleteCategory } from '@/api/category'
 import { uploadPath } from '@/api/storage'
 import { getToken } from '@/utils/auth'
+import { listCatAndBrand } from '@/api/goods'
+import Editor from '@tinymce/tinymce-vue'
 
 export default {
   name: 'Category',
+  components: { Editor },
   data() {
     return {
       uploadPath,
       list: [],
       listLoading: true,
       catL1: {},
+      categoryList: [],
+      categoryIds: [],
       dataForm: {
         id: undefined,
         name: '',
@@ -173,7 +184,10 @@ export default {
   },
   created() {
     this.getList()
-    this.getCatL1()
+    this.getCatL1();
+    listCatAndBrand().then(response => {
+      this.categoryList = response.data.data.categoryList
+    })
   },
   methods: {
     getList() {
@@ -198,7 +212,7 @@ export default {
         id: undefined,
         name: '',
         keywords: '',
-        level: 'L2',
+        level: 'L1',
         pid: 0,
         desc: '',
         iconUrl: '',
@@ -295,7 +309,10 @@ export default {
             message: response.data.errmsg
           })
         })
-    }
+    },
+    handleCategoryChange(value) {
+      this.dataForm.pid = value[value.length - 1]
+    },
   }
 }
 </script>
