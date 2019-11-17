@@ -92,12 +92,22 @@
 
       <el-table-column align="center" label="销量" prop="sales">100</el-table-column>
 
-      <el-table-column align="center" label="审核状态" prop="status">已审核</el-table-column>
+      <el-table-column align="center" label="审核状态" prop="reviewType">
+        <template slot-scope="scope">
+          {{scope.row.reviewType | reviewFilter}}
+        </template>
+      </el-table-column>
 
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          <el-row>
+            <el-button type="primary" size="mini" @click="handleDetail(scope.row)">查看</el-button>
+            <el-button type="primary" size="mini" @click="handleLog(scope.row)">日志</el-button>
+          </el-row>
+          <el-row style="margin-top: 5px;">
+            <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+            <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          </el-row>
         </template>
       </el-table-column>
     </el-table>
@@ -134,6 +144,11 @@ import { listGoods, deleteGoods } from '@/api/goods'
 import BackToTop from '@/components/BackToTop'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
+let reviewMap = {
+  0: '待审核',
+  1: '已审核',
+  2: '已拒绝'
+}
 export default {
   name: 'GoodsList',
   components: { BackToTop, Pagination },
@@ -165,12 +180,6 @@ export default {
         console.log(response.data.data.list);
         this.list = response.data.data.list
         this.total = response.data.data.total
-        this.list.forEach(function(p, index) {
-          p.storeCount = 100 + index
-          p.sales = 30 + index
-          p.status = '已审核'
-          p.goodsNum = 'T' + 100 + index
-        })
 
         this.listLoading = false
       }).catch(() => {
@@ -216,6 +225,17 @@ export default {
         excel.export_json_to_excel2(tHeader, this.list, filterVal, '商品信息')
         this.downloadLoading = false
       })
+    },
+    handleLog(row){
+      this.$router.push({path:'/goods/logs',query:{id: row.id}})
+    },
+    handleDetail(row){
+      this.$router.push({path:'/goods/detail',query:{id: row.id}})
+    }
+  },
+  filters:{
+    reviewFilter(review){
+      return reviewMap[review];
     }
   }
 }

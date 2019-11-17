@@ -32,3 +32,20 @@ export function editShop(data) {
   })
 }
 
+export function createShop(data) {
+  return request({
+    url: '/shop/create',
+    method: 'post',
+    data
+  })
+}
+
+export function getLogs(query) {
+  return request({
+    url: '/shopLog/list',
+    method: 'get',
+    params:query
+  })
+}
+
+

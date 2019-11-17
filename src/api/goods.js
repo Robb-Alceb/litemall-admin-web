@@ -46,3 +46,12 @@ export function listCatAndBrand() {
     method: 'get'
   })
 }
+
+export function getGoodsLogs(query) {
+  return request({
+    url: '/goods/logs',
+    method: 'get',
+    params: query
+  })
+}
+

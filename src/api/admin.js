@@ -63,3 +63,10 @@ export function getShopMembers(shopId) {
     params: { shopId }
   })
 }
+
+export function allAdmin() {
+  return request({
+    url: '/admin/all',
+    method: 'get'
+  })
+}

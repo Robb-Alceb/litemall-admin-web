@@ -166,6 +166,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/shop/list'),
         name: 'list',
         meta: {
+          perms: ['POST /shop/create'],
           title: '门店列表',
           noCache: true
         }
@@ -186,8 +187,8 @@ export const asyncRouterMap = [
         component: () => import('@/views/shop/create'),
         name: 'createShop',
         meta: {
-          perms: ['GET /shop/list'],
-          title: '新增',
+          perms: ['POST /shop/create'],
+          title: '新增门店',
           noCache: true
         },
         hidden: true
@@ -213,6 +214,16 @@ export const asyncRouterMap = [
           noCache: true
         },
         hidden: true
+      },
+      {
+        path: 'logs',
+        component: () => import('@/views/shop/log'),
+        name: 'shopLogs',
+        meta: {
+          perms: [],
+          title: '门店操作日志',
+          noCache: true
+        },
       }
     ]
   },
@@ -277,6 +288,25 @@ export const asyncRouterMap = [
           title: '商品评论',
           noCache: true
         }
+      },
+      {
+        path: 'logs',
+        component: () => import('@/views/goods/logs'),
+        name: 'goodsLogs',
+        meta: {
+          title: '商品操作日志',
+          noCache: true
+        }
+      },
+      {
+        path: 'detail',
+        component: () => import('@/views/goods/detail'),
+        name: 'goodsDetail',
+        meta: {
+          title: '商品详情',
+          noCache: true
+        },
+        hidden: true
       }
     ]
   },
@@ -337,11 +367,11 @@ export const asyncRouterMap = [
     ]
   },
   {
-    path: '/repertory',
+    path: '/repository',
     component: Layout,
     redirect: 'noredirect',
     alwaysShow: true,
-    name: 'repertory',
+    name: 'repository',
     meta: {
       title: '库存管理',
       icon: 'chart'
@@ -349,10 +379,10 @@ export const asyncRouterMap = [
     children: [
       {
         path: 'list',
-        component: () => import('@/views/repertory/list'),
-        name: 'repertoryList',
+        component: () => import('@/views/repository/list'),
+        name: 'repositoryList',
         meta: {
-          perms: ['GET /admin/goods/list', 'POST /admin/goods/delete'],
+          perms: ['GET /admin/repository/list'],
           title: '库存列表',
           noCache: true
         }
@@ -558,6 +588,16 @@ export const asyncRouterMap = [
         meta: {
           perms: ['GET /admin/admin/list', 'POST /admin/admin/create', 'POST /admin/admin/update', 'POST /admin/admin/delete'],
           title: '用户统计',
+          noCache: true
+        }
+      },
+      {
+        path: 'sales',
+        component: () => import('@/views/statistics/sales'),
+        name: 'salesStatistics',
+        meta: {
+          perms: [],
+          title: '销售统计',
           noCache: true
         }
       }

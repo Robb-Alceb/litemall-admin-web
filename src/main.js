@@ -20,6 +20,10 @@ import * as filters from './filters' // global filters
 
 import permission from '@/directive/permission/index.js' // 权限判断指令
 
+import VCharts from 'v-charts'    //报表
+
+import _ from 'lodash'    //lodash
+
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium' // set element-ui default size
 })
@@ -31,7 +35,11 @@ Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
 
+Vue.use(VCharts)
+
 Vue.config.productionTip = false
+
+Vue.prototype._ = _
 
 new Vue({
   el: '#app',

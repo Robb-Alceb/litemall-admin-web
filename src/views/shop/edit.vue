@@ -4,7 +4,9 @@
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span>门店编辑</span>
+
         <el-button style="float: right; padding: 3px 0" type="text" @click="members()">查看成员</el-button>
+        <el-button style="float: right; padding: 3px 0;margin-right: 10px;" type="text" @click="handleLogs()">查看日志</el-button>
       </div>
       <el-form ref="shop" :rules="rules" :model="shop" label-width="150px">
         <el-form-item label="门店名称" prop="name">
@@ -14,13 +16,17 @@
           <el-input v-model="shop.address"/>
         </el-form-item>
         <el-form-item label="门店经理" prop="shopManager">
-            <el-input v-model="shopManager.nickName" :disabled="true" placeholder="从成员列表中设置账号为门店经理"/>
-        </el-form-item>
-        <el-form-item label="联系电话" prop="tel">
-          <el-input v-model="shop.tel" placeholder="13000000000"/>
+          <el-select  v-model="shopManager.id"  placeholder="从成员列表中设置账号为门店店长">
+            <el-option v-for="item in shopMembers" :value="item.id" :label="item.nickName"/>
+          </el-select>
         </el-form-item>
         <el-form-item label="门店店长" prop="shopkeeper">
-            <el-input v-model="shopkeeper.nickName" :disabled="true" placeholder="从成员列表中设置账号为门店店长"/>
+          <el-select  v-model="shopkeeper.id">
+            <el-option v-for="item in shopMembers" :value="item.id" :label="item.nickName"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="联系电话" prop="mobile">
+          <el-input v-model="shop.mobile" placeholder="13000000000"/>
         </el-form-item>
         <el-form-item label="服务时间">
           <el-col :span="6">
@@ -28,7 +34,7 @@
               <el-time-picker v-model="shop.openTime" format="HH:mm" value-format="HH:mm" placeholder="早" style="width: 100%;"/>
             </el-form-item>
           </el-col>
-          <el-col :span="1" class="line center">-</el-col>
+          <el-col :span="1" class="line" align="center">-</el-col>
           <el-col :span="6">
             <el-form-item prop="date1">
               <el-time-picker v-model="shop.closeTime" format="HH:mm" value-format="HH:mm" placeholder="晚" style="width: 100%;"/>
@@ -50,8 +56,8 @@
         </el-form-item>
         <el-form-item label="订单类型">
           <el-checkbox-group v-model="shop.types">
-            <el-checkbox label="0" >客户自取</el-checkbox>
-            <el-checkbox label="1" >支持配送</el-checkbox>
+            <el-checkbox :label="0" >客户自取</el-checkbox>
+            <el-checkbox :label="1" >支持配送</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="运营状态" prop="status">
@@ -64,7 +70,7 @@
       </el-form>
     </el-card>
 
-    <div class="op-container">
+    <div class="op-container" style="margin-top: 10px;">
       <el-button @click="handleCancel">取消</el-button>
       <el-button type="primary" @click="handleEdit">更新门店</el-button>
     </div>
@@ -74,8 +80,9 @@
 
 <script>
 import { detailShop, editShop } from '@/api/shop'
-import { getShopkeeper, getShopManager } from '@/api/admin'
+import { getShopkeeper, getShopManager, getShopMembers } from '@/api/admin'
 import { MessageBox } from 'element-ui'
+
 
 export default {
   name: 'ShopEdit',
@@ -84,11 +91,12 @@ export default {
       shop: { types: [] },
       shopManager: {},
       shopkeeper: {},
+      shopMembers:[],
       rules: {
         address: [
           { required: true, message: '门店地址不能为空', trigger: 'blur' }
         ],
-        name: [{ required: true, message: '门店名称不能为空', trigger: 'blur' }]
+        name: [{ required: true, message: '门店名称不能为空', trigger: 'blur' }],
       }
     }
   },
@@ -103,7 +111,6 @@ export default {
   created() {
     this.init()
 
-
   },
   methods: {
     init: function() {
@@ -115,11 +122,11 @@ export default {
         console.log(this.shop)
         console.log(response.data.data)
         this.shop = response.data.data
-        if(this.shop.types){
+/*        if(this.shop.types){
           this.shop.types = this.shop.types.map(function(type){
             return JSON.stringify(type);
           })
-        }
+        }*/
       }).catch(() => {
         this.list = []
         this.total = 0
@@ -142,6 +149,9 @@ export default {
       }).catch(() => {
 
       })
+      getShopMembers(shopId).then((res)=>{
+        this.shopMembers = res.data.data
+      })
     },
     handleCancel: function() {
       this.$router.push({ path: '/shop/list' })
@@ -152,12 +162,9 @@ export default {
           return parseInt(type)
         })
       }
-      const finalGoods = {
-        litemallShop: this.shop,
-        shopManagerId: this.shopManager.id,
-        shopkeeperId: this.shopkeeper.id
-      }
-      editShop(finalGoods)
+      this.shop.shopManagerId = this.shopManager.id
+      this.shop.shopkeeperId = this.shopkeeper.id
+      editShop(this.shop)
         .then(response => {
           this.$notify.success({
             title: '成功',
@@ -174,6 +181,9 @@ export default {
     },
     members() {
       this.$router.push({ path: '/shop/members', query: { shopId: this.shop.id }})
+    },
+    handleLogs(){
+      this.$router.push({ path: '/shop/logs', query: { id: this.shop.id }})
     }
   }
 }
