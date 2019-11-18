@@ -41,11 +41,11 @@
       </el-table-column>
     </el-table>
 
-    <!--<pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />-->
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
-<!--    <el-tooltip placement="top" content="返回顶部">
+    <el-tooltip placement="top" content="返回顶部">
       <back-to-top :visibility-height="100" />
-    </el-tooltip>-->
+    </el-tooltip>
 
   </div>
 </template>
@@ -53,9 +53,11 @@
 <script>
   import ElSelectDropdown from 'element-ui/packages/select/src/select-dropdown'
   import { listShop, deleteShop } from '@/api/shop'
+  import BackToTop from '@/components/BackToTop'
+  import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 export default {
   name: 'ShopList',
-  components: { ElSelectDropdown },
+  components: { ElSelectDropdown, BackToTop, Pagination },
   data() {
     return {
       list: [],

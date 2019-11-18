@@ -56,15 +56,15 @@
         </el-form-item>
         <el-form-item label="订单类型">
           <el-checkbox-group v-model="shop.types">
-            <el-checkbox :label="0" >客户自取</el-checkbox>
-            <el-checkbox :label="1" >支持配送</el-checkbox>
+            <el-checkbox :label="1" >客户自取</el-checkbox>
+            <el-checkbox :label="2" >支持配送</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="运营状态" prop="status">
           <el-select v-model="shop.status">
-            <el-option :value="0" label="运营中"/>
-            <el-option :value="1" label="歇业中"/>
-            <el-option :value="2" label="装修中"/>
+            <el-option :value="1" label="运营中"/>
+            <el-option :value="2" label="歇业中"/>
+            <el-option :value="3" label="装修中"/>
           </el-select>
         </el-form-item>
       </el-form>
@@ -157,14 +157,13 @@ export default {
       this.$router.push({ path: '/shop/list' })
     },
     handleEdit: function() {
-      if(this.shop.types){
-        this.shop.types = this.shop.types.map(function(type) {
-          return parseInt(type)
-        })
+
+      let shop = {
+        litemallShop: this.shop,
+        shopManagerId: this.shopManager.id || null,
+        shopkeeperId: this.shopkeeper.id || null
       }
-      this.shop.shopManagerId = this.shopManager.id
-      this.shop.shopkeeperId = this.shopkeeper.id
-      editShop(this.shop)
+      editShop(shop)
         .then(response => {
           this.$notify.success({
             title: '成功',

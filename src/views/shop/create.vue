@@ -11,12 +11,12 @@
           <el-input v-model="shop.address"/>
         </el-form-item>
         <el-form-item label="门店经理" prop="shopManager">
-          <el-select  v-model="shop.shopManagerId"  placeholder="从成员列表中设置账号为门店店长">
+          <el-select  v-model="shopManagerId"  placeholder="从成员列表中设置账号为门店店长">
             <el-option v-for="item in shopMembers" :value="item.id" :label="item.nickName"/>
           </el-select>
         </el-form-item>
         <el-form-item label="门店店长" prop="shopkeeper">
-          <el-select  v-model="shop.shopkeeperId">
+          <el-select  v-model="shopkeeperId">
             <el-option v-for="item in shopMembers" :value="item.id" :label="item.nickName"/>
           </el-select>
         </el-form-item>
@@ -50,15 +50,15 @@
         </el-form-item>
         <el-form-item label="订单类型">
           <el-checkbox-group v-model="shop.types">
-            <el-checkbox :label="0" >客户自取</el-checkbox>
-            <el-checkbox :label="1" >支持配送</el-checkbox>
+            <el-checkbox :label="1" >客户自取</el-checkbox>
+            <el-checkbox :label="2" >支持配送</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="运营状态" prop="status">
           <el-select v-model="shop.status">
-            <el-option :value="0" label="运营中"/>
-            <el-option :value="1" label="歇业中"/>
-            <el-option :value="2" label="装修中"/>
+            <el-option :value="1" label="运营中"/>
+            <el-option :value="2" label="歇业中"/>
+            <el-option :value="3" label="装修中"/>
           </el-select>
         </el-form-item>
       </el-form>
@@ -91,9 +91,9 @@ export default {
         "description": "",
         "range": 0,
         "types": [],
-        "shopManagerId": null,
-        "shopkeeperId": null
       },
+      shopkeeperId:undefined,
+      shopManagerId:undefined,
       shopMembers:[],
       rules: {
         address: [
@@ -108,20 +108,6 @@ export default {
   },
   methods: {
     init: function() {
-      const shopId = this.$route.query.id
-      detailShop(shopId).then(response => {
-        console.log(this.shop)
-        console.log(response.data.data)
-        this.shop = response.data.data
-        if (this.shop && this.shop.range > 0) {
-          this.limit = true
-        }
-      }).catch(() => {
-        this.list = []
-        this.total = 0
-        this.listLoading = false
-      })
-
       allAdmin().then((res)=>{
         this.shopMembers = res.data.data
       })
@@ -130,7 +116,12 @@ export default {
       this.$router.push({ path: '/shop/list' })
     },
     handleCreate: function() {
-      createShop(this.shop)
+      let shop = {
+        litemallShop: this.shop,
+        shopManagerId: this.shopManagerId,
+        shopkeeperId: this.shopkeeperId
+      }
+      createShop(shop)
         .then(response => {
           this.$notify.success({
             title: '成功',
