@@ -210,7 +210,7 @@ export const asyncRouterMap = [
         name: 'members',
         meta: {
           perms: [],
-          title: '门店角色',
+          title: '门店成员',
           noCache: true
         },
         hidden: true
@@ -223,7 +223,7 @@ export const asyncRouterMap = [
           perms: [],
           title: '门店操作日志',
           noCache: true
-        },
+        }
       }
     ]
   },
@@ -675,7 +675,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/sys/admin/edit'),
         name: 'adminEdit',
         meta: {
-          perms: [ 'POST /admin/admin/update'],
+          perms: ['POST /admin/admin/update'],
           title: '编辑管理员',
           noCache: true
         },
@@ -686,7 +686,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/sys/admin/create'),
         name: 'adminEdit',
         meta: {
-          perms: [ 'POST /admin/admin/create'],
+          perms: ['POST /admin/admin/create'],
           title: '新增管理员',
           noCache: true
         },
