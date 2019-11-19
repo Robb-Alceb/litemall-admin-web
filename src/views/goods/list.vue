@@ -13,7 +13,7 @@
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
 
-      <el-table-column type="expand">
+<!--      <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" class="table-expand">
             <el-form-item label="宣传画廊">
@@ -36,7 +36,7 @@
             </el-form-item>
           </el-form>
         </template>
-      </el-table-column>
+      </el-table-column>-->
 
       <el-table-column align="center" label="商品编号" prop="goodsSn"/>
 
