@@ -15,10 +15,9 @@
 
       <el-table-column align="center" label="操作内容" prop="content"/>
 
+      <el-table-column align="center" label="操作者" prop="addUserName"/>
 
-      <el-table-column align="center" label="操作者" prop="addUserName"></el-table-column>
-
-      <el-table-column align="center" label="操作时间" prop="addTime"></el-table-column>
+      <el-table-column align="center" label="操作时间" prop="addTime"/>
 
     </el-table>
 
@@ -32,40 +31,43 @@
 </template>
 
 <script>
-  import {getGoodsLogs} from '@/api/goods'
-  export default {
-    name: "logs",
-    data() {
-      return {
-        list: [],
-        total: 0,
-        listLoading: true,
-        listQuery: {
-          page: 1,
-          limit: 20,
-          goodsSn: undefined,
-          addUserName: undefined,
-          sort: 'add_time',
-          order: 'desc'
-        },
-      }
-    },
-    created() {
-      this.getList()()
-    },
-    methods: {
-      getList(){
-        getGoodsLogs(this.listQuery).then((res)=>{
-          this.listLoading = false;
-          this.list = res.data.data.list;
-          this.total = res.data.data.total;
-        })
-      },
-      handleFilter(){
-        this.getList();
+import { getGoodsLogs } from '@/api/goods'
+import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import BackToTop from '@/components/BackToTop'
+export default {
+  name: 'GoodsLogs',
+  components: { Pagination, BackToTop },
+  data() {
+    return {
+      list: [],
+      total: 0,
+      listLoading: true,
+      listQuery: {
+        page: 1,
+        limit: 20,
+        goodsSn: undefined,
+        addUserName: undefined,
+        sort: 'add_time',
+        order: 'desc'
       }
     }
+  },
+  created() {
+    this.getList()
+  },
+  methods: {
+    getList() {
+      getGoodsLogs(this.listQuery).then((res) => {
+        this.listLoading = false
+        this.list = res.data.data.list
+        this.total = res.data.data.total
+      })
+    },
+    handleFilter() {
+      this.getList()
+    }
   }
+}
 </script>
 
 <style scoped>

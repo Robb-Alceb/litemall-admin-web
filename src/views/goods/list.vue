@@ -13,31 +13,6 @@
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
 
-<!--      <el-table-column type="expand">
-        <template slot-scope="props">
-          <el-form label-position="left" class="table-expand">
-            <el-form-item label="宣传画廊">
-              <img v-for="pic in props.row.gallery" :key="pic" :src="pic" class="gallery">
-            </el-form-item>
-            <el-form-item label="商品介绍">
-              <span>{{ props.row.brief }}</span>
-            </el-form-item>
-            <el-form-item label="商品单位">
-              <span>{{ props.row.unit }}</span>
-            </el-form-item>
-            <el-form-item label="关键字">
-              <span>{{ props.row.keywords }}</span>
-            </el-form-item>
-            <el-form-item label="类目ID">
-              <span>{{ props.row.categoryId }}</span>
-            </el-form-item>
-            <el-form-item label="品牌商ID">
-              <span>{{ props.row.brandId }}</span>
-            </el-form-item>
-          </el-form>
-        </template>
-      </el-table-column>-->
-
       <el-table-column align="center" label="商品编号" prop="goodsSn"/>
 
       <el-table-column align="center" min-width="100" label="名称" prop="name"/>
@@ -48,13 +23,13 @@
         </template>
       </el-table-column>
 
-<!--      <el-table-column align="center" property="iconUrl" label="分享图">
+      <!--      <el-table-column align="center" property="iconUrl" label="分享图">
         <template slot-scope="scope">
           <img :src="scope.row.shareUrl" width="40">
         </template>
       </el-table-column>-->
 
-<!--      <el-table-column align="center" label="详情" prop="detail">
+      <!--      <el-table-column align="center" label="详情" prop="detail">
         <template slot-scope="scope">
           <el-dialog :visible.sync="detailDialogVisible" title="商品详情">
             <div v-html="goodsDetail"/>
@@ -73,28 +48,28 @@
         <template slot-scope="scope">
           <el-row>
             <span>上架:</span>
-            <el-switch :disabled="true" v-model="scope.row.isOnSale" :active-value="true" :nactive-value="false" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+            <el-switch :disabled="true" v-model="scope.row.isOnSale" :active-value="true" :nactive-value="false" active-color="#13ce66" inactive-color="#ff4949"/>
           </el-row>
           <el-row>
             <span>新品:</span>
-            <el-switch :disabled="true" v-model="scope.row.isNew" :active-value="true" :nactive-value="false" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+            <el-switch :disabled="true" v-model="scope.row.isNew" :active-value="true" :nactive-value="false" active-color="#13ce66" inactive-color="#ff4949"/>
           </el-row>
           <el-row>
             <span>推荐:</span>
-            <el-switch :disabled="true" v-model="scope.row.isHot" :active-value="true" :nactive-value="false" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+            <el-switch :disabled="true" v-model="scope.row.isHot" :active-value="true" :nactive-value="false" active-color="#13ce66" inactive-color="#ff4949"/>
           </el-row>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="上架时间" prop="addTime"></el-table-column>
+      <el-table-column align="center" label="上架时间" prop="addTime"/>
 
-      <el-table-column align="center" label="库存" prop="storeCount">100</el-table-column>
+      <el-table-column align="center" label="库存" prop="number"/>
 
-      <el-table-column align="center" label="销量" prop="sales">100</el-table-column>
+      <el-table-column align="center" label="销量" prop="sales"/>
 
       <el-table-column align="center" label="审核状态" prop="reviewType">
         <template slot-scope="scope">
-          {{scope.row.reviewType | reviewFilter}}
+          {{ scope.row.reviewType | reviewFilter }}
         </template>
       </el-table-column>
 
@@ -144,7 +119,7 @@ import { listGoods, deleteGoods } from '@/api/goods'
 import BackToTop from '@/components/BackToTop'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
-let reviewMap = {
+const reviewMap = {
   0: '待审核',
   1: '已审核',
   2: '已拒绝'
@@ -152,6 +127,11 @@ let reviewMap = {
 export default {
   name: 'GoodsList',
   components: { BackToTop, Pagination },
+  filters: {
+    reviewFilter(review) {
+      return reviewMap[review]
+    }
+  },
   data() {
     return {
       list: [],
@@ -177,7 +157,7 @@ export default {
     getList() {
       this.listLoading = true
       listGoods(this.listQuery).then(response => {
-        console.log(response.data.data.list);
+        console.log(response.data.data.list)
         this.list = response.data.data.list
         this.total = response.data.data.total
 
@@ -226,16 +206,11 @@ export default {
         this.downloadLoading = false
       })
     },
-    handleLog(row){
-      this.$router.push({path:'/goods/logs',query:{id: row.id}})
+    handleLog(row) {
+      this.$router.push({ path: '/goods/logs', query: { id: row.id }})
     },
-    handleDetail(row){
-      this.$router.push({path:'/goods/detail',query:{id: row.id}})
-    }
-  },
-  filters:{
-    reviewFilter(review){
-      return reviewMap[review];
+    handleDetail(row) {
+      this.$router.push({ path: '/goods/detail', query: { id: row.id }})
     }
   }
 }

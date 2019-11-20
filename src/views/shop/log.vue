@@ -26,57 +26,56 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
-
   </div>
 </template>
 
 <script>
-  import {getLogs} from '@/api/shop'
-  import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
-  export default {
-    name: "shopLog",
-    components:{Pagination},
-    data(){
-      return {
-        list: [],
-        total: 0,
-        listLoading: false,
-        listQuery: {
-          page: 1,
-          limit: 20,
-          shopId: undefined,
-          content: undefined,
-          createUserName: undefined,
-          sort: 'add_time',
-          order: 'desc'
-        }
+import { getLogs } from '@/api/shop'
+import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+export default {
+  name: 'ShopLog',
+  components: { Pagination },
+  data() {
+    return {
+      list: [],
+      total: 0,
+      listLoading: false,
+      listQuery: {
+        page: 1,
+        limit: 20,
+        shopId: undefined,
+        content: undefined,
+        createUserName: undefined,
+        sort: 'add_time',
+        order: 'desc'
       }
+    }
+  },
+  created() {
+    const shopId = this.$route.query.id
+    if (shopId) {
+      this.listQuery.shopId = shopId
+    }
+    this.getList()
+  },
+  methods: {
+    getList() {
+      getLogs(this.listQuery).then((res) => {
+        this.list = res.data.data.list
+        this.total = res.data.data.total
+        this.listLoading = false
+      }).catch(() => {
+        this.list = []
+        this.total = 0
+        this.listLoading = false
+      })
     },
-    created(){
-      let shopId = this.$route.query.id
-      if(shopId){
-        this.listLoading.shopId = shopId
-      }
+    handleFilter() {
+      this.listQuery.page = 1
       this.getList()
-    },
-    methods: {
-      getList(){
-        getLogs(this.listQuery).then((res)=>{
-          this.list = res.data.data.list
-          this.total = res.data.data.total
-          this.listLoading = false
-        }).catch(() => {
-          this.list = []
-          this.total = 0
-          this.listLoading = false
-        })
-      },
-      handleFilter() {
-        this.listQuery.page = 1
-        this.getList()
-      },
     }
   }
+}
 </script>
 
 <style scoped>
