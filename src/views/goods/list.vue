@@ -76,7 +76,7 @@
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-row>
-            <el-button type="primary" size="mini" @click="handleDetail(scope.row)">查看</el-button>
+            <el-button type="primary" size="mini" :disabled="isShowReview(scope.row.reviewType)" @click="handleReview(scope.row)">审核</el-button>
             <el-button type="primary" size="mini" @click="handleLog(scope.row)">日志</el-button>
           </el-row>
           <el-row style="margin-top: 5px;">
@@ -93,6 +93,21 @@
       <back-to-top :visibility-height="100" />
     </el-tooltip>
 
+    <el-dialog :visible.sync="reviewDialogVisiable" title="商品审核">
+      <el-form ref="reviewForm" :model="reviewForm" status-icon label-position="left" label-width="100px">
+        <el-form-item label="商品名称" prop="goodsName">
+          <el-input v-model="reviewForm.goodsName" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="备注信息" prop="content">
+          <el-input type="textarea" v-model="reviewForm.content"/>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="reviewDialogVisiable = false">取消</el-button>
+        <el-button @click="reviewHandleReject()" type="danger">不通过</el-button>
+        <el-button @click="reviewHandlePass()" type="primary">通过</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -115,14 +130,14 @@
 </style>
 
 <script>
-import { listGoods, deleteGoods } from '@/api/goods'
+import { listGoods, deleteGoods, approveGoods, rejectGoods } from '@/api/goods'
 import BackToTop from '@/components/BackToTop'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 const reviewMap = {
-  0: '待审核',
-  1: '已审核',
-  2: '已拒绝'
+  1: '待审核',
+  2: '已审核',
+  3: '已拒绝'
 }
 export default {
   name: 'GoodsList',
@@ -145,9 +160,17 @@ export default {
         sort: 'add_time',
         order: 'desc'
       },
+      reviewForm:{
+        id:undefined,
+        goodsSn:undefined,
+        goodsName:undefined,
+        content:undefined,
+        type:undefined
+      },
       goodsDetail: '',
       detailDialogVisible: false,
-      downloadLoading: false
+      downloadLoading: false,
+      reviewDialogVisiable:false
     }
   },
   created() {
@@ -183,6 +206,15 @@ export default {
       this.detailDialogVisible = true
     },
     handleDelete(row) {
+      this.$confirm('是否删除商品?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.doDelete(row)
+      });
+    },
+    doDelete(row){
       deleteGoods(row).then(response => {
         this.$notify.success({
           title: '成功',
@@ -209,8 +241,50 @@ export default {
     handleLog(row) {
       this.$router.push({ path: '/goods/logs', query: { id: row.id }})
     },
-    handleDetail(row) {
-      this.$router.push({ path: '/goods/detail', query: { id: row.id }})
+    handleReview(row) {
+      this.reviewForm.goodsName = row.name
+      this.reviewForm.id = row.id
+      this.reviewForm.goodsSn = row.goodsSn
+      this.reviewDialogVisiable = true
+    },
+    reviewHandlePass(){
+      this.reviewForm.type = 2
+      approveGoods(this.reviewForm).then(res=>{
+        this.$notify.success({
+          title: '成功',
+          message: '审核成功'
+        })
+        this.getList()
+        this.reviewDialogVisiable = false
+      }).catch(response => {
+        this.$notify.error({
+          title: '失败',
+          message: response.data.errmsg
+        })
+      })
+    },
+    reviewHandleReject(){
+      this.reviewForm.type = 3
+      rejectGoods(this.reviewForm).then(res=>{
+        this.$notify.success({
+          title: '成功',
+          message: '审核成功'
+        })
+        this.getList()
+        this.reviewDialogVisiable = false
+      }).catch(response => {
+        this.$notify.error({
+          title: '失败',
+          message: response.data.errmsg
+        })
+      })
+    },
+    isShowReview(reviewType){
+      if(reviewType == 1){
+        return false
+      }else{
+        return true;
+      }
     }
   }
 }

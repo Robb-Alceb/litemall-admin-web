@@ -55,3 +55,19 @@ export function getGoodsLogs(query) {
   })
 }
 
+
+export function approveGoods(data) {
+  return request({
+    url: '/goods/approve',
+    method: 'post',
+    data
+  })
+}
+
+export function rejectGoods(data) {
+  return request({
+    url: '/goods/reject',
+    method: 'post',
+    data
+  })
+}
