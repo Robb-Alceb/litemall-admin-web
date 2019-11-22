@@ -49,7 +49,7 @@ export function listCatAndBrand() {
 
 export function getGoodsLogs(query) {
   return request({
-    url: '/goods/logs',
+    url: '/goods/queryGoodsLogList',
     method: 'get',
     params: query
   })

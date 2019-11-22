@@ -15,7 +15,7 @@
 
       <el-table-column align="center" label="操作内容" prop="content"/>
 
-      <el-table-column align="center" label="操作者" prop="addUserName"/>
+      <el-table-column align="center" label="操作者" prop="userName"/>
 
       <el-table-column align="center" label="操作时间" prop="addTime"/>
 
@@ -45,6 +45,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
+        goodsId:undefined,
         goodsSn: undefined,
         addUserName: undefined,
         sort: 'add_time',
@@ -53,6 +54,9 @@ export default {
     }
   },
   created() {
+    if(this.$route.query.id){
+      this.listQuery.goodsId = parseInt(this.$route.query.id)
+    }
     this.getList()
   },
   methods: {
