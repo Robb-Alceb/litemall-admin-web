@@ -382,10 +382,31 @@ export const asyncRouterMap = [
         component: () => import('@/views/repository/list'),
         name: 'repositoryList',
         meta: {
-          perms: ['GET /admin/repository/list'],
-          title: '库存列表',
+          perms: ['GET /admin/repository/merchandiseRecordList'],
+          title: '出库入库列表',
           noCache: true
         }
+      },
+      {
+        path: 'merchandise',
+        component: () => import('@/views/repository/merchandise'),
+        name: 'merchandise',
+        meta: {
+          perms: ['GET /admin/merchandise/list'],
+          title: '货品列表',
+          noCache: true
+        }
+      },
+      {
+        path: 'create',
+        component: () => import('@/views/repository/create'),
+        name: 'merchandiseCreate',
+        meta: {
+          perms: ['POST /admin/merchandise/create'],
+          title: '新增货品',
+          noCache: true
+        },
+        hidden: true
       }
     ]
   },
