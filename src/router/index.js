@@ -407,6 +407,17 @@ export const asyncRouterMap = [
           noCache: true
         },
         hidden: true
+      },
+      {
+        path: 'edit',
+        component: () => import('@/views/repository/edit'),
+        name: 'merchandiseCreate',
+        meta: {
+          perms: ['POST /admin/merchandise/update'],
+          title: '货品详情',
+          noCache: true
+        },
+        hidden: true
       }
     ]
   },

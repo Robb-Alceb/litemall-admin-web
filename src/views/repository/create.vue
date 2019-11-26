@@ -75,9 +75,9 @@ export default {
         merchandiseSn: [{ required: true, message: '货品编号不能为空', trigger: 'blur' }],
         name: [{ required: true, message: '货品名称不能为空', trigger: 'blur' }],
         sellingPrice: [{ required: true, message: '销售价格不能为空', trigger: 'change' },
-          { validatePass: validateDouble, trigger: 'change' }],
+          { validator: validateDouble, trigger: 'change' }],
         purchasePrice: [{ required: true, message: '进货价格不能为空', trigger: 'change' },
-          { validatePass: validateDouble, trigger: 'change' }],
+          { validator: validateDouble, trigger: 'change' }],
         number: [{ required: true, message: '货品数量不能为空', trigger: 'change' },
           { type: 'number', message: '货品数量必须为数字' }],
         unit: [{ required: true, message: '单位不能为空', trigger: 'blur' }]

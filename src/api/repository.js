@@ -32,6 +32,15 @@ export function createMerchandise(data) {
   })
 }
 
+
+export function readMerchandise(id) {
+  return request({
+    url: '/merchandise/read',
+    method: 'get',
+    params: { id }
+  })
+}
+
 export function getMerchandiseRecordList(query) {
   return request({
     url: '/merchandise/merchandiseRecordList',

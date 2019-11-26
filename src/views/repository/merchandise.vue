@@ -31,7 +31,8 @@
 
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-permission="['GET /admin/merchandise/list']" type="primary" @click="handleAdd(scope.row)">补充库存</el-button>
+          <el-button v-permission="['GET /admin/merchandise/list']" type="primary" size="mini" @click="handleAdd(scope.row)">补充</el-button>
+          <el-button v-permission="['GET /admin/merchandise/list']" type="primary" size="mini" @click="handleEdit(scope.row)">详情</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -40,9 +41,9 @@
 
     <!-- 补充库存对话框 -->
     <el-dialog :visible.sync="shipDialogVisible" title="补充库存">
-      <el-form ref="merchandiseForm" :model="merchandiseForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
+      <el-form :rules="rules" ref="merchandiseForm" :model="merchandiseForm" status-icon label-position="left" label-width="120px" style="width: 400px; margin-left:50px;">
         <el-form-item label="补充库存数量" prop="number">
-          <el-input v-model="merchandiseForm.number"/>
+          <el-input v-model.number="merchandiseForm.number"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -78,6 +79,12 @@ export default {
         merchandiseId: undefined,
         number: undefined
       },
+      rules:{
+        number:[
+          { required: true, message: '数量不能为空', trigger: 'change' },
+          { type: 'number', message: '数量必须为数字', trigger: 'change' }
+        ]
+      },
       list: []
     }
   },
@@ -101,14 +108,28 @@ export default {
       this.getList()
     },
     handleAdd(row) {
-      /*      this.shipDialogVisible = true
-      this.merchandiseForm.merchandiseId = row.id*/
+      this.shipDialogVisible = true
+      this.merchandiseForm.merchandiseId = row.id
+      this.merchandiseForm.number = undefined
+      this.$nextTick(() => {
+        this.$refs['merchandiseForm'].clearValidate()
+      })
     },
     confirmAdd() {
+      this.$refs['merchandiseForm'].validate(valid => {
+        if (valid) {
 
+        }
+      })
+      this.$nextTick(() => {
+        this.$refs['merchandiseForm'].clearValidate()
+      })
     },
     handleCreate() {
       this.$router.push({ path: '/repository/create' })
+    },
+    handleEdit(row){
+      this.$router.push({ path: '/repository/edit',query:{id:row.id} })
     },
     handleDownload() {
       /*      this.downloadLoading = true
