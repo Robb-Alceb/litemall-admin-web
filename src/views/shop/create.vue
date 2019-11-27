@@ -66,7 +66,7 @@
 
     <div class="op-container">
       <el-button @click="handleCancel">取消</el-button>
-      <el-button type="primary" @click="handleCreate">新增门店</el-button>
+      <el-button v-permission="['POST /admin/shop/create']"  type="primary" @click="handleCreate">新增门店</el-button>
     </div>
 
   </div>

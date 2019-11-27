@@ -5,8 +5,8 @@
       <div slot="header" class="clearfix">
         <span>门店编辑</span>
 
-        <el-button style="float: right; padding: 3px 0" type="text" @click="members()">查看成员</el-button>
-        <el-button style="float: right; padding: 3px 0;margin-right: 10px;" type="text" @click="handleLogs()">查看日志</el-button>
+        <el-button v-permission="['GET /admin/admin/list']" style="float: right; padding: 3px 0" type="text" @click="members()">查看成员</el-button>
+        <el-button v-permission="['GET /admin/shopLog/list']" style="float: right; padding: 3px 0;margin-right: 10px;" type="text" @click="handleLogs()">查看日志</el-button>
       </div>
       <el-form ref="shop" :rules="rules" :model="shop" label-width="150px">
         <el-form-item label="门店名称" prop="name">
@@ -72,7 +72,7 @@
 
     <div class="op-container" style="margin-top: 10px;">
       <el-button @click="handleCancel">取消</el-button>
-      <el-button type="primary" @click="handleEdit">更新门店</el-button>
+      <el-button v-permission="['PUT /admin/shop/update']" type="primary" @click="handleEdit">更新门店</el-button>
     </div>
 
   </div>

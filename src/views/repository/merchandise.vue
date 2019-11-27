@@ -7,6 +7,7 @@
       <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="货品名称"/>
       <el-button v-permission="['GET /admin/repository/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button v-permission="['POST /admin/merchandise/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
+      <el-button v-permission="['POST /admin/shopOrder/orderApplying']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">货品申请</el-button>
       <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
     </div>
 

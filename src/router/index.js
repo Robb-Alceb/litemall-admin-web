@@ -78,78 +78,6 @@ export default new Router({
 })
 
 export const asyncRouterMap = [
-  /* {
-    path: '/mall',
-    component: Layout,
-    redirect: 'noredirect',
-    alwaysShow: true,
-    name: 'mallManage',
-    meta: {
-      title: '商场管理',
-      icon: 'chart'
-    },
-    children: [
-      {
-        path: 'region',
-        component: () => import('@/views/mall/region'),
-        name: 'region',
-        meta: {
-          title: '行政区域',
-          noCache: true
-        }
-      },
-      {
-        path: 'brand',
-        component: () => import('@/views/mall/brand'),
-        name: 'brand',
-        meta: {
-          perms: ['GET /admin/brand/list', 'POST /admin/brand/create', 'GET /admin/brand/read', 'POST /admin/brand/update', 'POST /admin/brand/delete'],
-          title: '品牌制造商',
-          noCache: true
-        }
-      },
-      {
-        path: 'category',
-        component: () => import('@/views/mall/category'),
-        name: 'category',
-        meta: {
-          perms: ['GET /admin/category/list', 'POST /admin/category/create', 'GET /admin/category/read', 'POST /admin/category/update', 'POST /admin/category/delete'],
-          title: '商品类目',
-          noCache: true
-        }
-      },
-      {
-        path: 'order',
-        component: () => import('@/views/mall/order'),
-        name: 'order',
-        meta: {
-          perms: ['GET /admin/order/list', 'GET /admin/order/detail', 'POST /admin/order/ordership', 'POST /admin/order/orderrefund', 'POST /admin/order/orderreply'],
-          title: '订单管理',
-          noCache: true
-        }
-      },
-      {
-        path: 'issue',
-        component: () => import('@/views/mall/issue'),
-        name: 'issue',
-        meta: {
-          perms: ['GET /admin/issue/list', 'POST /admin/issue/create', 'GET /admin/issue/read', 'POST /admin/issue/update', 'POST /admin/issue/delete'],
-          title: '通用问题',
-          noCache: true
-        }
-      },
-      {
-        path: 'keyword',
-        component: () => import('@/views/mall/keyword'),
-        name: 'keyword',
-        meta: {
-          perms: ['GET /admin/keyword/list', 'POST /admin/keyword/create', 'GET /admin/keyword/read', 'POST /admin/keyword/update', 'POST /admin/keyword/delete'],
-          title: '关键词',
-          noCache: true
-        }
-      }
-    ]
-  },*/
   {
     path: '/shop',
     component: Layout,
@@ -166,7 +94,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/shop/list'),
         name: 'list',
         meta: {
-          perms: ['POST /shop/create'],
+          perms: ['GET /admin/shop/list'],
           title: '门店列表',
           noCache: true
         }
@@ -176,7 +104,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/shop/edit'),
         name: 'editShop',
         meta: {
-          perms: ['GET /shop/list'],
+          perms: ['PUT /admin/shop/update','GET /admin/shop/detail'],
           title: '编辑门店',
           noCache: true
         },
@@ -187,19 +115,8 @@ export const asyncRouterMap = [
         component: () => import('@/views/shop/create'),
         name: 'createShop',
         meta: {
-          perms: ['POST /shop/create'],
+          perms: ['GET /admin/shop/create'],
           title: '新增门店',
-          noCache: true
-        },
-        hidden: true
-      },
-      {
-        path: 'overview',
-        component: () => import('@/views/shop/overview'),
-        name: 'shopOverview',
-        meta: {
-          perms: [],
-          title: '门店概览',
           noCache: true
         },
         hidden: true
@@ -209,7 +126,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/sys/admin/admin'),
         name: 'members',
         meta: {
-          perms: [],
+          perms: ['GET /admin/admin/list'],
           title: '门店成员',
           noCache: true
         },
@@ -220,7 +137,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/shop/log'),
         name: 'shopLogs',
         meta: {
-          perms: [],
+          perms: ['GET /admin/shopLog/list'],
           title: '门店操作日志',
           noCache: true
         }
@@ -243,7 +160,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/goods/list'),
         name: 'goodsList',
         meta: {
-          perms: ['GET /admin/goods/list', 'POST /admin/goods/delete'],
+          perms: ['GET /admin/goods/list'],
           title: '商品列表',
           noCache: true
         }
@@ -253,7 +170,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/goods/category'),
         name: 'category',
         meta: {
-          perms: ['GET /admin/category/list', 'POST /admin/category/create', 'GET /admin/category/read', 'POST /admin/category/update', 'POST /admin/category/delete'],
+          perms: ['GET /admin/category/list'],
           title: '商品分类',
           noCache: true
         }
@@ -273,7 +190,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/goods/edit'),
         name: 'goodsEdit',
         meta: {
-          perms: ['GET /admin/goods/detail', 'POST /admin/goods/update', 'POST /admin/goods/catAndBrand'],
+          perms: ['POST /admin/goods/update'],
           title: '商品编辑',
           noCache: true
         },
@@ -284,7 +201,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/goods/comment'),
         name: 'goodsComment',
         meta: {
-          perms: ['GET /admin/comment/list', 'POST /admin/comment/delete'],
+          perms: ['GET /admin/comment/list'],
           title: '商品评论',
           noCache: true
         }
@@ -294,6 +211,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/goods/logs'),
         name: 'goodsLogs',
         meta: {
+          perms: ['GET /admin/goods/queryGoodsLogList'],
           title: '商品操作日志',
           noCache: true
         }
@@ -303,6 +221,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/goods/detail'),
         name: 'goodsDetail',
         meta: {
+          perms: ['GET /admin/goods/detail'],
           title: '商品详情',
           noCache: true
         },
@@ -354,16 +273,6 @@ export const asyncRouterMap = [
         },
         hidden: true
       }
-      /*      {
-        path: 'order',
-        component: () => import('@/views/mall/order'),
-        name: 'order',
-        meta: {
-          perms: ['GET /admin/order/list', 'GET /admin/order/detail', 'POST /admin/order/ordership', 'POST /admin/order/orderrefund', 'POST /admin/order/orderreply'],
-          title: '订单管理',
-          noCache: true
-        }
-      }*/
     ]
   },
   {
