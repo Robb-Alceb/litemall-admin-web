@@ -20,7 +20,7 @@ export function readAdmin(id) {
   return request({
     url: '/admin/read',
     method: 'get',
-    params:{id}
+    params: { id }
   })
 }
 
@@ -67,6 +67,13 @@ export function getShopMembers(shopId) {
 export function allAdmin() {
   return request({
     url: '/admin/all',
+    method: 'get'
+  })
+}
+
+export function infoAdmin() {
+  return request({
+    url: '/admin/info',
     method: 'get'
   })
 }

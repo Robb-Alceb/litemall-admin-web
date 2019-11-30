@@ -3,6 +3,7 @@
 
     <el-card class="box-card">
       <h3>新增门店</h3>
+
       <el-form ref="shop" :rules="rules" :model="shop" label-width="150px">
         <el-form-item label="门店名称" prop="name">
           <el-input v-model="shop.name"/>
@@ -11,12 +12,12 @@
           <el-input v-model="shop.address"/>
         </el-form-item>
         <el-form-item label="门店经理" prop="shopManager">
-          <el-select  v-model="shopManagerId"  placeholder="从成员列表中设置账号为门店店长">
+          <el-select v-model="shopManagerId" placeholder="从成员列表中设置账号为门店店长">
             <el-option v-for="item in shopMembers" :value="item.id" :label="item.nickName"/>
           </el-select>
         </el-form-item>
         <el-form-item label="门店店长" prop="shopkeeper">
-          <el-select  v-model="shopkeeperId">
+          <el-select v-model="shopkeeperId">
             <el-option v-for="item in shopMembers" :value="item.id" :label="item.nickName"/>
           </el-select>
         </el-form-item>
@@ -66,7 +67,7 @@
 
     <div class="op-container">
       <el-button @click="handleCancel">取消</el-button>
-      <el-button v-permission="['POST /admin/shop/create']"  type="primary" @click="handleCreate">新增门店</el-button>
+      <el-button v-permission="['POST /admin/shop/create']" type="primary" @click="handleCreate">新增门店</el-button>
     </div>
 
   </div>
@@ -83,18 +84,18 @@ export default {
     return {
       limit: false,
       shop: {
-        "name": "",
-        "address": "",
-        "status": 0,
-        "openTime": "08:00",
-        "closeTime": "22:00",
-        "description": "",
-        "range": 0,
-        "types": [],
+        'name': '',
+        'address': '',
+        'status': 0,
+        'openTime': '08:00',
+        'closeTime': '22:00',
+        'description': '',
+        'range': 0,
+        'types': []
       },
-      shopkeeperId:undefined,
-      shopManagerId:undefined,
-      shopMembers:[],
+      shopkeeperId: undefined,
+      shopManagerId: undefined,
+      shopMembers: [],
       rules: {
         address: [
           { required: true, message: '门店地址不能为空', trigger: 'blur' }
@@ -103,12 +104,20 @@ export default {
       }
     }
   },
+  computed: {
+    limited() {
+      if (this.shop.range > 0) {
+        return true
+      }
+      return false
+    }
+  },
   created() {
     this.init()
   },
   methods: {
     init: function() {
-      allAdmin().then((res)=>{
+      allAdmin().then((res) => {
         this.shopMembers = res.data.data
       })
     },
@@ -116,7 +125,7 @@ export default {
       this.$router.push({ path: '/shop/list' })
     },
     handleCreate: function() {
-      let shop = {
+      const shop = {
         litemallShop: this.shop,
         shopManagerId: this.shopManagerId,
         shopkeeperId: this.shopkeeperId
@@ -135,14 +144,6 @@ export default {
             type: 'error'
           })
         })
-    }
-  },
-  computed:{
-    limited() {
-      if (this.shop.range > 0) {
-        return true
-      }
-      return false
     }
   }
 }

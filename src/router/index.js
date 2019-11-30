@@ -104,7 +104,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/shop/edit'),
         name: 'editShop',
         meta: {
-          perms: ['PUT /admin/shop/update','GET /admin/shop/detail'],
+          perms: ['PUT /admin/shop/update', 'GET /admin/shop/detail'],
           title: '编辑门店',
           noCache: true
         },
@@ -141,6 +141,38 @@ export const asyncRouterMap = [
           title: '门店操作日志',
           noCache: true
         }
+      },
+      {
+        path: 'order',
+        component: () => import('@/views/shop/order/list'),
+        name: 'shopOrderList',
+        meta: {
+          perms: ['GET /admin/shopOrder/list'],
+          title: '门店订单列表',
+          noCache: true
+        }
+      },
+      {
+        path: 'order/detail',
+        component: () => import('@/views/shop/order/detail'),
+        name: 'shopOrderDetail',
+        meta: {
+          perms: ['POST /admin/shopOrder/orderPass', 'POST /admin/shopOrder/orderNoPass', 'POST /admin/shopOrder/orderPay', 'POST /admin/shopOrder/deliverGoods', 'POST /admin/shopOrder/cancelDeliverGoods', 'POST /admin/shopOrder/takeDelivery'],
+          title: '门店订单处理',
+          noCache: true
+        },
+        hidden: true
+      },
+      {
+        path: 'order/create',
+        component: () => import('@/views/shop/order/create'),
+        name: 'shopOrderCreate',
+        meta: {
+          perms: ['POST /admin/shopOrder/orderApplying'],
+          title: '进货申请',
+          noCache: true
+        },
+        hidden: true
       }
     ]
   },

@@ -7,7 +7,7 @@
       <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="货品名称"/>
       <el-button v-permission="['GET /admin/repository/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button v-permission="['POST /admin/merchandise/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-      <el-button v-permission="['POST /admin/shopOrder/orderApplying']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">货品申请</el-button>
+      <el-button v-permission="['POST /admin/shopOrder/orderApplying']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleGetAllmerchandise">货品申请</el-button>
       <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
     </div>
 
@@ -42,7 +42,7 @@
 
     <!-- 补充库存对话框 -->
     <el-dialog :visible.sync="shipDialogVisible" title="补充库存">
-      <el-form :rules="rules" ref="merchandiseForm" :model="merchandiseForm" status-icon label-position="left" label-width="120px" style="width: 400px; margin-left:50px;">
+      <el-form ref="merchandiseForm" :rules="rules" :model="merchandiseForm" status-icon label-position="left" label-width="120px" style="width: 400px; margin-left:50px;">
         <el-form-item label="补充库存数量" prop="number">
           <el-input v-model.number="merchandiseForm.number"/>
         </el-form-item>
@@ -52,12 +52,42 @@
         <el-button type="primary" @click="confirmAdd">确定</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog :visible.sync="merchandiseHQDialogVisible" title="总部货品列表">
+      <el-table :data="merchandiseHQlist" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+
+        <el-table-column align="center" min-width="100" label="货号" prop="merchandiseSn"/>
+
+        <el-table-column align="center" min-width="100" label="货品名称" prop="name"/>
+
+        <el-table-column align="center" min-width="100" label="货品图片" prop="picUrl">
+          <template slot-scope="scope">
+            <img :src="scope.row.picUrl" width="40">
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="价格" prop="sellingPrice"/>
+
+        <el-table-column align="center" label="数量" prop="number"/>
+
+        <el-table-column align="center" label="单位" prop="unit"/>
+
+        <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+          <template slot-scope="scope">
+            <el-button v-permission="['GET /admin/merchandise/all']" type="primary" size="mini" @click="handleApplying(scope.row)">货品申请</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="merchandiseHQDialogVisible = false">取消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
-import { listMerchandise } from '@/api/repository' // Secondary package based on el-pagination
+import { listMerchandise, allMerchandise } from '@/api/repository' // Secondary package based on el-pagination
 export default {
   name: 'Merchandise',
   components: { Pagination },
@@ -80,13 +110,15 @@ export default {
         merchandiseId: undefined,
         number: undefined
       },
-      rules:{
-        number:[
+      rules: {
+        number: [
           { required: true, message: '数量不能为空', trigger: 'change' },
           { type: 'number', message: '数量必须为数字', trigger: 'change' }
         ]
       },
-      list: []
+      list: [],
+      merchandiseHQlist: [],
+      merchandiseHQDialogVisible: false
     }
   },
   created() {
@@ -129,8 +161,17 @@ export default {
     handleCreate() {
       this.$router.push({ path: '/repository/create' })
     },
-    handleEdit(row){
-      this.$router.push({ path: '/repository/edit',query:{id:row.id} })
+    handleEdit(row) {
+      this.$router.push({ path: '/repository/edit', query: { id: row.id }})
+    },
+    handleApplying(row) {
+      this.$router.push({ path: '/shop/order/create', query: { merchandise: row }})
+    },
+    handleGetAllmerchandise() {
+      allMerchandise().then(res => {
+        this.merchandiseHQlist = res.data.data
+        this.merchandiseHQDialogVisible = true
+      })
     },
     handleDownload() {
       /*      this.downloadLoading = true
