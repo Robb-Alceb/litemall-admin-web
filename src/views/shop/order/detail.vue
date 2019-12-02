@@ -3,7 +3,7 @@
     <el-card class="box-card">
       <h3>进货详情</h3>
       <div>
-        <el-steps :active="formatStepStatus(orderDetail.order.orderStatus)" finish-status="success" align-center>
+        <el-steps :active="formatStepStatus(orderDetail.orderStatus)" finish-status="success" align-center>
           <el-step title="申请调货"/>
           <el-step title="同意调货" />
           <el-step title="支付付款" />
@@ -38,98 +38,261 @@
       <div class="table-layout" align="center">
         <el-row>
           <el-col :span="6" class="table-cell-name">服务单号</el-col>
-          <el-col :span="18" align="left" class="table-cell-content">3215614222</el-col>
+          <el-col :span="18" align="left" class="table-cell-content">
+            {{orderDetail.orderSn}}
+          </el-col>
         </el-row>
         <el-row>
           <el-col :span="6" class="table-cell-name">申请状态</el-col>
-          <el-col :span="18" align="left" class="table-cell-content">待处理</el-col>
+          <el-col :span="18" align="left" class="table-cell-content">
+            {{orderStatusMap[orderDetail.orderStatus]}}
+          </el-col>
         </el-row>
-        <el-row>
+<!--        <el-row>
           <el-col :span="6" class="table-cell-name">货物编号</el-col>
-          <el-col :span="18" align="left" class="table-cell-content">No 1000</el-col>
-        </el-row>
+          <el-col :span="18" align="left" class="table-cell-content">
+            {{}}
+          </el-col>
+        </el-row>-->
         <el-row>
           <el-col :span="6" class="table-cell-name">申请时间</el-col>
-          <el-col :span="18" align="left" class="table-cell-content">2019-01-01 20:20:00</el-col>
+          <el-col :span="18" align="left" class="table-cell-content">
+            {{orderDetail.addTime}}
+          </el-col>
         </el-row>
         <el-row>
           <el-col :span="6" class="table-cell-name">用户账号</el-col>
-          <el-col :span="18" align="left" class="table-cell-content">shanghai1</el-col>
+          <el-col :span="18" align="left" class="table-cell-content">
+            {{orderDetail.username}}
+          </el-col>
         </el-row>
         <el-row>
           <el-col :span="6" class="table-cell-name">联系人</el-col>
-          <el-col :span="18" align="left" class="table-cell-content">上海店长</el-col>
+          <el-col :span="18" align="left" class="table-cell-content">
+            {{orderDetail.consignee}}
+          </el-col>
         </el-row>
         <el-row>
           <el-col :span="6" class="table-cell-name">联系电话</el-col>
-          <el-col :span="18" align="left" class="table-cell-content">1300000000</el-col>
+          <el-col :span="18" align="left" class="table-cell-content">
+            {{orderDetail.mobile}}
+          </el-col>
         </el-row>
         <el-row>
           <el-col :span="6" class="table-cell-name">所在门店</el-col>
-          <el-col :span="18" align="left" class="table-cell-content">上海门店</el-col>
+          <el-col :span="18" align="left" class="table-cell-content">
+            {{orderDetail.shopName}}
+          </el-col>
         </el-row>
         <el-row>
           <el-col :span="6" class="table-cell-name">订货描述</el-col>
-          <el-col :span="18" align="left" class="table-cell-content">存货不足</el-col>
+          <el-col :span="18" align="left" class="table-cell-content">
+            {{orderDetail.orderRemark}}
+          </el-col>
         </el-row>
       </div>
-
-      <div class="table-layout" align="center">
-        <el-row>
-          <el-col :span="6" class="table-cell-name">发货数量</el-col>
-          <el-col :span="18" align="left" class="table-cell-content">$100</el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6" class="table-cell-name">确认发货金额</el-col>
-          <el-col :span="18" align="left" class="table-cell-content">$1000</el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6" class="table-cell-name">收货人姓名</el-col>
-          <el-col :span="18" align="left" class="table-cell-content">上海店长</el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6" class="table-cell-name">收货人地址</el-col>
-          <el-col :span="18" align="left" class="table-cell-content">上海市</el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6" class="table-cell-name">支付状态</el-col>
-          <el-col :span="18" align="left" class="table-cell-content">待支付</el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6" class="table-cell-name">处理备注</el-col>
-          <el-col :span="18" align="left" class="table-cell-content">批准</el-col>
-        </el-row>
+      <div class="table-layout"  v-permission="['POST /admin/shopOrder/orderPass']">
+        <el-form style="margin-top: 10px;">
+          <el-form ref="passForm" :model="passForm" label-width="150px">
+<!--            <el-form-item v-if="orderDetail.orderStatus == 1" label="运费价格" prop="shipPrice">
+              <el-input v-model="passForm.shipPrice"/>
+            </el-form-item>-->
+            <el-form-item label="处理备注" prop="mobile">
+              <el-input v-model="passForm.handleRemark" type="textarea"/>
+            </el-form-item>
+          </el-form>
+        </el-form>
       </div>
     </el-card>
 
+    <div class="op-container">
+      <el-button @click="handleCancel">取消</el-button>
+      <el-button v-if="orderDetail.orderStatus == 3" v-permission="['POST /admin/shopOrder/deliverGoods']" type="primary" @click="handleDeliverGoods">同意发货</el-button>
+      <el-button v-if="orderDetail.orderStatus == 3" v-permission="['POST /admin/shopOrder/cancelDeliverGoods']" type="danger" @click="handleCancelDeliverGoods">拒绝发货</el-button>
+      <el-button v-if="orderDetail.orderStatus == 2" v-permission="['POST /admin/shopOrder/orderPay']" type="primary" @click="handleOrderPay">支付货款</el-button>
+      <el-button v-if="orderDetail.orderStatus == 1" v-permission="['POST /admin/shopOrder/orderPass']" type="primary" @click="handleOrderPass">同意调货</el-button>
+      <el-button v-if="orderDetail.orderStatus == 1" v-permission="['POST /admin/shopOrder/orderNoPass']" type="danger" @click="handleOrderNoPass">拒绝调货</el-button>
+      <el-button v-if="orderDetail.orderStatus == 4" v-permission="['POST /admin/shopOrder/takeDelivery']" type="primary" @click="handleTakeDelivery">确认收货</el-button>
+    </div>
   </div>
 </template>
 
 <script>
+import {shopOrderDetail, shopOrderPass, shopOrderNoPass, shopOrderPay, shopDeliverGoods, shopCancelDeliverGoods, shopTakeDelivery} from '@/api/shop'
+import { MessageBox } from 'element-ui'
+
+const orderStatusMap = {
+  1:'待调货',
+  2:'代付款',
+  3:'代发货',
+  4:'待确认',
+  5:'完成',
+  6:'拒绝'
+}
 export default {
   name: 'ShopOrderDetail',
   data() {
+    const validateDouble = (rule, value, callback) => {
+      console.log('value' + value)
+      if (!/^[0-9,.]*$/.test(value)) {
+        callback(new Error('运费价格必须为数字'))
+      } else {
+        callback()
+      }
+    }
     return {
+      orderStatusMap,
+      validateDouble,
+      orderId:undefined,
       orderDetail: {
-        order: {}
+      },
+      merchandises:undefined,
+      passForm:{
+        shipPrice:undefined,
+        handleRemark:undefined
+      },
+      passRules: {
+        number: [
+          { shipPrice: true, message: '申请数量不能为空', trigger: 'change' },
+          { validator: validateDouble, message: '申请数量不能为非数字', trigger: 'change' }
+        ],
+        userId: [{ required: true, message: '联系人不能为空', trigger: 'blur' }]
       }
     }
   },
+  created(){
+    if(this.$route.query.id){
+      this.orderId = this.$route.query.id
+    }
+    this.getDetail()
+  },
   methods: {
+    getDetail(){
+      shopOrderDetail(this.orderId).then(res=>{
+        this.orderDetail = res.data.data.order
+        this.merchandises = res.data.data.merchandises
+      })
+    },
     formatStepStatus(value) {
-      if (value === 201) {
-        // 待发货
+      if (value === 2) {
+        // 支付
         return 2
-      } else if (value === 301) {
-        // 已发货
+      } else if (value === 3) {
+        // 处理发货
         return 3
-      } else if (value === 401) {
-        // 已完成
+      } else if (value === 4) {
+        // 确认发货
         return 4
+      } else if(value === 5){
+        // 确认收货
+        return 5
       } else {
-        // 待付款、已关闭、无限订单
+        // 同意调货、拒绝调货
         return 1
       }
+    },
+    handleCancel(){
+      this.$router.push({path:'/shop/order'})
+    },
+    handleOrderPass(){
+      this.passForm.adminOrderId = this.orderDetail.id
+      this.$refs['passForm'].validate(valid => {
+        if (valid) {
+          shopOrderPass(this.passForm).then(response => {
+            this.$notify.success({
+              title: '成功',
+              message: '处理成功'
+            })
+            this.$router.push({ path: '/shop/list' })
+          })
+          .catch(response => {
+            MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
+              confirmButtonText: '确定',
+              type: 'error'
+            })
+          })
+        }
+      })
+    },
+    handleOrderNoPass(){
+      this.passForm.adminOrderId = this.orderDetail.id
+      shopOrderPay(this.passForm).then(response => {
+        this.$notify.success({
+          title: '成功',
+          message: '处理成功'
+        })
+        this.$router.push({ path: '/shop/list' })
+      })
+        .catch(response => {
+          MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
+            confirmButtonText: '确定',
+            type: 'error'
+          })
+        })
+    },
+    handleOrderPay(){
+      this.passForm.adminOrderId = this.orderDetail.id
+      shopOrderPay(this.passForm).then(response => {
+        this.$notify.success({
+          title: '成功',
+          message: '处理成功'
+        })
+        this.$router.push({ path: '/shop/order' })
+      })
+        .catch(response => {
+          MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
+            confirmButtonText: '确定',
+            type: 'error'
+          })
+        })
+    },
+    handleDeliverGoods(){
+      this.passForm.adminOrderId = this.orderDetail.id
+      shopDeliverGoods(this.passForm).then(response => {
+        this.$notify.success({
+          title: '成功',
+          message: '处理成功'
+        })
+        this.$router.push({ path: '/shop/order' })
+      })
+        .catch(response => {
+          MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
+            confirmButtonText: '确定',
+            type: 'error'
+          })
+        })
+    },
+    handleCancelDeliverGoods(){
+      this.passForm.adminOrderId = this.orderDetail.id
+      shopCancelDeliverGoods(this.passForm).then(response => {
+        this.$notify.success({
+          title: '成功',
+          message: '处理成功'
+        })
+        this.$router.push({ path: '/shop/order' })
+      })
+        .catch(response => {
+          MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
+            confirmButtonText: '确定',
+            type: 'error'
+          })
+        })
+    },
+    handleTakeDelivery(){
+      this.passForm.adminOrderId = this.orderDetail.id
+      shopTakeDelivery(this.passForm).then(response => {
+        this.$notify.success({
+          title: '成功',
+          message: '处理成功'
+        })
+        this.$router.push({ path: '/shop/order' })
+      })
+        .catch(response => {
+          MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
+            confirmButtonText: '确定',
+            type: 'error'
+          })
+        })
     }
   }
 }

@@ -111,3 +111,11 @@ export function shopTakeDelivery(data) {
     data
   })
 }
+
+export function shopOrderDetail(id) {
+  return request({
+    url: '/shopOrder/read',
+    method: 'get',
+    params: { id }
+  })
+}

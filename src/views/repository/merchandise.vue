@@ -72,9 +72,9 @@
 
         <el-table-column align="center" label="单位" prop="unit"/>
 
-        <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+        <el-table-column align="center" label="操作" width="100" class-name="small-padding fixed-width">
           <template slot-scope="scope">
-            <el-button v-permission="['GET /admin/merchandise/all']" type="primary" size="mini" @click="handleApplying(scope.row)">货品申请</el-button>
+            <el-button v-permission="['GET /admin/merchandise/all']" type="primary" @click="handleApplying(scope.row)">货品申请</el-button>
           </template>
         </el-table-column>
       </el-table>
