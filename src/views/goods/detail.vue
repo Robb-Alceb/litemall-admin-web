@@ -1,6 +1,63 @@
 <template>
   <div class="app-container">
 
+
+    <el-card class="box-card">
+      <h4>基本信息</h4>
+      <el-form ref="goods" :rules="rules" :model="goods" label-width="150px">
+        <el-form-item label="所属分类">
+          <el-cascader :options="categoryList" v-model="categoryIds" expand-trigger="hover" @change="handleCategoryChange"/>
+        </el-form-item>
+        <el-form-item label="商品编号" prop="goodsSn">
+          <el-input v-model="goods.goodsSn"/>
+        </el-form-item>
+        <el-form-item label="商品名称" prop="name">
+          <el-input v-model="goods.name"/>
+        </el-form-item>
+        <el-form-item label="商品售价" prop="price">
+          <el-input v-model="productForm.price"/>
+        </el-form-item>
+        <el-form-item label="商品进货价" prop="cost">
+          <el-input v-model="productForm.cost"/>
+        </el-form-item>
+        <el-form-item label="副标题" prop="subhead">
+          <el-input v-model="goods.subhead"/>
+        </el-form-item>
+        <el-form-item label="商品简介">
+          <el-input v-model="goods.brief"/>
+        </el-form-item>
+        <el-form-item label="商品详细介绍">
+          <editor :init="editorInit" v-model="goods.detail"/>
+        </el-form-item>
+        <el-form-item label="商品类型" prop="goodsType">
+          <el-radio-group v-model="goods.goodsType">
+            <el-radio :label="1">普通商品</el-radio>
+            <el-radio :label="2">商品原料</el-radio>
+            <el-radio :label="3">特殊商品</el-radio>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
+    </el-card>
+    <el-card class="box-card">
+      <h4>库存规格</h4>
+      <el-form ref="goods" :rules="rules" :model="goods" label-width="150px">
+        <el-form-item label="商品库存" prop="number">
+          <el-input v-model="productForm.number"/>
+        </el-form-item>
+        <el-form-item label="商品图片" prop="url">
+          <el-upload
+            :headers="headers"
+            :action="uploadPath"
+            :show-file-list="false"
+            :on-success="uploadProductUrl"
+            class="avatar-uploader"
+            accept=".jpg,.jpeg,.png,.gif">
+            <img v-if="productForm.url" :src="productForm.url" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"/>
+          </el-upload>
+        </el-form-item>
+      </el-form>
+    </el-card>
     <el-card class="box-card">
       <h3>商品介绍</h3>
       <el-form ref="goods" :rules="rules" :model="goods" label-width="150px">
