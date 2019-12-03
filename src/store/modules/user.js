@@ -12,6 +12,7 @@ const user = {
     introduction: '',
     roles: [],
     perms: [],
+    shop: {},
     setting: {
       articlePlatform: []
     }
@@ -44,6 +45,9 @@ const user = {
     },
     SET_PERMS: (state, perms) => {
       state.perms = perms
+    },
+    SET_SHOP: (state, shop) => {
+      state.shop = shop
     }
   },
 
@@ -74,11 +78,11 @@ const user = {
           } else {
             reject('getInfo: perms must be a non-null array !')
           }
-
           commit('SET_ROLES', data.roles)
           commit('SET_NAME', data.name)
           commit('SET_AVATAR', data.avatar)
           commit('SET_INTRODUCTION', data.introduction)
+          commit('SET_SHOP', data.shop)
           resolve(response)
         }).catch(error => {
           reject(error)

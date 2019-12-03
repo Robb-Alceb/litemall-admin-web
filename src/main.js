@@ -20,6 +20,7 @@ import * as filters from './filters' // global filters
 
 import permission from '@/directive/permission/index.js' // 权限判断指令
 
+import shop from '@/directive/shop/index.js' // 门店成员判断指令
 import VCharts from 'v-charts'    //报表
 
 import _ from 'lodash'    //lodash
@@ -29,6 +30,7 @@ Vue.use(Element, {
 })
 
 Vue.directive('permission', permission)
+Vue.directive('shop', shop)
 
 // register global utility filters.
 Object.keys(filters).forEach(key => {

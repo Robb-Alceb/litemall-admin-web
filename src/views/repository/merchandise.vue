@@ -7,8 +7,8 @@
       <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="货品名称"/>
       <el-button v-permission="['GET /admin/repository/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button v-permission="['POST /admin/merchandise/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-      <el-button v-permission="['POST /admin/shopOrder/orderApplying']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleGetAllmerchandise">货品申请</el-button>
-      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
+      <el-button v-permission="['POST /admin/shopOrder/orderApplying']" v-shop="true" class="filter-item" type="primary" icon="el-icon-edit" @click="handleGetAllmerchandise">货品申请</el-button>
+<!--      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>-->
     </div>
 
     <!-- 查询结果 -->
@@ -87,7 +87,9 @@
 
 <script>
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
-import { listMerchandise, allMerchandise } from '@/api/repository' // Secondary package based on el-pagination
+import { listMerchandise, allMerchandise, merchandiseAddNumber } from '@/api/merchandise'
+import { MessageBox } from 'element-ui'
+
 export default {
   name: 'Merchandise',
   components: { Pagination },
@@ -142,7 +144,7 @@ export default {
     },
     handleAdd(row) {
       this.shipDialogVisible = true
-      this.merchandiseForm.merchandiseId = row.id
+      this.merchandiseForm.id = row.id
       this.merchandiseForm.number = undefined
       this.$nextTick(() => {
         this.$refs['merchandiseForm'].clearValidate()
@@ -151,7 +153,20 @@ export default {
     confirmAdd() {
       this.$refs['merchandiseForm'].validate(valid => {
         if (valid) {
-
+          merchandiseAddNumber(this.merchandiseForm).then(response => {
+            this.$notify.success({
+              title: '成功',
+              message: '修改成功'
+            })
+            this.shipDialogVisible = false
+            this.getList()
+          })
+            .catch(response => {
+              MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
+                confirmButtonText: '确定',
+                type: 'error'
+              })
+            })
         }
       })
       this.$nextTick(() => {

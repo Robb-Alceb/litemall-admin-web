@@ -2,7 +2,7 @@
   <div class="app-container">
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-select v-model="listQuery.status" clearable class="filter-item" placeholder="请选择">
+      <el-select v-model="listQuery.orderStatus" clearable class="filter-item" placeholder="请选择">
         <el-option :value="1" label="待处理"/>
         <el-option :value="2" label="待付款"/>
         <el-option :value="3" label="待发货"/>
@@ -22,15 +22,19 @@
 
       <el-table-column align="center" label="申请时间" prop="addTime"/>
 
-      <el-table-column align="center" label="用户账号" prop="userName"/>
+      <el-table-column align="center" label="用户账号" prop="username"/>
 
-      <el-table-column align="center" label="服务类型" prop="serviceType"/>
+      <el-table-column align="center" label="服务类型" prop="serviceType">
+        <template slot-scope="scope">
+          <el-tag>{{ scope.row.serviceType | serviceStatusFilter }}</el-tag>
+        </template>
+      </el-table-column>
 
       <el-table-column align="center" label="所在门店" prop="shopName"/>
 
       <el-table-column align="center" label="申请状态" prop="orderStatus">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.orderStatus != 1 ? 'success' : 'error' ">{{ statusMap[scope.row.orderStatus] }}</el-tag>
+          <el-tag :type="scope.row.orderStatus != 6 &&  scope.row.orderStatus != 5? 'success' : 'error' ">{{ statusMap[scope.row.orderStatus] }}</el-tag>
         </template>
       </el-table-column>
 
@@ -61,15 +65,24 @@ const statusMap = {
   5: '确认收货',
   6: '已拒绝'
 }
+const serviceMap = {
+  1:'门店进货'
+}
 import BackToTop from '@/components/BackToTop'
 import Pagination from '@/components/Pagination'
 import { getShopOrderList } from '@/api/shop'
 export default {
   name: 'ShopOrderList',
   components: { BackToTop, Pagination },
+  filters: {
+    serviceStatusFilter(status) {
+      return serviceMap[status]
+    }
+  },
   data() {
     return {
       statusMap,
+      serviceMap,
       list: [{
         orderSn: 'O00001',
         addTime: '2019-01-01 20:20:00',

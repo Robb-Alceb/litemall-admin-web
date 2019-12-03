@@ -48,3 +48,18 @@ export function getMerchandiseRecordList(query) {
   })
 }
 
+
+export function allMerchandise() {
+  return request({
+    url: '/merchandise/all',
+    method: 'get'
+  })
+}
+
+export function merchandiseAddNumber(data) {
+  return request({
+    url: '/merchandise/addNumber',
+    method: 'put',
+    data
+  })
+}

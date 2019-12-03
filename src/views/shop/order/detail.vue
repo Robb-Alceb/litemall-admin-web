@@ -203,7 +203,7 @@ export default {
               title: '成功',
               message: '处理成功'
             })
-            this.$router.push({ path: '/shop/list' })
+            this.$router.push({ path: '/shop/order' })
           })
           .catch(response => {
             MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
@@ -216,12 +216,12 @@ export default {
     },
     handleOrderNoPass(){
       this.passForm.adminOrderId = this.orderDetail.id
-      shopOrderPay(this.passForm).then(response => {
+      shopOrderNoPass(this.passForm).then(response => {
         this.$notify.success({
           title: '成功',
           message: '处理成功'
         })
-        this.$router.push({ path: '/shop/list' })
+        this.$router.push({ path: '/shop/order' })
       })
         .catch(response => {
           MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {

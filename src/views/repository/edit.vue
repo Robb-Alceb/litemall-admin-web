@@ -50,6 +50,8 @@
 <script>
   import {readMerchandise, editMerchandise} from '@/api/repository'
   import { MessageBox } from 'element-ui'
+  import { uploadPath } from '@/api/storage'
+  import { getToken } from '@/utils/auth'
   export default {
     name: "editMerchandise",
     data(){
@@ -62,8 +64,9 @@
         }
       }
       return {
+        uploadPath,
         merchandiseId: undefined,
-        merchandise: undefined,
+        merchandise: {},
         rules: {
           merchandiseSn: [{ required: true, message: '货品编号不能为空', trigger: 'blur' }],
           name: [{ required: true, message: '货品名称不能为空', trigger: 'blur' }],
@@ -80,6 +83,13 @@
     created(){
       this.detail()
     },
+    computed: {
+      headers() {
+        return {
+          'X-Litemall-Admin-Token': getToken()
+        }
+      }
+    },
     methods: {
       detail(){
         readMerchandise(this.$route.query.id).then(res=>{
@@ -93,7 +103,7 @@
         this.$router.push({path:'repository/list'})
       },
       handleEdit(){
-        editMerchandise(this.merchandise).then(response => {
+        editMerchandise({litemallMerchandise:this.merchandise}).then(response => {
           this.$notify.success({
             title: '成功',
             message: '修改成功'
@@ -106,7 +116,10 @@
               type: 'error'
             })
           })
-      }
+      },
+      uploadPicUrl: function(response) {
+        this.merchandise.picUrl = response.data.url
+      },
     }
   }
 </script>
