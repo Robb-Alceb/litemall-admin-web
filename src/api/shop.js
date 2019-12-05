@@ -40,6 +40,15 @@ export function createShop(data) {
   })
 }
 
+
+export function allForPerm(id) {
+  return request({
+    url: '/shop/allForPerm',
+    method: 'get',
+    params: { id }
+  })
+}
+
 export function getLogs(query) {
   return request({
     url: '/shopLog/list',

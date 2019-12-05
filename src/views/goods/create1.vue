@@ -8,11 +8,6 @@
         <el-form-item label="所属分类">
           <el-cascader :options="categoryList" v-model="categoryIds" expand-trigger="hover" @change="handleCategoryChange"/>
         </el-form-item>
-        <el-form-item label="所属门店">
-          <el-select v-model="goods.shopId">
-            <el-option v-for="item in shops" :value="item.id" :label="item.name"></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="商品编号" prop="goodsSn">
           <el-input v-model="goods.goodsSn"/>
         </el-form-item>
@@ -228,44 +223,44 @@
           </el-form>
         </el-tab-pane>
         <el-tab-pane label="阶梯价格" name="2">
-            <el-table :data="stepPriceForms" border fit highlight-current-row>
-              <el-table-column align="center" label="数量" prop="number">
-                <template slot-scope="scope">
-                  <el-input v-model="stepPriceForms[scope.$index].number"/>
-                </template>
-              </el-table-column>
-              <el-table-column align="center" label="价格" prop="price">
-                <template slot-scope="scope">
-                  <el-input v-model="stepPriceForms[scope.$index].price"/>
-                </template>
-              </el-table-column>
-              <el-table-column align="center" label="操作">
-                <template slot-scope="scope">
-                  <el-button type="primary" size="mini" @click="handleStepAdd(scope.row)">增加</el-button>
-                  <el-button type="danger" size="mini" @click="handleStepDelete(scope)">删除</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
+          <el-table :data="stepPriceForms" border fit highlight-current-row>
+            <el-table-column align="center" label="数量" prop="number">
+              <template slot-scope="scope">
+                <el-input v-model="stepPriceForms[scope.$index].number"/>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="价格" prop="price">
+              <template slot-scope="scope">
+                <el-input v-model="stepPriceForms[scope.$index].price"/>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="操作">
+              <template slot-scope="scope">
+                <el-button type="primary" size="mini" @click="handleStepAdd(scope.row)">增加</el-button>
+                <el-button type="danger" size="mini" @click="handleStepDelete(scope)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
         </el-tab-pane>
         <el-tab-pane label="满减价格"  name="3">
-            <el-table :data="moneyOfPriceForms" border fit highlight-current-row>
-              <el-table-column align="center" label="满" prop="price">
-                <template slot-scope="scope">
-                  <el-input v-model="moneyOfPriceForms[scope.$index].price"/>
-                </template>
-              </el-table-column>
-              <el-table-column align="center" label="立减" prop="reduce">
-                <template slot-scope="scope">
-                  <el-input v-model="moneyOfPriceForms[scope.$index].reduce"/>
-                </template>
-              </el-table-column>
-              <el-table-column align="center" label="操作">
-                <template slot-scope="scope">
-                  <el-button type="primary" size="mini" @click="handleMoneyOfAdd(scope.row)">增加</el-button>
-                  <el-button type="danger" size="mini" @click="handleMoneyOfDelete(scope)">删除</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
+          <el-table :data="moneyOfPriceForms" border fit highlight-current-row>
+            <el-table-column align="center" label="满" prop="price">
+              <template slot-scope="scope">
+                <el-input v-model="moneyOfPriceForms[scope.$index].price"/>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="立减" prop="reduce">
+              <template slot-scope="scope">
+                <el-input v-model="moneyOfPriceForms[scope.$index].reduce"/>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="操作">
+              <template slot-scope="scope">
+                <el-button type="primary" size="mini" @click="handleMoneyOfAdd(scope.row)">增加</el-button>
+                <el-button type="danger" size="mini" @click="handleMoneyOfDelete(scope)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -323,19 +318,20 @@
   import { allForPerm } from '@/api/shop'
 
   export default {
-    name: 'GoodsDetail',
+    name: 'GoodsCreate',
     components: { Editor },
     data() {
       return {
-        shops:[],
         uploadPath,
         limited: false,
         vipPriceForm:{},
         stepPriceForms:[{
-
+          number:undefined,
+          price:undefined
         }],
         moneyOfPriceForms:[{
-
+          price: undefined,
+          reduce: undefined
         }],
         newKeywordVisible: false,
         newKeyword: '',
@@ -433,7 +429,7 @@
           this.brandList = response.data.data.brandList
         })
 
-        allForPerm().then(response=>{
+        allForPerm().then(res=>{
           this.shops = response.data.data.list
         })
       },
@@ -670,16 +666,13 @@
           goods: this.goods,
           specifications: this.specifications,
           products: this.products,
-          attributes: this.attributes,
-          vipPrice: this.vipPriceForm,
-          stepPrices: this.stepPriceForms,
-          moneyOfPrices: this.moneyOfPriceForms
+          attributes: this.attributes
         }
         editGoods(finalGoods)
           .then(response => {
             this.$notify.success({
               title: '成功',
-              message: '修改成功'
+              message: '创建成功'
             })
             this.$router.push({ path: '/goods/list' })
           })
