@@ -67,30 +67,22 @@
     </el-card>
     <el-card class="box-card">
       <h4>库存规格</h4>
-      <el-form ref="goods" :rules="rules" :model="goods" label-width="150px">
+      <el-form ref="productForm" :rules="productRules" :model="productForm" label-width="150px">
         <el-form-item label="商品库存" prop="number">
           <el-input v-model.number="productForm.number"/>
         </el-form-item>
         <el-form-item label="商品售价" prop="sellPrice">
-          <el-input v-model="productForm.sellPrice"/>
+          <el-input v-model="productForm.sellPrice">
+            <template slot="append">元</template>
+          </el-input>
         </el-form-item>
         <el-form-item label="商品进货价" prop="costPrice">
-          <el-input v-model="productForm.costPrice"/>
+          <el-input v-model="productForm.costPrice">
+            <template slot="append">元</template>
+          </el-input>
         </el-form-item>
         <el-form-item label="商品预警值" prop="earlyWarningValue">
           <el-input v-model.number="productForm.earlyWarningValue"/>
-        </el-form-item>
-        <el-form-item label="商品图片" prop="url">
-          <el-upload
-            :headers="headers"
-            :action="uploadPath"
-            :show-file-list="false"
-            :on-success="uploadProductUrl"
-            class="avatar-uploader"
-            accept=".jpg,.jpeg,.png,.gif">
-            <img v-if="productForm.url" :src="productForm.url" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"/>
-          </el-upload>
         </el-form-item>
       </el-form>
     </el-card>
@@ -130,7 +122,9 @@
             <el-input v-model="specForm.value"/>
           </el-form-item>
           <el-form-item label="规格额外价格" prop="price">
-            <el-input v-model="specForm.price"/>
+            <el-input v-model="specForm.price">
+              <template slot="append">元</template>
+            </el-input>
           </el-form-item>
           <el-form-item label="规格图片" prop="picUrl">
             <el-upload
@@ -216,24 +210,32 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="白银会员" prop="silverVipPrice">
-                  <el-input v-model="vipPriceForm.silverVipPrice"/>
+                  <el-input v-model="vipPriceForm.silverVipPrice">
+                    <template slot="append">元</template>
+                  </el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="黄金会员" prop="goldVipPrice">
-                  <el-input v-model="vipPriceForm.goldVipPrice"/>
+                  <el-input v-model="vipPriceForm.goldVipPrice">
+                    <template slot="append">元</template>
+                  </el-input>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="12">
                 <el-form-item label="白金会员" prop="platinumVipPrice">
-                  <el-input v-model="vipPriceForm.platinumVipPrice"/>
+                  <el-input v-model="vipPriceForm.platinumVipPrice">
+                    <template slot="append">元</template>
+                  </el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="钻石会员" prop="diamondVipPrice">
-                  <el-input v-model="vipPriceForm.diamondVipPrice"/>
+                  <el-input v-model="vipPriceForm.diamondVipPrice">
+                    <template slot="append">元</template>
+                  </el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -248,7 +250,9 @@
             </el-table-column>
             <el-table-column align="center" label="价格" prop="price">
               <template slot-scope="scope">
-                <el-input v-model="stepPriceForms[scope.$index].price"/>
+                <el-input v-model="stepPriceForms[scope.$index].price">
+                  <template slot="append">元</template>
+                </el-input>
               </template>
             </el-table-column>
             <el-table-column align="center" label="操作">
@@ -263,12 +267,16 @@
           <el-table :data="moneyOfPriceForms" border fit highlight-current-row>
             <el-table-column align="center" label="满" prop="price">
               <template slot-scope="scope">
-                <el-input v-model="moneyOfPriceForms[scope.$index].price"/>
+                <el-input v-model="moneyOfPriceForms[scope.$index].price">
+                  <template slot="append">元</template>
+                </el-input>
               </template>
             </el-table-column>
             <el-table-column align="center" label="立减" prop="reduce">
               <template slot-scope="scope">
-                <el-input v-model="moneyOfPriceForms[scope.$index].reduce"/>
+                <el-input v-model="moneyOfPriceForms[scope.$index].reduce">
+                  <template slot="append">元</template>
+                </el-input>
               </template>
             </el-table-column>
             <el-table-column align="center" label="操作">
@@ -338,16 +346,22 @@
     name: 'GoodsDetail',
     components: { Editor },
     data() {
+      const validateDouble = (rule, value, callback) => {
+        console.log('value' + value)
+        if (!/^[0-9,.]*$/.test(value)) {
+          callback(new Error('销售价格必须为数字'))
+        } else {
+          callback()
+        }
+      }
       return {
         shops:[],
         uploadPath,
         limited: false,
         vipPriceForm:{},
         stepPriceForms:[{
-
         }],
         moneyOfPriceForms:[{
-
         }],
         newKeywordVisible: false,
         newKeyword: '',
@@ -379,6 +393,16 @@
             { required: true, message: '商品编号不能为空', trigger: 'blur' }
           ],
           name: [{ required: true, message: '商品名称不能为空', trigger: 'blur' }]
+        },
+        productRules:{
+          number: [
+            { required: true, message: '库存数量不能为空', trigger: 'blur' },
+            { type: 'number', message: '库存数量必须为数字', trigger: 'blur' }
+          ],
+          sellPrice: [{ required: true, message: '销售价格不能为空', trigger: 'change' },
+            { validator: validateDouble, trigger: 'change' }],
+          costPrice: [{ required: true, message: '进货价格不能为空', trigger: 'change' },
+            { validator: validateDouble, trigger: 'change' }],
         },
         editorInit: {
           language: 'zh_CN',
@@ -427,6 +451,7 @@
           this.products = response.data.data.products
           this.attributes = response.data.data.attributes
           this.categoryIds = response.data.data.categoryIds
+          this.productForm = this.products[0]
 
           this.galleryFileList = []
           for (var i = 0; i < this.goods.gallery.length; i++) {
