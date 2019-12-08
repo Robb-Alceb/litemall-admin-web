@@ -71,3 +71,27 @@ export function rejectGoods(data) {
     data
   })
 }
+
+export function pushGoods(data) {
+  return request({
+    url: '/goods/push',
+    method: 'put',
+    data
+  })
+}
+
+export function newProductGoods(data) {
+  return request({
+    url: '/goods/newProduce',
+    method: 'put',
+    data
+  })
+}
+
+export function recommendGoods(data) {
+  return request({
+    url: '/goods/recommend',
+    method: 'put',
+    data
+  })
+}

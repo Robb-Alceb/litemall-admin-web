@@ -165,11 +165,11 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="配送服务" prop="distributionFee">
-          <el-radio-group v-model="limited">
+          <el-radio-group v-model="goods.isDistribution">
             <el-radio :label="false">免配送费</el-radio>
             <el-radio :label="true" >配送费</el-radio>
           </el-radio-group>
-          <el-input v-show="limited" v-model="goods.distributionFee" placeholder="配送费"></el-input>
+          <el-input v-show="goods.isDistribution" v-model="goods.distributionFee" placeholder="配送费"></el-input>
         </el-form-item>
       </el-form>
     </el-card>
@@ -204,7 +204,7 @@
     </el-card>
     <el-card class="el-card">
       <h4>特殊信息</h4>
-      <el-tabs :value="goods.discountType" @tab-click="handleTabSwitch" tab-position="left">
+      <el-tabs :value="goods.priceType" @tab-click="handleTabSwitch" tab-position="left">
         <el-tab-pane label="会员价格" name="1">
           <el-form ref="vipPriceForm" :rules="rules" :model="vipPriceForm" label-width="150px">
             <el-row>
@@ -265,16 +265,16 @@
         </el-tab-pane>
         <el-tab-pane label="满减价格"  name="3" >
           <el-table :data="moneyOfPriceForms" border fit highlight-current-row>
-            <el-table-column align="center" label="满" prop="price">
+            <el-table-column align="center" label="满" prop="minusPrice">
               <template slot-scope="scope">
-                <el-input v-model="moneyOfPriceForms[scope.$index].price">
+                <el-input v-model="moneyOfPriceForms[scope.$index].minusPrice">
                   <template slot="append">元</template>
                 </el-input>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="立减" prop="reduce">
+            <el-table-column align="center" label="立减" prop="maxPrice">
               <template slot-scope="scope">
-                <el-input v-model="moneyOfPriceForms[scope.$index].reduce">
+                <el-input v-model="moneyOfPriceForms[scope.$index].maxPrice">
                   <template slot="append">元</template>
                 </el-input>
               </template>
@@ -357,7 +357,6 @@
       return {
         shops:[],
         uploadPath,
-        limited: false,
         vipPriceForm:{},
         stepPriceForms:[{
         }],
@@ -370,7 +369,7 @@
         categoryList: [],
         brandList: [],
         categoryIds: [],
-        goods: { discountType:"1",gallery: [] },
+        goods: { priceType:"1",gallery: [] },
         specVisiable: false,
         specForm: { specification: '', value: '', picUrl: '' },
         specifications: [{ specification: '规格', price:0.0, value: '标准', picUrl: '' }],
@@ -446,18 +445,27 @@
 
         const goodsId = this.$route.query.id
         detailGoods(goodsId).then(response => {
+          console.log(response.data.data)
           this.goods = response.data.data.goods
           this.specifications = response.data.data.specifications
           this.products = response.data.data.products
           this.attributes = response.data.data.attributes
           this.categoryIds = response.data.data.categoryIds
           this.productForm = this.products[0]
+          this.stepPriceForms = response.data.data.ladderPrices || [{}]
+          this.moneyOfPriceForms = response.data.data.maxMinusPrices || [{}]
+          this.vipPriceForm = response.data.data.vipGoodsPrice || {}
 
           this.galleryFileList = []
           for (var i = 0; i < this.goods.gallery.length; i++) {
             this.galleryFileList.push({
               url: this.goods.gallery[i]
             })
+          }
+          if(!this.goods.priceType){
+            this.goods.priceType = "1"
+          }else{
+            this.goods.priceType = this.goods.priceType + ""
           }
           const keywords = response.data.data.goods.keywords
           if (keywords !== null) {
@@ -670,8 +678,8 @@
       },
       handleMoneyOfAdd(row){
         this.moneyOfPriceForms.push({
-          price:undefined,
-          reduce:undefined
+          maxPrice:undefined,
+          minusPrice:undefined
         })
       },
       handleMoneyOfDelete(scope){
@@ -679,8 +687,8 @@
           this.moneyOfPriceForms.splice(scope.$index,1)
         }else{
           this.moneyOfPriceForms[0] = {
-            price:undefined,
-            reduce:undefined
+            maxPrice:undefined,
+            minusPrice:undefined
           }
         }
       },
@@ -702,15 +710,38 @@
           }
         }
       },
+      handleTabSwitch: function(tab){
+        if(tab.name == 1){
+          this.moneyOfPriceForms = [{}]
+          this.stepPriceForms = [{}]
+        }else if(tab.name == 2){
+          this.vipPriceForm = {}
+          this.moneyOfPriceForms = [{}]
+        }else{
+          this.vipPriceForm = {}
+          this.stepPriceForms = [{}]
+        }
+      },
       handleEdit: function() {
         const finalGoods = {
           goods: this.goods,
           specifications: this.specifications,
           products: this.products,
           attributes: this.attributes,
-          vipPrice: this.vipPriceForm,
-          stepPrices: this.stepPriceForms,
-          moneyOfPrices: this.moneyOfPriceForms
+        }
+        if(this.goods.priceType == "1"){
+          finalGoods.vipPrice = this.vipPriceForm
+        }else if(this.goods.priceType == "2"){
+          finalGoods.ladderPrices = this.stepPriceForms
+        }else if(this.goods.priceType == "3"){
+          finalGoods.maxMinusPrices = this.moneyOfPriceForms
+        }
+        if(this.goods.shopId){
+          this.shops.forEach(shop=>{
+            if(this.goods.shopId == shop.id){
+              this.goods.shopName = shop.name
+            }
+          })
         }
         editGoods(finalGoods)
           .then(response => {

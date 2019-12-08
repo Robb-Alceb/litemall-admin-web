@@ -142,16 +142,7 @@ export const asyncRouterMap = [
           noCache: true
         }
       },
-      {
-        path: 'order',
-        component: () => import('@/views/shop/order/list'),
-        name: 'shopOrderList',
-        meta: {
-          perms: ['GET /admin/shopOrder/list'],
-          title: '门店订单列表',
-          noCache: true
-        }
-      },
+
       {
         path: 'order/detail',
         component: () => import('@/views/shop/order/detail'),
@@ -215,11 +206,12 @@ export const asyncRouterMap = [
           perms: ['POST /admin/goods/create'],
           title: '商品添加',
           noCache: true
-        }
+        },
+        hidden: true
       },
       {
         path: 'edit',
-        component: () => import('@/views/goods/edit'),
+        component: () => import('@/views/goods/detail'),
         name: 'goodsEdit',
         meta: {
           perms: ['POST /admin/goods/update'],
@@ -318,12 +310,22 @@ export const asyncRouterMap = [
       icon: 'chart'
     },
     children: [
-      {
+/*      {
         path: 'list',
         component: () => import('@/views/repository/list'),
         name: 'repositoryList',
         meta: {
           perms: ['GET /admin/repository/merchandiseRecordList'],
+          title: '出库入库列表',
+          noCache: true
+        }
+      },*/
+      {
+        path: 'list',
+        component: () => import('@/views/shop/order/list'),
+        name: 'shopOrderList',
+        meta: {
+          perms: ['GET /admin/shopOrder/list'],
           title: '出库入库列表',
           noCache: true
         }

@@ -3,6 +3,9 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
+      <el-select v-model="listQuery.shopId" clearable>
+          <el-option v-for="item in shops" :value="item.id" :label="item.name"></el-option>
+      </el-select>
       <el-input v-model="listQuery.goodsSn" clearable class="filter-item" style="width: 200px;" placeholder="请输入商品编号"/>
       <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入商品名称"/>
       <el-button v-permission="['GET /admin/goods/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
@@ -12,6 +15,8 @@
 
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+
+      <el-table-column align="center" label="门店" prop="shopName"/>
 
       <el-table-column align="center" label="商品编号" prop="goodsSn"/>
 
@@ -48,15 +53,15 @@
         <template slot-scope="scope">
           <el-row>
             <span>上架:</span>
-            <el-switch :disabled="true" v-model="scope.row.isOnSale" :active-value="true" :nactive-value="false" active-color="#13ce66" inactive-color="#ff4949"/>
+            <el-switch v-model="scope.row.isOnSale" @change="handlePush(scope.row)" :active-value="true" :nactive-value="false" active-color="#13ce66" inactive-color="#ff4949"/>
           </el-row>
           <el-row>
             <span>新品:</span>
-            <el-switch :disabled="true" v-model="scope.row.isNew" :active-value="true" :nactive-value="false" active-color="#13ce66" inactive-color="#ff4949"/>
+            <el-switch v-model="scope.row.isNew" @change="handleNewProduce(scope.row)"  :active-value="true" :nactive-value="false" active-color="#13ce66" inactive-color="#ff4949"/>
           </el-row>
           <el-row>
             <span>推荐:</span>
-            <el-switch :disabled="true" v-model="scope.row.isHot" :active-value="true" :nactive-value="false" active-color="#13ce66" inactive-color="#ff4949"/>
+            <el-switch v-model="scope.row.isHot" @change="handleRecommend(scope.row)"  :active-value="true" :nactive-value="false" active-color="#13ce66" inactive-color="#ff4949"/>
           </el-row>
         </template>
       </el-table-column>
@@ -130,9 +135,10 @@
 </style>
 
 <script>
-import { listGoods, deleteGoods, approveGoods, rejectGoods } from '@/api/goods'
+import { listGoods, deleteGoods, approveGoods, rejectGoods, pushGoods, newProductGoods, recommendGoods } from '@/api/goods'
 import BackToTop from '@/components/BackToTop'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import { allForPerm } from '@/api/shop'
 
 const reviewMap = {
   1: '待审核',
@@ -155,6 +161,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
+        shopId: undefined,
         goodsSn: undefined,
         name: undefined,
         sort: 'add_time',
@@ -175,6 +182,9 @@ export default {
   },
   created() {
     this.getList()
+    allForPerm().then(response=>{
+      this.shops = response.data.data.list
+    })
   },
   methods: {
     getList() {
@@ -285,6 +295,57 @@ export default {
       }else{
         return true;
       }
+    },
+    handlePush(row){
+      const goodsDto = {
+        isOnSale: row.isOnSale,
+        id: row.id
+      }
+      pushGoods(goodsDto).then(res=>{
+        this.$notify.success({
+          title: '成功',
+          message: '修改成功'
+        })
+      }).catch(response => {
+        this.$notify.error({
+          title: '失败',
+          message: response.data.errmsg
+        })
+      })
+    },
+    handleNewProduce(row){
+      const goodsDto = {
+        isNew: row.isNew,
+        id: row.id
+      }
+      newProductGoods(goodsDto).then(res=>{
+        this.$notify.success({
+          title: '成功',
+          message: '修改成功'
+        })
+      }).catch(response => {
+        this.$notify.error({
+          title: '失败',
+          message: response.data.errmsg
+        })
+      })
+    },
+    handleRecommend(row){
+      const goodsDto = {
+        isHot: row.isHot,
+        id: row.id
+      }
+      recommendGoods(goodsDto).then(res=>{
+        this.$notify.success({
+          title: '成功',
+          message: '修改成功'
+        })
+      }).catch(response => {
+        this.$notify.error({
+          title: '失败',
+          message: response.data.errmsg
+        })
+      })
     }
   }
 }

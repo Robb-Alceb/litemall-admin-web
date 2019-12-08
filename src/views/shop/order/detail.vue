@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-card class="box-card">
       <h3>进货详情</h3>
-      <div>
+      <div v-if="orderDetail.orderStatus != 6">
         <el-steps :active="formatStepStatus(orderDetail.orderStatus)" finish-status="success" align-center>
           <el-step title="申请调货"/>
           <el-step title="同意调货" />
@@ -11,12 +11,45 @@
           <el-step title="确认收货" />
         </el-steps>
       </div>
+      <div v-else>
+        <el-steps :active="6" finish-status="error" align-center>
+          <el-step title="申请调货"/>
+          <el-step title="同意调货" />
+          <el-step title="支付付款" />
+          <el-step title="处理发货" />
+          <el-step title="确认收货" />
+          <el-step title="已拒绝"/>
+        </el-steps>
+      </div>
 
       <div style="margin-top: 20px">
         <svg-icon icon-class="marker" style="color: #606266"/>
         <span class="font-small">货品信息</span>
       </div>
       <div class="table-layout">
+        <el-table v-loading="listLoading" :data="merchandises" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+          <el-table-column align="center" label="货号" prop="merchandiseSn"/>
+          <el-table-column align="center" label="货品名称" prop="merchandiseName"/>
+          <el-table-column align="center" label="货品图片" prop="addTime">
+            <template slot-scope="scope">
+              <img :src="scope.row.picUrl" width="40">
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="现有库存">
+            <template slot-scope="scope">
+              {{hasNumber(scope.row.merchandiseSn)}}
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="价格" prop="price"/>
+          <el-table-column align="center" label="订货数量" prop="number"/>
+          <el-table-column align="center" label="小计">
+            <template slot-scope="scope">
+              {{scope.row.price*scope.row.number}}
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <!--<div class="table-layout">
         <el-row>
           <el-col :span="4" class="table-cell-title">货品名称</el-col>
           <el-col :span="4" class="table-cell-title">货品图片</el-col>
@@ -26,14 +59,18 @@
           <el-col :span="4" class="table-cell-title">小计</el-col>
         </el-row>
         <el-row>
-          <el-col :span="4" class="table-cell">咖啡豆</el-col>
-          <el-col :span="4" class="table-cell"/>
+          <el-col :span="4" class="table-cell">{{merchandises[0].merchandiseName}}</el-col>
+          <el-col :span="4" class="table-cell">
+            <template slot-scope="scope">
+              <img :src="scope.row.picUrl" width="40">
+            </template>
+          </el-col>
           <el-col :span="4" class="table-cell">4000</el-col>
-          <el-col :span="4" class="table-cell">$10/N10000</el-col>
-          <el-col :span="4" class="table-cell">100</el-col>
-          <el-col :span="4" class="table-cell">$1000</el-col>
+          <el-col :span="4" class="table-cell">{{merchandises[0].price}}/{{merchandises[0].merchandiseSn}}</el-col>
+          <el-col :span="4" class="table-cell">{{merchandises[0].number}}</el-col>
+          <el-col :span="4" class="table-cell">{{merchandises[0].price*merchandises[0].number}}</el-col>
         </el-row>
-      </div>
+      </div>-->
 
       <div class="table-layout" align="center">
         <el-row>
@@ -105,7 +142,7 @@
       </div>
     </el-card>
 
-    <div class="op-container">
+    <div class="op-container" style="margin-top: 20px;">
       <el-button @click="handleCancel">取消</el-button>
       <el-button v-if="orderDetail.orderStatus == 3" v-permission="['POST /admin/shopOrder/deliverGoods']" type="primary" @click="handleDeliverGoods">同意发货</el-button>
       <el-button v-if="orderDetail.orderStatus == 3" v-permission="['POST /admin/shopOrder/cancelDeliverGoods']" type="danger" @click="handleCancelDeliverGoods">拒绝发货</el-button>
@@ -118,7 +155,7 @@
 </template>
 
 <script>
-import {shopOrderDetail, shopOrderPass, shopOrderNoPass, shopOrderPay, shopDeliverGoods, shopCancelDeliverGoods, shopTakeDelivery} from '@/api/shop'
+import {shopOrderDetail, shopOrderPass, shopOrderNoPass, shopOrderPay, shopDeliverGoods, shopCancelDeliverGoods, shopTakeDelivery, merchandiseNumber} from '@/api/shop'
 import { MessageBox } from 'element-ui'
 
 const orderStatusMap = {
@@ -146,7 +183,7 @@ export default {
       orderId:undefined,
       orderDetail: {
       },
-      merchandises:undefined,
+      merchandises:[],
       passForm:{
         shipPrice:undefined,
         handleRemark:undefined
@@ -172,6 +209,8 @@ export default {
         this.orderDetail = res.data.data.order
         this.merchandises = res.data.data.merchandises
       })
+
+
     },
     formatStepStatus(value) {
       if (value === 2) {
@@ -191,8 +230,18 @@ export default {
         return 1
       }
     },
+    hasNumber(merchandiseSn){
+      let queryParam = {
+        shopId: this.orderDetail.shopId,
+        merchandiseSn: merchandiseSn
+      }
+debugger
+      return merchandiseNumber(queryParam).then(res=>{
+        return res.data.data.number
+      })
+    },
     handleCancel(){
-      this.$router.push({path:'/shop/order'})
+      this.$router.push({path:'/repository/list'})
     },
     handleOrderPass(){
       this.passForm.adminOrderId = this.orderDetail.id
@@ -203,7 +252,7 @@ export default {
               title: '成功',
               message: '处理成功'
             })
-            this.$router.push({ path: '/shop/order' })
+            this.$router.push({ path: '/repository/list' })
           })
           .catch(response => {
             MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
@@ -221,7 +270,7 @@ export default {
           title: '成功',
           message: '处理成功'
         })
-        this.$router.push({ path: '/shop/order' })
+        this.$router.push({ path: '/repository/list' })
       })
         .catch(response => {
           MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
@@ -237,7 +286,7 @@ export default {
           title: '成功',
           message: '处理成功'
         })
-        this.$router.push({ path: '/shop/order' })
+        this.$router.push({ path: '/repository/list' })
       })
         .catch(response => {
           MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
@@ -253,7 +302,7 @@ export default {
           title: '成功',
           message: '处理成功'
         })
-        this.$router.push({ path: '/shop/order' })
+        this.$router.push({ path: '/repository/list' })
       })
         .catch(response => {
           MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
@@ -269,7 +318,7 @@ export default {
           title: '成功',
           message: '处理成功'
         })
-        this.$router.push({ path: '/shop/order' })
+        this.$router.push({ path: '/repository/list' })
       })
         .catch(response => {
           MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
@@ -285,7 +334,7 @@ export default {
           title: '成功',
           message: '处理成功'
         })
-        this.$router.push({ path: '/shop/order' })
+        this.$router.push({ path: '/repository/list' })
       })
         .catch(response => {
           MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {

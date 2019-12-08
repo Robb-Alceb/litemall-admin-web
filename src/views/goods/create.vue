@@ -166,11 +166,11 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="配送服务" prop="distributionFee">
-          <el-radio-group v-model="limited">
+          <el-radio-group v-model="goods.isDistribution">
             <el-radio :label="false">免配送费</el-radio>
             <el-radio :label="true" >配送费</el-radio>
           </el-radio-group>
-          <el-input v-show="limited" v-model="goods.distributionFee" placeholder="配送费"></el-input>
+          <el-input v-show="goods.isDistribution" v-model="goods.distributionFee" placeholder="配送费"></el-input>
         </el-form-item>
       </el-form>
     </el-card>
@@ -205,7 +205,7 @@
     </el-card>
     <el-card class="el-card">
       <h4>特殊信息</h4>
-      <el-tabs :value="goods.discountType" @tab-click="handleTabSwitch" tab-position="left">
+      <el-tabs :value="goods.priceType" @tab-click="handleTabSwitch" tab-position="left">
         <el-tab-pane label="会员价格" name="1">
           <el-form ref="vipPriceForm" :rules="rules" :model="vipPriceForm" label-width="150px">
             <el-row>
@@ -266,16 +266,16 @@
         </el-tab-pane>
         <el-tab-pane label="满减价格"  name="3" >
           <el-table :data="moneyOfPriceForms" border fit highlight-current-row>
-            <el-table-column align="center" label="满" prop="price">
+            <el-table-column align="center" label="满" prop="maxPrice">
               <template slot-scope="scope">
-                <el-input v-model="moneyOfPriceForms[scope.$index].price">
+                <el-input v-model="moneyOfPriceForms[scope.$index].maxPrice">
                   <template slot="append">元</template>
                 </el-input>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="立减" prop="reduce">
+            <el-table-column align="center" label="立减" prop="minusPrice">
               <template slot-scope="scope">
-                <el-input v-model="moneyOfPriceForms[scope.$index].reduce">
+                <el-input v-model="moneyOfPriceForms[scope.$index].minusPrice">
                   <template slot="append">元</template>
                 </el-input>
               </template>
@@ -371,7 +371,7 @@
         categoryList: [],
         brandList: [],
         categoryIds: [],
-        goods: { discountType:"1",gallery: [],goodsType:1, isReturn:false },
+        goods: { priceType:"1",gallery: [],goodsType:1, isReturn:false, isDistribution: false },
         specVisiable: false,
         specForm: { specification: '', value: '', picUrl: '' },
         specifications: [{ specification: '规格', price:0.0, value: '标准', picUrl: '' }],
@@ -527,8 +527,8 @@
       },
       handleMoneyOfAdd(row){
         this.moneyOfPriceForms.push({
-          price:undefined,
-          reduce:undefined
+          maxPrice:undefined,
+          minusPrice:undefined
         })
       },
       handleMoneyOfDelete(scope){
@@ -536,8 +536,8 @@
           this.moneyOfPriceForms.splice(scope.$index,1)
         }else{
           this.moneyOfPriceForms[0] = {
-            price:undefined,
-            reduce:undefined
+            maxPrice:undefined,
+            minusPrice:undefined
           }
         }
       },
@@ -575,11 +575,22 @@
         const finalGoods = {
           goods: this.goods,
           specifications: this.specifications,
-          products: this.productForm,
-          attributes: this.attributes,
-          vipPrice: this.vipPriceForm,
-          stepPrices: this.stepPriceForms,
-          moneyOfPrices: this.moneyOfPriceForms
+          products: [this.productForm],
+          attributes: this.attributes
+        }
+        if(this.goods.priceType == "1"){
+          finalGoods.vipPrice = this.vipPriceForm
+        }else if(this.goods.priceType == "2"){
+          finalGoods.ladderPrices = this.stepPriceForms
+        }else if(this.goods.priceType == "3"){
+          finalGoods.maxMinusPrices = this.moneyOfPriceForms
+        }
+        if(this.goods.shopId){
+          this.shops.forEach(function(shop){
+            if(this.goods.shopId == shop.id){
+              this.goods.shopName = shop.name
+            }
+          })
         }
         console.log(finalGoods)
         this.$refs['goodsForm'].validate((valid) => {
@@ -588,7 +599,7 @@
               .then(response => {
                 this.$notify.success({
                   title: '成功',
-                  message: '修改成功'
+                  message: '添加成功'
                 })
                 this.$router.push({ path: '/goods/list' })
               })

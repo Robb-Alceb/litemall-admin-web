@@ -128,3 +128,12 @@ export function shopOrderDetail(id) {
     params: { id }
   })
 }
+
+
+export function merchandiseNumber(query) {
+  return request({
+    url: '/shop/read',
+    method: 'get',
+    params: query
+  })
+}
