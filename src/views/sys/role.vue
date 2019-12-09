@@ -12,6 +12,13 @@
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
       <el-table-column align="center" label="角色名称" prop="name" sortable/>
 
+      <el-table-column align="center" label="角色类型" prop="type">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.type == 1" type="warning"> 门店角色 </el-tag>
+          <el-tag v-else type="primary"> 系统角色 </el-tag>
+        </template>
+      </el-table-column>
+
       <el-table-column align="center" label="说明" prop="desc"/>
 
       <el-table-column align="center" label="操作" class-name="small-padding fixed-width">
@@ -30,6 +37,11 @@
       <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
         <el-form-item label="角色名称" prop="name">
           <el-input v-model="dataForm.name"/>
+        </el-form-item>
+        <el-form-item label="角色类型" prop="type">
+          <el-select v-model="dataForm.type">
+            <el-option v-for="item in roleTypes" :value="item.value" :label="item.label"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="说明" prop="desc">
           <el-input v-model="dataForm.desc"/>
@@ -68,6 +80,7 @@
 <script>
 import { listRole, createRole, updateRole, deleteRole, getPermission, updatePermission } from '@/api/role'
 import Pagination from '@/components/Pagination'
+
 export default {
   name: 'Role',
   components: { Pagination },
@@ -96,9 +109,20 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '角色名称不能为空', trigger: 'blur' }
+          { required: true, message: '角色名称不能为空', trigger: 'blur' },
+        ],
+        type: [
+          { required: true, message: '角色类型不能为空', trigger: 'change' },
         ]
       },
+      roleTypes:[
+        {
+          value: true,label:"门店角色"
+        },
+        {
+          value:false, label:"系统角色"
+        }
+      ],
       permissionDialogFormVisible: false,
       systemPermissions: null,
       assignedPermissions: null,

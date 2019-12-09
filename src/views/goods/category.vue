@@ -33,7 +33,7 @@
         <template slot-scope="scope">
           <el-tag v-if="scope.row.level === 'L1'" type="primary">一级类目</el-tag>
           <el-tag v-if="scope.row.level === 'L2'" type="info">二级类目</el-tag>
-          <el-tag v-if="scope.row.level === 'L3'" type="primary">三级类目</el-tag>
+          <el-tag v-if="scope.row.level === 'L3'" type="warning">三级类目</el-tag>
         </template>
       </el-table-column>
 
