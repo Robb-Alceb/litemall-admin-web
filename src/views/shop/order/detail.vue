@@ -235,7 +235,7 @@ export default {
         shopId: this.orderDetail.shopId,
         merchandiseSn: merchandiseSn
       }
-debugger
+
       return merchandiseNumber(queryParam).then(res=>{
         return res.data.data.number
       })
