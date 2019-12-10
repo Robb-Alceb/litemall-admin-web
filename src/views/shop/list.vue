@@ -74,7 +74,7 @@ export default {
       goodsDetail: '',
       detailDialogVisible: false,
       downloadLoading: false,
-      consStatus:['正在营业', '歇业', '正在装修']
+      consStatus:['','正在营业', '歇业', '正在装修']
     }
   },
   created() {

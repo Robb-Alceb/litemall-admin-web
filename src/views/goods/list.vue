@@ -53,15 +53,15 @@
         <template slot-scope="scope">
           <el-row>
             <span>上架:</span>
-            <el-switch v-model="scope.row.isOnSale" @change="handlePush(scope.row)" :active-value="true" :nactive-value="false" active-color="#13ce66" inactive-color="#ff4949"/>
+            <el-switch v-model="scope.row.isOnSale" :disabled="handlePermission(['PUT /admin/goods/push'])" @change="handlePush(scope.row)" :active-value="true" :nactive-value="false" active-color="#13ce66" inactive-color="#ff4949"/>
           </el-row>
           <el-row>
             <span>新品:</span>
-            <el-switch v-model="scope.row.isNew" @change="handleNewProduce(scope.row)"  :active-value="true" :nactive-value="false" active-color="#13ce66" inactive-color="#ff4949"/>
+            <el-switch v-model="scope.row.isNew" :disabled="handlePermission(['PUT /admin/goods/newProduce'])" @change="handleNewProduce(scope.row)"  :active-value="true" :nactive-value="false" active-color="#13ce66" inactive-color="#ff4949"/>
           </el-row>
           <el-row>
             <span>推荐:</span>
-            <el-switch v-model="scope.row.isHot" @change="handleRecommend(scope.row)"  :active-value="true" :nactive-value="false" active-color="#13ce66" inactive-color="#ff4949"/>
+            <el-switch v-model="scope.row.isHot" :disabled="handlePermission(['PUT /admin/goods/recommend'])" @change="handleRecommend(scope.row)"  :active-value="true" :nactive-value="false" active-color="#13ce66" inactive-color="#ff4949"/>
           </el-row>
         </template>
       </el-table-column>
@@ -139,6 +139,7 @@ import { listGoods, deleteGoods, approveGoods, rejectGoods, pushGoods, newProduc
 import BackToTop from '@/components/BackToTop'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { allForPerm } from '@/api/shop'
+import checkPermission from '@/utils/permission'
 
 const reviewMap = {
   1: '待审核',
@@ -177,7 +178,8 @@ export default {
       goodsDetail: '',
       detailDialogVisible: false,
       downloadLoading: false,
-      reviewDialogVisiable:false
+      reviewDialogVisiable:false,
+      shops:[]
     }
   },
   created() {
@@ -346,6 +348,9 @@ export default {
           message: response.data.errmsg
         })
       })
+    },
+    handlePermission(value){
+      return !checkPermission(value)
     }
   }
 }
