@@ -5,26 +5,14 @@
       <div>
         <el-steps :active="formatStepStatus(orderDetail.order.orderStatus)" finish-status="success" align-center>
           <el-step :description="orderDetail.order.addTime" title="提交订单"/>
-          <el-step title="支付订单" />
-          <el-step title="平台发货" />
-          <el-step title="确认收货" />
-          <el-step title="完成评价" />
+          <el-step :description="orderDetail.order.updateTime" title="支付订单" />
+          <el-step :description="orderDetail.order.updateTime" title="平台发货" />
+          <el-step :description="orderDetail.order.updateTime" title="确认收货" />
+          <el-step :description="orderDetail.order.updateTime" title="完成评价" />
         </el-steps>
       </div>
 
       <el-form :inline="true">
-        <!--        <div style="margin-top: 20px">
-          <el-row>
-            <el-col :span="18">
-              <span class="font-small">当前状态</span>
-              {{ orderDetail.order.orderStatus | orderStatusFilter }}
-            </el-col>
-            <el-col>
-              <el-button @click="consignment(orderDetail.order.id)">发货处理</el-button>
-              <el-button @click="addMark(orderDetail.order.id)">添加备注</el-button>
-            </el-col>
-          </el-row>
-        </div>-->
         <el-col :span="18">
           <el-form-item label="当前状态">
             {{ orderDetail.order.orderStatus | orderStatusFilter }}
@@ -32,7 +20,7 @@
         </el-col>
         <el-col :span="6">
           <el-form-item label="">
-            <el-button @click="consignment(orderDetail.order)">发货处理</el-button>
+            <el-button v-if="orderDetail.order.orderStatus == 201" @click="consignment(orderDetail.order)">发货处理</el-button>
             <el-button @click="addMark(orderDetail.order)">添加备注</el-button>
           </el-form-item>
         </el-col>
@@ -53,11 +41,12 @@
         </el-row>
         <el-row>
           <el-col :span="4" class="table-cell">{{ orderDetail.order.orderSn }}</el-col>
-          <el-col :span="4" class="table-cell">{{ orderDetail.order.orderStatus | orderStatusFilter }}</el-col>
-          <el-col :span="4" class="table-cell">{{ orderDetail.order.memberUsername }}</el-col>
-          <el-col :span="4" class="table-cell">{{ orderDetail.order.orderStatus | payMethodFilter }}</el-col>
-          <el-col :span="4" class="table-cell">手机APP</el-col>
-          <el-col :span="4" class="table-cell">普通订单</el-col>
+          <el-col :span="4" class="table-cell" v-if="orderDetail.order.shipSn">{{ orderDetail.order.shipSn }}</el-col>
+          <el-col :span="4" class="table-cell" v-else>未发货</el-col>
+          <el-col :span="4" class="table-cell">{{ orderDetail.user.nickname }}</el-col>
+          <el-col :span="4" class="table-cell">{{ orderDetail.order.payType | payTypeFilter }}</el-col>
+          <el-col :span="4" class="table-cell">{{ orderDetail.order.orderSource | orderSourceFilter}}</el-col>
+          <el-col :span="4" class="table-cell">{{ orderDetail.order.orderType | orderTypeFilter}}</el-col>
         </el-row>
       </div>
 
@@ -77,22 +66,24 @@
           <el-col :span="8" class="table-cell">{{ orderDetail.order.address }}</el-col>
         </el-row>
       </div>
-      <el-form>
-        <el-form-item label="商品信息">
-          <el-table :data="orderDetail.orderGoods" border fit highlight-current-row>
-            <el-table-column align="center" label="商品名称" prop="goodsName" />
-            <el-table-column align="center" label="商品编号" prop="goodsSn" />
-            <el-table-column align="center" label="货品规格" prop="specifications" />
-            <el-table-column align="center" label="货品价格" prop="price" />
-            <el-table-column align="center" label="货品数量" prop="number" />
-            <el-table-column align="center" label="货品图片" prop="picUrl">
-              <template slot-scope="scope">
-                <img :src="scope.row.picUrl" width="40">
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-form-item>
-      </el-form>
+      <div style="margin-top: 20px">
+        <svg-icon icon-class="marker" style="color: #606266"/>
+        <span class="font-small">商品信息</span>
+      </div>
+      <div class="table-layout">
+        <el-table :data="orderDetail.orderGoods" border fit highlight-current-row>
+          <el-table-column align="center" label="商品名称" prop="goodsName" />
+          <el-table-column align="center" label="商品编号" prop="goodsSn" />
+          <el-table-column align="center" label="货品规格" prop="specifications" />
+          <el-table-column align="center" label="货品价格" prop="price" />
+          <el-table-column align="center" label="货品数量" prop="number" />
+          <el-table-column align="center" label="货品图片" prop="picUrl">
+            <template slot-scope="scope">
+              <img :src="scope.row.picUrl" width="40">
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
       <div style="margin-top: 20px">
         <svg-icon icon-class="marker" style="color: #606266"/>
         <span class="font-small">费用信息</span>
@@ -179,9 +170,25 @@ export default {
     orderStatusFilter(status) {
       return statusMap[status]
     },
-    payMethodFilter(status) {
-      if (status !== 101) {
-        return '微信'
+    payTypeFilter(status) {
+      if (status == 1) {
+        return '未支付'
+      }else if(status == 2){
+        return 'paypal支付'
+      }
+    },
+    orderSourceFilter(type){
+      if(type == 1){
+        return '手机APP'
+      }else{
+        return '其他'
+      }
+    },
+    orderTypeFilter(type){
+      if(type == 1){
+        return '普通订单'
+      }else if(type == 2){
+        return '外送订单'
       }
     }
   },

@@ -81,12 +81,12 @@
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-row>
-            <el-button type="primary" size="mini" :disabled="isShowReview(scope.row.reviewType)" @click="handleReview(scope.row)">审核</el-button>
-            <el-button type="primary" size="mini" @click="handleLog(scope.row)">日志</el-button>
+            <el-button v-permission="['POST /admin/goods/approve', 'POST /admin/goods/reject']" type="primary" size="mini" :disabled="isShowReview(scope.row.reviewType)" @click="handleReview(scope.row)">审核</el-button>
+            <el-button v-permission="['GET /admin/goods/queryGoodsLogList']" type="primary" size="mini" @click="handleLog(scope.row)">日志</el-button>
           </el-row>
           <el-row style="margin-top: 5px;">
-            <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-            <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button v-permission="['POST /admin/goods/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">详情</el-button>
+            <el-button v-permission="['POST /admin/goods/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
           </el-row>
         </template>
       </el-table-column>
@@ -109,8 +109,8 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="reviewDialogVisiable = false">取消</el-button>
-        <el-button @click="reviewHandleReject()" type="danger">不通过</el-button>
-        <el-button @click="reviewHandlePass()" type="primary">通过</el-button>
+        <el-button v-permission="['POST /admin/goods/approve']" @click="reviewHandleReject()" type="danger">不通过</el-button>
+        <el-button v-permission="['POST /admin/goods/reject']" @click="reviewHandlePass()" type="primary">通过</el-button>
       </div>
     </el-dialog>
   </div>
