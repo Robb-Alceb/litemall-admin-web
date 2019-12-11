@@ -56,10 +56,10 @@ export function updatePermission(data) {
   })
 }
 
-export function roleOptions(query) {
+export function roleOptions(shopId) {
   return request({
     url: '/role/options',
     method: 'get',
-    params: query
+    params: {shopId}
   })
 }

@@ -65,7 +65,7 @@
         highlight-current>
         <span slot-scope="{ node, data }" class="custom-tree-node">
           <span>{{ data.label }}</span>
-          <el-tag v-if="data.api" type="success" size="mini">{{ data.api }}</el-tag>
+<!--          <el-tag v-if="data.api" type="success" size="mini">{{ data.api }}</el-tag>-->
         </span>
       </el-tree>
       <div slot="footer" class="dialog-footer">

@@ -50,7 +50,7 @@
             <el-radio :label="false">不限制</el-radio>
             <el-radio :label="true" >服务范围设置</el-radio>
           </el-radio-group>
-          <el-input v-show="limited" v-model="shop.range" placeholder="服务范围设置">
+          <el-input v-show="limited" v-model.number="shop.range" placeholder="服务范围设置">
             <template slot="append">KM</template>
           </el-input>
         </el-form-item>
@@ -88,6 +88,7 @@ export default {
   name: 'ShopEdit',
   data() {
     return {
+      limited:false,
       shop: { types: [] },
       shopManager: {},
       shopkeeper: {},
@@ -97,17 +98,18 @@ export default {
           { required: true, message: '门店地址不能为空', trigger: 'blur' }
         ],
         name: [{ required: true, message: '门店名称不能为空', trigger: 'blur' }],
+        // range: [{ type: 'number', message: '服务范围必须为数字', trigger: 'change' }],
       }
     }
   },
-  computed: {
+/*  computed: {
     limited() {
       if (this.shop.range > 0) {
         return true
       }
       return false
     }
-  },
+  },*/
   created() {
     this.init()
 
@@ -122,6 +124,9 @@ export default {
         console.log(this.shop)
         console.log(response.data.data)
         this.shop = response.data.data
+        if(this.shop.range){
+          this.limited = true
+        }
 /*        if(this.shop.types){
           this.shop.types = this.shop.types.map(function(type){
             return JSON.stringify(type);
@@ -163,20 +168,24 @@ export default {
         shopManagerId: this.shopManager.id || null,
         shopkeeperId: this.shopkeeper.id || null
       }
-      editShop(shop)
-        .then(response => {
-          this.$notify.success({
-            title: '成功',
-            message: '修改成功'
-          })
-          this.$router.push({ path: '/shop/list' })
-        })
-        .catch(response => {
-          MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
-            confirmButtonText: '确定',
-            type: 'error'
-          })
-        })
+      this.$refs['shop'].validate(valid=> {
+        if(valid){
+          editShop(shop)
+            .then(response => {
+              this.$notify.success({
+                title: '成功',
+                message: '修改成功'
+              })
+              this.$router.push({path: '/shop/list'})
+            })
+            .catch(response => {
+              MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
+                confirmButtonText: '确定',
+                type: 'error'
+              })
+            })
+        }
+      })
     },
     members() {
       this.$router.push({ path: '/shop/members', query: { shopId: this.shop.id }})

@@ -3,10 +3,10 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.username" clearable class="filter-item" style="width: 200px;" placeholder="名称"/>
+      <el-input v-model="listQuery.nickname" clearable class="filter-item" style="width: 200px;" placeholder="名称"/>
       <el-button v-permission="['GET /admin/admin/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button v-permission="['POST /admin/admin/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
+<!--      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>-->
     </div>
 
 
@@ -17,7 +17,7 @@
 
       <el-table-column align="center" label="登录账号" prop="username"/>
 
-      <el-table-column align="center" label="联系地址" prop="address"/>
+      <el-table-column align="center" label="联系地址" prop="location"/>
 
       <el-table-column align="center" label="成员角色" prop="roleIds">
         <template slot-scope="scope">
@@ -126,7 +126,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        username: undefined,
+        nickname: undefined,
         shopId: null,
         sort: 'add_time',
         order: 'desc'

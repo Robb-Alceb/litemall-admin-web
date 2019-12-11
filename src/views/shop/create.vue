@@ -82,11 +82,11 @@ export default {
   name: 'ShopEdit',
   data() {
     return {
-      limit: false,
+      limited:false,
       shop: {
         'name': '',
         'address': '',
-        'status': 0,
+        'status': 1,
         'openTime': '08:00',
         'closeTime': '22:00',
         'description': '',
@@ -104,14 +104,14 @@ export default {
       }
     }
   },
-  computed: {
+/*  computed: {
     limited() {
       if (this.shop.range > 0) {
         return true
       }
       return false
     }
-  },
+  },*/
   created() {
     this.init()
   },
@@ -130,20 +130,24 @@ export default {
         shopManagerId: this.shopManagerId,
         shopkeeperId: this.shopkeeperId
       }
-      createShop(shop)
-        .then(response => {
-          this.$notify.success({
-            title: '成功',
-            message: '创建成功'
-          })
-          this.$router.push({ path: '/shop/list' })
-        })
-        .catch(response => {
-          MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
-            confirmButtonText: '确定',
-            type: 'error'
-          })
-        })
+      this.$refs['shop'].validate(valid=>{
+        if(valid){
+          createShop(shop)
+            .then(response => {
+              this.$notify.success({
+                title: '成功',
+                message: '创建成功'
+              })
+              this.$router.push({ path: '/shop/list' })
+            })
+            .catch(response => {
+              MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
+                confirmButtonText: '确定',
+                type: 'error'
+              })
+            })
+        }
+      })
     }
   }
 }

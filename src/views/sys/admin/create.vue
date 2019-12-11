@@ -18,8 +18,8 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"/>
           </el-upload>
         </el-form-item>
-        <el-form-item label="联系地址" prop="address">
-          <el-input v-model="admin.address"/>
+        <el-form-item label="联系地址" prop="location">
+          <el-input v-model="admin.location"/>
         </el-form-item>
         <el-form-item label="联系电话" prop="mobile">
           <el-input v-model="admin.mobile"/>
@@ -133,7 +133,7 @@
                   title: '成功',
                   message: '新增管理员成功'
                 })
-                this.$router.push({path:'sys/admin/admin'})
+                this.$router.push({path:'/sys/admin'})
               })
               .catch(response => {
                 this.$notify.error({
@@ -145,7 +145,7 @@
         })
       },
       uploadAvatar: function(response) {
-        this.dataForm.avatar = response.data.url
+        this.admin.avatar = response.data.url
       },
       handleCancel(){
         this.$router.push({ path: '/sys/admin'})

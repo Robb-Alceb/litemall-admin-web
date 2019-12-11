@@ -76,7 +76,7 @@ const user = {
           if (data.perms && data.perms.length > 0) { // 验证返回的perms是否是一个非空数组
             commit('SET_PERMS', data.perms)
           } else {
-            reject('getInfo: perms must be a non-null array !')
+            reject('该成员没有任何权限，请先授权再登录')
           }
           commit('SET_ROLES', data.roles)
           commit('SET_NAME', data.name)
