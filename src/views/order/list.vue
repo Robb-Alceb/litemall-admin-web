@@ -5,6 +5,9 @@
     <div class="filter-container">
       <el-input v-model="listQuery.userId" clearable class="filter-item" style="width: 200px;" placeholder="请输入用户ID"/>
       <el-input v-model="listQuery.orderSn" clearable class="filter-item" style="width: 200px;" placeholder="请输入订单编号"/>
+      <el-select v-model="listQuery.shopId" clearable style="width: 200px" class="filter-item" placeholder="请选择门店">
+        <el-option v-for="item in shops" :label="item.name" :value="item.id"/>
+      </el-select>
       <el-select v-model="listQuery.orderStatusArray" multiple style="width: 200px" class="filter-item" placeholder="请选择订单状态">
         <el-option v-for="(key, value) in statusMap" :key="key" :label="key" :value="value"/>
       </el-select>
@@ -17,15 +20,29 @@
 
       <el-table-column align="center" min-width="100" label="订单编号" prop="orderSn"/>
 
+      <el-table-column align="center" min-width="100" label="门店" prop="shopId">
+        <template slot-scope="scope">
+          {{getShopName(scope.row.shopId)}}
+        </template>
+      </el-table-column>
+
       <el-table-column align="center" min-width="100" label="提交时间" prop="addTime"/>
 
       <el-table-column align="center" label="用户账号" prop="userName"/>
 
       <el-table-column align="center" label="订单金额" prop="orderPrice"/>
 
-      <el-table-column align="center" label="支付方式" prop="payMethod"/>
+      <el-table-column align="center" label="支付方式" prop="payType">
+        <template slot-scope="scope">
+          <el-tag>{{ scope.row.payType | payTypeFilter }}</el-tag>
+        </template>
+      </el-table-column>
 
-      <el-table-column align="center" label="订单来源" prop="orderSource"/>
+      <el-table-column align="center" label="订单来源" prop="orderSource">
+        <template slot-scope="scope">
+          <el-tag>{{ scope.row.orderSource | orderSourceFilter }}</el-tag>
+        </template>
+      </el-table-column>
 
       <!--<el-table-column align="center" label="用户ID" prop="userId"/>-->
 
@@ -151,6 +168,7 @@
 import { listOrder, shipOrder, refundOrder } from '@/api/order'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import checkPermission from '@/utils/permission' // 权限判断函数
+import { allForPerm } from '@/api/shop'
 
 const statusMap = {
   101: '未付款',
@@ -164,12 +182,27 @@ const statusMap = {
   402: '系统收货'
 }
 
+const payTypeMap = {
+  1: '未支付',
+  2: 'paypal支付'
+}
+
+const orderSourceMap = {
+  1: '手机app'
+}
+
 export default {
   name: 'Order',
   components: { Pagination },
   filters: {
     orderStatusFilter(status) {
       return statusMap[status]
+    },
+    payTypeFilter(type){
+      return payTypeMap[type]
+    },
+    orderSourceFilter(source){
+      return orderSourceMap[source]
     }
   },
   data() {
@@ -182,6 +215,7 @@ export default {
         limit: 20,
         id: undefined,
         name: undefined,
+        shopId: undefined,
         orderStatusArray: [],
         sort: 'add_time',
         order: 'desc'
@@ -204,11 +238,15 @@ export default {
         refundMoney: undefined
       },
       refundDialogVisible: false,
-      downloadLoading: false
+      downloadLoading: false,
+      shops: []
     }
   },
   created() {
     this.getList()
+    allForPerm().then(response=>{
+      this.shops = response.data.data.list
+    })
   },
   methods: {
     checkPermission,
@@ -218,15 +256,6 @@ export default {
         this.list = response.data.data.list
         this.total = response.data.data.total
         this.listLoading = false
-        this.list.forEach((p, index) => {
-          p.userName = '张三' + index
-          if (index % 2 === 0) {
-            p.payMethod = '微信'
-          } else {
-            p.payMethod = '信用卡'
-          }
-          p.orderSource = '手机app'
-        })
       }).catch(() => {
         this.list = []
         this.total = 0
@@ -309,6 +338,13 @@ export default {
           excel.export_json_to_excel2(tHeader, this.list, filterVal, '订单信息')
           this.downloadLoading = false
         })
+    },
+    getShopName(shopId){
+      return this.shops.find(shop=>{
+        if(shop.id == shopId){
+          return true
+        }
+      }).name
     }
   }
 }

@@ -43,3 +43,11 @@ export function replyComment(data) {
     data
   })
 }
+
+export function remarkOrder(data) {
+  return request({
+    url: '/order/remark',
+    method: 'post',
+    data
+  })
+}

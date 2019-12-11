@@ -4,11 +4,26 @@
       <h3>订单详情</h3>
       <div>
         <el-steps :active="formatStepStatus(orderDetail.order.orderStatus)" finish-status="success" align-center>
-          <el-step :description="orderDetail.order.addTime" title="提交订单"/>
-          <el-step :description="orderDetail.order.updateTime" title="支付订单" />
-          <el-step :description="orderDetail.order.updateTime" title="平台发货" />
-          <el-step :description="orderDetail.order.updateTime" title="确认收货" />
-          <el-step :description="orderDetail.order.updateTime" title="完成评价" />
+          <el-step>
+            <span slot="title">提交订单</span>
+            <span v-if="orderDetail.order.orderStatus == 101" slot="description">{{orderDetail.order.updateTime}}</span>
+          </el-step>
+          <el-step>
+            <span slot="title">支付订单</span>
+            <span v-if="orderDetail.order.orderStatus == 201" slot="description">{{orderDetail.order.updateTime}}</span>
+          </el-step>
+          <el-step title="">
+            <span slot="title">平台发货</span>
+            <span v-if="orderDetail.order.orderStatus == 301" slot="description">{{orderDetail.order.updateTime}}</span>
+          </el-step>
+          <el-step title="">
+            <span slot="title">确认收货</span>
+            <span v-if="orderDetail.order.orderStatus == 401" slot="description">{{orderDetail.order.updateTime}}</span>
+          </el-step>
+          <el-step title="">
+            <span slot="title">完成评价</span>
+            <span v-if="orderDetail.order.orderStatus == 501" slot="description">{{orderDetail.order.updateTime}}</span>
+          </el-step>
         </el-steps>
       </div>
 
@@ -135,9 +150,9 @@
 
     <!-- 添加备注对话框 -->
     <el-dialog :visible.sync="markDialogVisible" title="发货">
-      <el-form ref="markForm" :model="markForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="备注" prop="shipChannel">
-          <el-input v-model="markForm.mark" type="textarea"/>
+      <el-form ref="markForm" :model="markForm" :rules="markRules" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="markForm.remark" type="textarea"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -150,7 +165,7 @@
 </template>
 
 <script>
-import { shipOrder, detailOrder } from '@/api/order'
+import { shipOrder, detailOrder, remarkOrder } from '@/api/order'
 
 const statusMap = {
   101: '未付款',
@@ -208,8 +223,13 @@ export default {
       markDialogVisible: false,
       markForm: {
         orderIdd: undefined,
-        mark: undefined
-      }
+        remark: undefined
+      },
+      markRules: {
+        remark: [
+          { required: true, message: '备注不能为空', trigger: 'blur' }
+        ],
+      },
     }
   },
   created() {
@@ -252,6 +272,7 @@ export default {
     addMark(row) {
       this.markDialogVisible = true
       this.markForm.orderId = row.id
+
     },
     confirmShip() {
       this.$refs['shipForm'].validate((valid) => {
@@ -262,7 +283,6 @@ export default {
               title: '成功',
               message: '确认发货成功'
             })
-            this.getList()
           }).catch(response => {
             this.$notify.error({
               title: '失败',
@@ -273,19 +293,22 @@ export default {
       })
     },
     confirmMark() {
-      /*      markOrder(this.markForm).then(response => {
-        this.markDialogVisible = false
-        this.$notify.success({
-          title: '成功',
-          message: '确认发货成功'
-        })
-        this.getList()
-      }).catch(response => {
-        this.$notify.error({
-          title: '失败',
-          message: response.data.errmsg
-        })
-      })*/
+      this.$refs['markForm'].validate((valid)=>{
+        if(valid){
+          remarkOrder(this.markForm).then(response => {
+            this.markDialogVisible = false
+            this.$notify.success({
+              title: '成功',
+              message: '备注成功'
+            })
+          }).catch(response => {
+            this.$notify.error({
+              title: '失败',
+              message: response.data.errmsg
+            })
+          })
+        }
+      })
     }
   }
 }
