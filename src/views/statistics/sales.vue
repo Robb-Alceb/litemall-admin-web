@@ -2,30 +2,31 @@
   <div class="app-container">
     <el-card>
       <div slot="header" class="clearfix">
-        <span>门店1</span>
+        <span>销售统计</span>
       </div>
+      <el-row style="margin-bottom: 20px;">
+        <el-select v-model="queryParam.shopId" clearable placeholder="请选择门店">
+          <el-option v-for="item in shops" :value="item.id" :label="item.name"></el-option>
+        </el-select>
+      </el-row>
       <el-card>
         <div slot="header" class="clearfix">
           <span>交易数据</span>
           <div style="display: inline;float: right;">
             <div style="display: inline;float: right;" class="block">
               <el-date-picker
-                v-model="date"
-                type="date"
-                placeholder="选择日期">
-              </el-date-picker>
+                v-model="dateRange"
+                type="datetimerange"
+                :clearable="false"
+                :picker-options="pickerOptions"
+                @change="handleDateChange"
+                format="yyyy-MM-dd HH:mm"
+                placeholder="选择日期"/>
             </div>
           </div>
-          <div style="display: inline;float: right;">
-            <el-tabs v-model="activeTable" type="card" @tab-click="handleClick">
-              <el-tab-pane label="昨天" name="1"></el-tab-pane>
-              <el-tab-pane label="最近7天" name="7"></el-tab-pane>
-              <el-tab-pane label="最近30天" name="30"></el-tab-pane>
-            </el-tabs>
-          </div>
-          <div style="display: inline;float: right;">
+<!--          <div style="display: inline;float: right;">
             <el-button style="display: inline;" @click="exportSales()">导出数据</el-button>
-          </div>
+          </div>-->
         </div>
         <el-row>
           <el-col :span="16">
@@ -76,22 +77,18 @@
               <div style="display: inline;float: right;">
                 <div style="display: inline;float: right;" class="block">
                   <el-date-picker
-                    v-model="date"
-                    type="date"
-                    placeholder="选择日期">
-                  </el-date-picker>
+                    v-model="dateSaleRange"
+                    type="datetimerange"
+                    :clearable="false"
+                    :picker-options="pickerOptions"
+                    @change="handleSaleDateChange"
+                    format="yyyy-MM-dd HH:mm"
+                    placeholder="选择日期"/>
                 </div>
               </div>
-              <div style="display: inline;float: right;">
-                <el-tabs v-model="activeTable" type="card" @tab-click="handleClick">
-                  <el-tab-pane label="昨天" name="1"></el-tab-pane>
-                  <el-tab-pane label="最近7天" name="7"></el-tab-pane>
-                  <el-tab-pane label="最近30天" name="30"></el-tab-pane>
-                </el-tabs>
-              </div>
-              <div style="display: inline;float: right;">
+<!--              <div style="display: inline;float: right;">
                 <el-button style="display: inline;" @click="exportSales()">导出数据</el-button>
-              </div>
+              </div>-->
             </div>
             <ve-histogram :data="chartData"></ve-histogram>
       </el-card>
@@ -103,12 +100,20 @@
 <script>
   import VeHistogram from 'v-charts/lib/histogram.common'
   import VeFunnel from 'v-charts/lib/funnel.common'
+  import { allForPerm } from '@/api/shop'
   export default {
     name: "salesStatistics",
     components: { VeHistogram, VeFunnel },
     data(){
+      const startDate = new Date(new Date().getTime() - 3600 * 1000 * 24 * 1);
+      const endDate = new Date();
       return {
-        date: null,
+        queryParam:{
+          shopId:undefined
+        },
+        shops:[],
+        dateRange: [startDate, endDate],
+        dateSaleRange: [startDate, startDate],
         activeTable:"1",
         chartData: {
           columns: ['date', 'sales'],
@@ -122,6 +127,33 @@
             { 'date': '5000-10000元', 'sales': 1 },
             { 'date': '10000以上', 'sales': 1 }
           ]
+        },
+        pickerOptions: {
+          shortcuts: [{
+            text: '昨天',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+              picker.$emit('pick', [start, end]);
+            }
+          },{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
         },
         funnelData: {
           columns: ['状态', '数值'],
@@ -138,7 +170,9 @@
     },
     methods: {
       init(){
-
+        allForPerm().then(response=>{
+          this.shops = response.data.data.list
+        })
       },
       handleClick(){
         if(this.activeTable == 1){
@@ -173,7 +207,13 @@
       },
       exportSales(){
 
-      }
+      },
+      handleDateChange(dateRange){
+        console.log(dateRange)
+      },
+      handleSaleDateChange(dateRange){
+        console.log(dateRange)
+      },
     }
   }
 </script>

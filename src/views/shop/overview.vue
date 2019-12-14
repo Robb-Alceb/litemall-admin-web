@@ -10,19 +10,22 @@
             门店店长:
           </el-col>
           <el-col :span="4">
-            张三
+            <span v-if="shopkeeper.nickName">{{shopkeeper.nickName}}</span>
+            <span v-else>无</span>
           </el-col>
           <el-col :span="4" align="right">
             营业状态:
           </el-col>
           <el-col :span="4">
-            正在营业
+            <span v-if="shop.status == 1">正在营业</span>
+            <span v-else-if="shop.status == 2">歇业</span>
+            <span v-else="shop.status == 3">正在装修</span>
           </el-col>
           <el-col :span="4" align="right">
             门店员工:
           </el-col>
           <el-col :span="4">
-            （100人）
+            （{{shopMembers.length}}人）
           </el-col>
         </el-row>
       </el-card>
@@ -135,17 +138,50 @@
 
 <script>
   import CountTo from 'vue-count-to'
+  import { detailShop } from '@/api/shop'
+  import { getShopkeeper, getShopManager, getShopMembers } from '@/api/admin'
   export default {
     name: "overview",
     data(){
       return {
-
+        shop:{},
+        shopkeeper:{},
+        shopManager:{},
+        shopMembers:[]
       }
     },
     components: {
       CountTo
     },
+    created(){
+
+    },
     methods:{
+      initData(){
+        const shopId = this.$route.query.id
+        detailShop(shopId).then(response => {
+          this.shop = response.data.data
+        })
+        // 店长
+        getShopkeeper(shopId).then(res=> {
+          if(res.data.data){
+            this.shopkeeper = res.data.data
+          }
+        })
+
+        // 经理
+        getShopManager(shopId).then(res=> {
+          if(res.data.data){
+            this.shopManager = res.data.data
+          }
+        })
+        getShopMembers(shopId).then((res)=>{
+          this.shopMembers = res.data.data
+        })
+      },
+      shopDetail(){
+        this.$router.push({path: '/shop/edit', query: {id: this.$route.query.id}})
+      },
       goodsDetail(){
 
       },

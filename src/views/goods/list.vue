@@ -66,7 +66,11 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="上架时间" prop="addTime"/>
+      <el-table-column align="center" label="上架时间" prop="updateTime">
+        <template slot-scope="scope">
+          <span v-show="scope.row.isOnSale">{{scope.row.updateTime}}</span>
+        </template>
+      </el-table-column>
 
       <el-table-column align="center" label="库存" prop="number"/>
 
@@ -218,7 +222,7 @@ export default {
       this.detailDialogVisible = true
     },
     handleDelete(row) {
-      this.$confirm('是否删除商品?', '提示', {
+      this.$confirm('是否删除?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -308,6 +312,9 @@ export default {
           title: '成功',
           message: '修改成功'
         })
+        if(row.isOnSale){
+          this.getList()
+        }
       }).catch(response => {
         this.$notify.error({
           title: '失败',

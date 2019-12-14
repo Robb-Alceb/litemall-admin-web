@@ -4,7 +4,7 @@
     <!-- 查询和其他操作 -->
     <div class="filter-container">
       <el-input v-model="listQuery.goodsSn" clearable class="filter-item" style="width: 200px;" placeholder="请输入商品编号"/>
-      <el-input v-model="listQuery.addUserName" clearable class="filter-item" style="width: 200px;" placeholder="请输入操作者"/>
+      <el-input v-model="listQuery.userName" clearable class="filter-item" style="width: 200px;" placeholder="请输入操作者"/>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
     </div>
 
@@ -12,6 +12,8 @@
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
 
       <el-table-column align="center" label="商品编号" prop="goodsSn"/>
+
+      <el-table-column align="center" label="商品名" prop="goodsName"/>
 
       <el-table-column align="center" label="操作内容" prop="content"/>
 
@@ -47,7 +49,7 @@ export default {
         limit: 20,
         goodsId:undefined,
         goodsSn: undefined,
-        addUserName: undefined,
+        userName: undefined,
         sort: 'add_time',
         order: 'desc'
       }

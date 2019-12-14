@@ -101,13 +101,22 @@ export default {
       this.$router.push({ path: '/shop/create' })
     },
     handleUpdate(row) {
-      this.$router.push({ path: '/shop/edit', query: { id: row.shopId }})
+      this.$router.push({ path: '/shop/overview', query: { id: row.shopId }})
     },
     showDetail(detail) {
       this.goodsDetail = detail
       this.detailDialogVisible = true
     },
     handleDelete(row) {
+      this.$confirm('是否删除?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.doDelete(row)
+      });
+    },
+    doDelete(row){
       deleteShop(row.shopId).then(response => {
         this.$notify.success({
           title: '成功',

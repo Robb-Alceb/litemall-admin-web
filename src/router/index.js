@@ -111,6 +111,17 @@ export const asyncRouterMap = [
         hidden: true
       },
       {
+        path: 'overview',
+        component: () => import('@/views/shop/overview'),
+        name: 'overviewShop',
+        meta: {
+          perms: ['GET /admin/shop/detail'],
+          title: '门店信息',
+          noCache: true
+        },
+        hidden: true
+      },
+      {
         path: 'create',
         component: () => import('@/views/shop/create'),
         name: 'createShop',

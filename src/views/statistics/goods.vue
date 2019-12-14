@@ -4,32 +4,29 @@
       <div slot="header" class="clearfix">
         <span>商品统计</span>
       </div>
+      <el-row style="margin-bottom: 20px;">
+        <el-select v-model="queryParam.shopId" clearable placeholder="请选择门店">
+          <el-option v-for="item in shops" :value="item.id" :label="item.name"></el-option>
+        </el-select>
+      </el-row>
       <el-card>
         <div slot="header" class="clearfix">
           <span>商品类目销售分析</span>
           <div style="display: inline;float: right;">
             <div style="display: inline;float: right;" class="block">
               <el-date-picker
-                v-model="date"
-                type="date"
+                v-model="dateRange"
+                type="datetimerange"
+                :clearable="false"
+                :picker-options="pickerOptions"
+                @change="handleDateChange"
+                format="yyyy-MM-dd HH:mm"
                 placeholder="选择日期"/>
             </div>
           </div>
-          <div style="display: inline;float: right;" class="inlineBlock">
-            <!--              <el-radio-group v-model="activeTable">
-                <el-radio-button label="昨天" name=""></el-radio-button>
-                <el-radio-button label="最近7天"></el-radio-button>
-                <el-radio-button label="最近30天"></el-radio-button>
-              </el-radio-group>-->
-            <el-tabs v-model="activeTable" type="card" @tab-click="handleCategoryClick">
-              <el-tab-pane label="昨天" name="1"/>
-              <el-tab-pane label="最近7天" name="7"/>
-              <el-tab-pane label="最近30天" name="30"/>
-            </el-tabs>
-          </div>
-          <div style="display: inline;float: right;">
+<!--          <div style="display: inline;float: right;">
             <el-button style="display: inline;" @click="exportCategory()">导出数据</el-button>
-          </div>
+          </div>-->
         </div>
         <el-row>
           <el-col :span="12">
@@ -46,21 +43,18 @@
           <div style="display: inline;float: right;">
             <div style="display: inline;float: right;" class="block">
               <el-date-picker
-                v-model="date"
-                type="date"
+                v-model="saleDateRange"
+                type="datetimerange"
+                :clearable="false"
+                :picker-options="pickerOptions"
+                format="yyyy-MM-dd HH:mm"
+                @change="handleSaleDateChange"
                 placeholder="选择日期"/>
             </div>
           </div>
-          <div style="display: inline;float: right;">
-            <el-tabs v-model="activeTable" type="card" @tab-click="handleListClick">
-              <el-tab-pane label="昨天" name="1"/>
-              <el-tab-pane label="最近7天" name="7"/>
-              <el-tab-pane label="最近30天" name="30"/>
-            </el-tabs>
-          </div>
-          <div style="display: inline;float: right;">
+<!--          <div style="display: inline;float: right;">
             <el-button style="display: inline;" @click="exportList()">导出数据</el-button>
-          </div>
+          </div>-->
         </div>
         <el-row>
           <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
@@ -80,13 +74,54 @@
 
 <script>
 import VePie from 'v-charts/lib/pie.common'
+import {goodsStatistics, goodsSalesStatistics} from '@/api/statistics'
+import { allForPerm } from '@/api/shop'
 export default {
   name: 'GoodsStatistics',
   components: { VePie },
   data() {
+    const startDate = new Date(new Date().getTime() - 3600 * 1000 * 24 * 1);
+    const endDate = new Date();
     return {
-      date: null,
+      queryParam:{
+        shopId:undefined
+      },
+      shops:[],
+      dateRange: [startDate, endDate],
+      saleDateRange: [startDate, startDate],
       activeTable: '1',
+      queryParam: {
+        shopId: undefined,
+        startTime: undefined,
+        endTIme: undefined
+      },
+      pickerOptions: {
+        shortcuts: [{
+          text: '昨天',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+            picker.$emit('pick', [start, end]);
+          }
+        },{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+            picker.$emit('pick', [start, end]);
+          }
+        }]
+      },
       listLoading: false,
       goodsData: {
         columns: ['日期', '访问用户'],
@@ -146,7 +181,23 @@ export default {
 
     }
   },
+  created(){
+    let shopId = this.$route.query.id
+    if(shopId){
+      this.queryParam.shopId = shopId
+    }
+  },
   methods: {
+    getData(){
+/*      goodsStatistics(this.queryParam).then(res=>{
+      })*/
+    },
+    handleDateChange(dateRange){
+      console.log(dateRange)
+    },
+    handleSaleDateChange(dateRange){
+      console.log(dateRange)
+    },
     exportCategory() {
 
     },

@@ -37,7 +37,7 @@
           </el-table-column>
           <el-table-column align="center" label="现有库存">
             <template slot-scope="scope">
-              {{hasNumber(scope.row.merchandiseSn)}}
+              {{ {row:scope.row, shopId:orderDetail.shopId} | hasNumber}}
             </template>
           </el-table-column>
           <el-table-column align="center" label="价格" prop="price"/>
@@ -197,6 +197,18 @@ export default {
       }
     }
   },
+  filters: {
+    hasNumber: async function(row){
+      let queryParam = {
+        shopId: row.shopId,
+        merchandiseSn: row.merchandiseSn
+      }
+
+      return await merchandiseNumber(queryParam).then(res=>{
+        return res.data.data.number
+      })
+    }
+  },
   created(){
     if(this.$route.query.id){
       this.orderId = this.$route.query.id
@@ -230,7 +242,7 @@ export default {
         return 1
       }
     },
-    hasNumber(merchandiseSn){
+/*    hasNumber(merchandiseSn){
       let queryParam = {
         shopId: this.orderDetail.shopId,
         merchandiseSn: merchandiseSn
@@ -239,7 +251,7 @@ export default {
       return merchandiseNumber(queryParam).then(res=>{
         return res.data.data.number
       })
-    },
+    },*/
     handleCancel(){
       this.$router.push({path:'/repository/list'})
     },

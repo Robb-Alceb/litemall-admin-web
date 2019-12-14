@@ -132,7 +132,7 @@ export function shopOrderDetail(id) {
 
 export function merchandiseNumber(query) {
   return request({
-    url: '/shop/read',
+    url: '/merchandise/count',
     method: 'get',
     params: query
   })
