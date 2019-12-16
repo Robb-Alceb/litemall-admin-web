@@ -183,13 +183,13 @@
         this.$router.push({path: '/shop/edit', query: {id: this.$route.query.id}})
       },
       goodsDetail(){
-
+        this.$router.push({path: '/goods/list', query: {id: this.$route.query.id}})
       },
       orderDetail(){
-
+        this.$router.push({path: '/order/list', query: {id: this.$route.query.id}})
       },
       salesDetail(){
-
+        this.$router.push({path: '/statistics/sales', query: {id: this.$route.query.id}})
       }
     }
   }

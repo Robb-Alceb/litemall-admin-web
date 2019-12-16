@@ -35,10 +35,7 @@
               <img :src="scope.row.picUrl" width="40">
             </template>
           </el-table-column>
-          <el-table-column align="center" label="现有库存">
-            <template slot-scope="scope">
-              {{ {row:scope.row, shopId:orderDetail.shopId} | hasNumber}}
-            </template>
+          <el-table-column align="center" label="现有库存" prop="store">
           </el-table-column>
           <el-table-column align="center" label="价格" prop="price"/>
           <el-table-column align="center" label="订货数量" prop="number"/>
@@ -178,6 +175,7 @@ export default {
       }
     }
     return {
+      listLoading:true,
       orderStatusMap,
       validateDouble,
       orderId:undefined,
@@ -199,14 +197,8 @@ export default {
   },
   filters: {
     hasNumber: async function(row){
-      let queryParam = {
-        shopId: row.shopId,
-        merchandiseSn: row.merchandiseSn
-      }
 
-      return await merchandiseNumber(queryParam).then(res=>{
-        return res.data.data.number
-      })
+
     }
   },
   created(){
@@ -214,15 +206,25 @@ export default {
       this.orderId = this.$route.query.id
     }
     this.getDetail()
+
   },
   methods: {
     getDetail(){
       shopOrderDetail(this.orderId).then(res=>{
+        this.listLoading = false
         this.orderDetail = res.data.data.order
         this.merchandises = res.data.data.merchandises
+
+        this.merchandises.forEach(merchandise=>{
+          let queryParam = {
+            shopId: this.orderDetail.shopId,
+            merchandiseSn: merchandise.merchandiseSn
+          }
+          merchandiseNumber(queryParam).then(res=>{
+            merchandise.store = res.data.data
+          })
+        })
       })
-
-
     },
     formatStepStatus(value) {
       if (value === 2) {

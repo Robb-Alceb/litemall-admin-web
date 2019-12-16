@@ -21,6 +21,7 @@
                 :picker-options="pickerOptions"
                 @change="handleDateChange"
                 format="yyyy-MM-dd HH:mm"
+                value-format="yyyy-MM-dd HH:mm"
                 placeholder="选择日期"/>
             </div>
           </div>
@@ -83,6 +84,7 @@
                     :picker-options="pickerOptions"
                     @change="handleSaleDateChange"
                     format="yyyy-MM-dd HH:mm"
+                    value-format="yyyy-MM-dd HH:mm"
                     placeholder="选择日期"/>
                 </div>
               </div>
@@ -101,12 +103,14 @@
   import VeHistogram from 'v-charts/lib/histogram.common'
   import VeFunnel from 'v-charts/lib/funnel.common'
   import { allForPerm } from '@/api/shop'
+  import { goodsStatistics } from '@/api/statistics'
+  import { formatDate } from '@/utils/date'
   export default {
     name: "salesStatistics",
     components: { VeHistogram, VeFunnel },
     data(){
-      const startDate = new Date(new Date().getTime() - 3600 * 1000 * 24 * 1);
-      const endDate = new Date();
+      const startDate = formatDate(new Date(new Date().getTime() - 3600 * 1000 * 24 * 1), 'yyyy-MM-dd hh:mm')
+      const endDate = formatDate(new Date(), 'yyyy-MM-dd hh:mm')
       return {
         queryParam:{
           shopId:undefined
@@ -166,12 +170,24 @@
       }
     },
     created(){
-      this.init()
+      this.getData()
     },
     methods: {
-      init(){
+      getData(){
         allForPerm().then(response=>{
           this.shops = response.data.data.list
+        })
+        let param = {
+          shopId: this.queryParam.shopId,
+          startTime: this.dateRange[0],
+          endTime: this.dateRange[1]
+        }
+        goodsStatistics(param).then(response=>{
+          console.log(response)
+          if(!response.data.data){
+
+          }
+          this.funnelData = response.data.data
         })
       },
       handleClick(){
@@ -209,10 +225,10 @@
 
       },
       handleDateChange(dateRange){
-        console.log(dateRange)
+        this.getData()
       },
       handleSaleDateChange(dateRange){
-        console.log(dateRange)
+        this.getData()
       },
     }
   }

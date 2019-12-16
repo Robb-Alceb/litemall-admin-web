@@ -7,6 +7,11 @@
       <tags-view/>
       <app-main/>
     </div>
+<!--    <div align="center">
+      <a href="http://www.yliyun.com" target="_blank" style="color: lightgrey;font-size:12px;">
+        由深圳一粒云科技有限公司提供技术支持
+      </a>
+    </div>-->
   </div>
 </template>
 

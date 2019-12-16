@@ -76,6 +76,11 @@
             <template slot="append">元</template>
           </el-input>
         </el-form-item>
+        <el-form-item label="商品税率" prop="tax">
+          <el-input v-model="goods.tax">
+            <template slot="append">%</template>
+          </el-input>
+        </el-form-item>
         <el-form-item label="商品进货价" prop="costPrice">
           <el-input v-model="productForm.costPrice">
             <template slot="append">元</template>
@@ -349,7 +354,7 @@
       const validateDouble = (rule, value, callback) => {
         console.log('value' + value)
         if (!/^[0-9,.]*$/.test(value)) {
-          callback(new Error('销售价格必须为数字'))
+          callback(new Error('必须为数字'))
         } else {
           callback()
         }
@@ -402,6 +407,8 @@
             { validator: validateDouble, trigger: 'change' }],
           costPrice: [{ required: true, message: '进货价格不能为空', trigger: 'change' },
             { validator: validateDouble, trigger: 'change' }],
+/*          tax: [{ required: true, message: '税率不能为空', trigger: 'change' },
+            { validator: validateDouble, trigger: 'change' }],*/
         },
         editorInit: {
           language: 'zh_CN',

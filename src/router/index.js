@@ -547,7 +547,7 @@ export const asyncRouterMap = [
       icon: 'chart'
     },
     children: [
-      {
+/*      {
         path: 'order',
         component: () => import('@/views/statistics/order'),
         name: 'orderStatistics',
@@ -556,7 +556,7 @@ export const asyncRouterMap = [
           title: '订单统计',
           noCache: true
         }
-      },
+      },*/
       {
         path: 'goods',
         component: () => import('@/views/statistics/goods'),

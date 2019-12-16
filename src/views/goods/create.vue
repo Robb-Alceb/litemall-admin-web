@@ -76,6 +76,11 @@
             <template slot="append">元</template>
           </el-input>
         </el-form-item>
+        <el-form-item label="商品税率" prop="tax">
+          <el-input v-model="goods.tax">
+            <template slot="append">%</template>
+          </el-input>
+        </el-form-item>
         <el-form-item label="商品进货价" prop="costPrice">
           <el-input v-model="productForm.costPrice">
             <template slot="append">元</template>
@@ -586,7 +591,7 @@
           finalGoods.maxMinusPrices = this.moneyOfPriceForms
         }
         if(this.goods.shopId){
-          this.shops.forEach(function(shop){
+          this.shops.forEach((shop)=>{
             if(this.goods.shopId == shop.id){
               this.goods.shopName = shop.name
             }
