@@ -117,6 +117,24 @@
         <el-button v-permission="['POST /admin/goods/reject']" @click="reviewHandlePass()" type="primary">通过</el-button>
       </div>
     </el-dialog>
+
+
+    <el-dialog :visible.sync="priceDialogVisiable" title="商品价格">
+
+      <el-form ref="reviewForm" :model="reviewForm" status-icon label-position="left" label-width="100px">
+        <el-form-item label="商品名称" prop="goodsName">
+          <el-input v-model="reviewForm.goodsName" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="备注信息" prop="content">
+          <el-input type="textarea" v-model="reviewForm.content"/>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="priceDialogVisiable = false">取消</el-button>
+        <el-button v-permission="['POST /admin/goods/approve']" @click="reviewHandleReject()" type="danger">不通过</el-button>
+        <el-button v-permission="['POST /admin/goods/reject']" @click="reviewHandlePass()" type="primary">通过</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
