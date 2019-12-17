@@ -15,6 +15,14 @@ export function listCatL1() {
   })
 }
 
+
+export function listCatL2() {
+  return request({
+    url: '/category/l2',
+    method: 'get'
+  })
+}
+
 export function createCategory(data) {
   return request({
     url: '/category/create',

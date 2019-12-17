@@ -10,7 +10,7 @@ export default{
         el.parentNode && el.parentNode.removeChild(el)
       }
     } else {
-      throw new Error(`need value! Like v-permission="true"`)
+      throw new Error(`need value! Like v-shop="true"`)
     }
   }
 }

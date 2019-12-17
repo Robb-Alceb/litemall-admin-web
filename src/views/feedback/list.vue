@@ -14,21 +14,22 @@
 
       <el-table-column align="center" label="手机号" prop="mobile"/>
 
-      <el-table-column align="center" label="反馈内容" prop="content"/>
+      <el-table-column align="center" label="反馈时间" prop="addTime"/>
 
-      <el-table-column align="center" label="添加时间" prop="addTime"/>
+      <el-table-column align="center" label="反馈内容" prop="content"/>
 
       <el-table-column align="center" label="状态" prop="status">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status != 1 ? 'success' : 'error' ">{{ consStatus[scope.row.status]}}</el-tag>
+          <el-tag :type="scope.row.status == 1 ? 'success' : 'error' ">{{ statusMap[scope.row.status]}}</el-tag>
         </template>
       </el-table-column>
 
-<!--      <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+      <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-permission="['DELETE /admin/shop/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button v-show="scope.row.status != 1" v-permission="['POST /admin/feedback/reply']" type="primary" size="mini" @click="handleReply(scope.row)">回复</el-button>
+          <el-button v-show="scope.row.status != 2" v-permission="['POST /admin/feedback/ignore']" type="info" size="mini" @click="handleIgnore(scope.row)">忽略</el-button>
         </template>
-      </el-table-column>-->
+      </el-table-column>
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
@@ -37,20 +38,34 @@
       <back-to-top :visibility-height="100" />
     </el-tooltip>
 
+    <!-- 回复反馈对话框 -->
+    <el-dialog :visible.sync="feedbackDialogVisible" title="回复">
+      <el-form ref="feedbackForm" :model="feedbackForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
+        <el-form-item label="内容" prop="reply">
+          <el-input v-model="feedbackForm.content" type="textarea"/>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="feedbackDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="doReply">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   import ElSelectDropdown from 'element-ui/packages/select/src/select-dropdown'
-  import { listFeedback } from '@/api/feedback'
+  import { listFeedback, replyFeedback, ignoreFeedback } from '@/api/feedback'
   import BackToTop from '@/components/BackToTop'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+  const statusMap = ['未处理', '已回复', '已忽略']
   export default {
     name: "feedbackList",
     components: { ElSelectDropdown, BackToTop, Pagination },
     components: { ElSelectDropdown, BackToTop, Pagination },
     data() {
       return {
+        statusMap,
         list: [],
         total: 0,
         listLoading: false,
@@ -61,6 +76,11 @@
           sort: 'add_time',
           order: 'desc'
         },
+        feedbackDialogVisible:false,
+        feedbackForm: {
+          id: undefined,
+          reply: undefined
+        }
       }
     },
     created() {
@@ -74,6 +94,42 @@
       },
       handleFilter(){
         this.getList()
+      },
+      handleReply(row){
+        this.feedbackDialogVisible = true
+        this.feedbackForm.id = row.id
+      },
+      doReply(){
+        replyFeedback(this.feedbackForm).then(response => {
+          this.feedbackDialogVisible = false
+          this.$notify.success({
+            title: '成功',
+            message: '回复成功'
+          })
+          this.getList()
+        }).catch(response => {
+          this.$notify.error({
+            title: '失败',
+            message: response.data.errmsg
+          })
+        })
+      },
+      handleIgnore(row){
+        let data = {
+          id: row.id
+        }
+        ignoreFeedback(data).then(response => {
+          this.$notify.success({
+            title: '成功',
+            message: '成功'
+          })
+          this.getList()
+        }).catch(response => {
+          this.$notify.error({
+            title: '失败',
+            message: response.data.errmsg
+          })
+        })
       }
     }
   }

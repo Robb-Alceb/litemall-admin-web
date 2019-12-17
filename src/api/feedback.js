@@ -8,3 +8,23 @@ export function listFeedback(query) {
   })
 
 }
+
+
+export function replyFeedback(data) {
+  return request({
+    url: '/feedback/reply',
+    method: 'post',
+    data
+  })
+
+}
+
+
+export function ignoreFeedback(data) {
+  return request({
+    url: '/feedback/ignore',
+    method: 'post',
+    data
+  })
+
+}

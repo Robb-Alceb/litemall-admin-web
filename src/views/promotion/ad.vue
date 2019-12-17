@@ -13,7 +13,12 @@
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
 
-      <el-table-column align="center" label="广告ID" prop="id" sortable/>
+      <el-table-column align="center" label="门店">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.type == 0">所有门店</el-tag>
+          <el-tag v-else>{{{shopId:scope.row.shopId,shops} | shopNameFilter}}</el-tag>
+        </template>
+      </el-table-column>
 
       <el-table-column align="center" label="广告标题" prop="name"/>
 
@@ -37,8 +42,8 @@
 
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-permission="['POST /admin/ad/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button v-permission="['POST /admin/ad/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button v-permission="['POST /admin/ad/update']" type="primary" :disabled="isPermission(scope.row)" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+          <el-button v-permission="['POST /admin/ad/delete']" type="danger" :disabled="isPermission(scope.row)" size="mini" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -48,6 +53,14 @@
     <!-- 添加或修改对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
+        <el-form-item label="门店" prop="shopId">
+          <el-select v-if="!store.state.user.shop" v-model="dataForm.shopId" clearable @change="handleAdTypeChange" placeholder="所有门店">
+            <el-option v-for="item in shops" :value="item.id" :label="item.name"></el-option>
+          </el-select>
+          <el-select v-else v-model="dataForm.shopId" @change="handleAdTypeChange">
+            <el-option v-for="item in shops" :value="item.id" :label="item.name"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="广告标题" prop="name">
           <el-input v-model="dataForm.name"/>
         </el-form-item>
@@ -124,12 +137,15 @@ import { listAd, createAd, updateAd, deleteAd } from '@/api/ad'
 import { uploadPath } from '@/api/storage'
 import { getToken } from '@/utils/auth'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import { allForPerm } from '@/api/shop'
+import store from '@/store'
 
 export default {
   name: 'Ad',
   components: { Pagination },
   data() {
     return {
+      store,
       uploadPath,
       list: [],
       total: 0,
@@ -144,6 +160,7 @@ export default {
       },
       dataForm: {
         id: undefined,
+        shopId: undefined,
         name: undefined,
         content: undefined,
         url: undefined,
@@ -164,9 +181,19 @@ export default {
         content: [
           { required: true, message: '广告内容不能为空', trigger: 'blur' }
         ],
-        url: [{ required: true, message: '广告链接不能为空', trigger: 'blur' }]
+        url: [{ required: true, message: '广告图片不能为空', trigger: 'blur' }]
       },
-      downloadLoading: false
+      downloadLoading: false,
+      shops:[]
+    }
+  },
+  filters: {
+    shopNameFilter(data){
+      return data.shops.find(shop=>{
+        if(shop.id == data.shopId){
+          return shop.name
+        }
+      }).name
     }
   },
   computed: {
@@ -178,6 +205,13 @@ export default {
   },
   created() {
     this.getList()
+    allForPerm().then(response=>{
+      this.shops = response.data.data.list
+    })
+    if(this.store.state.user.shop){
+      console.log(this.store.state.user.shop.id)
+      this.dataForm.shopId = this.store.state.user.shop.id
+    }
   },
   methods: {
     getList() {
@@ -284,6 +318,15 @@ export default {
       })
     },
     handleDelete(row) {
+      this.$confirm('是否删除?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.doDelete(row)
+      });
+    },
+    doDelete(row) {
       deleteAd(row)
         .then(response => {
           this.$notify.success({
@@ -324,6 +367,22 @@ export default {
         excel.export_json_to_excel2(tHeader, this.list, filterVal, '广告信息')
         this.downloadLoading = false
       })
+    },
+    handleAdTypeChange(){
+      if(this.dataForm.shopId){
+        this.dataForm.type = 1
+      }else{
+        this.dataForm.shopId = null
+        this.dataForm.shopName = null
+        this.dataForm.type = 0
+      }
+    },
+    isPermission(row){
+      if(!this.store.state.user.shop){
+        return false;
+      }else{
+        return this.store.state.user.shop.id != row.shopId
+      }
     }
   }
 }

@@ -470,7 +470,7 @@ export const asyncRouterMap = [
           noCache: true
         }
       },
-      {
+      /*{
         path: 'couponDetail',
         component: () => import('@/views/promotion/couponDetail'),
         name: 'couponDetail',
@@ -532,7 +532,7 @@ export const asyncRouterMap = [
           title: '团购活动',
           noCache: true
         }
-      }
+      }*/
     ]
   },
 

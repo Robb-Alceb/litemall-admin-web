@@ -9,7 +9,7 @@
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row row-key="id">
 
-      <el-table-column align="center" label="类目ID" prop="id"/>
+<!--      <el-table-column align="center" label="类目ID" prop="id"/>-->
 
       <el-table-column align="center" label="类目名" prop="name"/>
 
@@ -25,7 +25,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="关键字" prop="keywords"/>
+<!--      <el-table-column align="center" label="关键字" prop="keywords"/>-->
 
       <el-table-column align="center" min-width="100" label="简介" prop="desc"/>
 
@@ -51,9 +51,9 @@
         <el-form-item label="类目名称" prop="name">
           <el-input v-model="dataForm.name"/>
         </el-form-item>
-        <el-form-item label="关键字" prop="keywords">
+<!--        <el-form-item label="关键字" prop="keywords">
           <el-input v-model="dataForm.keywords"/>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="级别" prop="level">
           <el-select v-model="dataForm.level" @change="onLevelChange">
             <el-option label="一级类目" value="L1"/>
@@ -63,7 +63,7 @@
         </el-form-item>
         <el-form-item v-if="dataForm.level === 'L2'" label="父类目" prop="pid">
           <el-select v-model="dataForm.pid">
-            <el-option v-for="item in catL1" :key="item.value" :label="item.label" :value="item.value"/>
+            <el-option v-for="item in catL1" :label="item.label" :value="item.value"/>
           </el-select>
         </el-form-item>
         <el-form-item label="父类目" v-show="dataForm.level === 'L3'">
@@ -140,7 +140,7 @@
 import { listCategory, listCatL1, createCategory, updateCategory, deleteCategory } from '@/api/category'
 import { uploadPath } from '@/api/storage'
 import { getToken } from '@/utils/auth'
-import { listCatAndBrand } from '@/api/goods'
+import { listCatL2 } from '@/api/category'
 import Editor from '@tinymce/tinymce-vue'
 
 export default {
@@ -159,7 +159,7 @@ export default {
         name: '',
         keywords: '',
         level: 'L2',
-        pid: 0,
+        pid: undefined,
         desc: '',
         iconUrl: '',
         picUrl: ''
@@ -185,7 +185,7 @@ export default {
   created() {
     this.getList()
     this.getCatL1();
-    listCatAndBrand().then(response => {
+    listCatL2().then(response => {
       this.categoryList = response.data.data.categoryList
     })
   },
@@ -213,7 +213,7 @@ export default {
         name: '',
         keywords: '',
         level: 'L1',
-        pid: 0,
+        pid: undefined,
         desc: '',
         iconUrl: '',
         picUrl: ''
@@ -293,6 +293,15 @@ export default {
       })
     },
     handleDelete(row) {
+      this.$confirm('是否删除?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.doDelete(row)
+      });
+    },
+    doDelete(row) {
       deleteCategory(row)
         .then(response => {
           this.getList()
