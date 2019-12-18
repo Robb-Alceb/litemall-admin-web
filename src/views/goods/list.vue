@@ -92,6 +92,11 @@
             <el-button v-permission="['POST /admin/goods/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">详情</el-button>
             <el-button v-permission="['POST /admin/goods/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
           </el-row>
+          <el-row style="margin-top: 5px;">
+            <el-button v-permission="['GET /admin/goods/allPrice']" type="info" size="mini" @click="getPriceDetail(scope.row)">价格</el-button>
+            <el-button v-permission="['GET /admin/goods/allPrice']" type="info" size="mini" @click="getStoreDetail(scope.row)">库存</el-button>
+          </el-row>
+
         </template>
       </el-table-column>
     </el-table>
@@ -120,19 +125,56 @@
 
 
     <el-dialog :visible.sync="priceDialogVisiable" title="商品价格">
+      <el-form ref="priceForm" :model="priceForm" status-icon label-position="left" label-width="100px">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="商品名称" prop="goodsName">
+              <el-col>{{priceForm.goodsName}}</el-col>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="商品价格" prop="goodsSellPrice">
+              <el-input v-model="priceForm.goodsSellPrice"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8" align="center">
+              <el-button v-permission="['PUT /admin/goods/updatePrice']" type="primary" size="mini" @click="handleUpdatePrice">更新</el-button>
+          </el-col>
+        </el-row>
+        <el-row  v-for="item in priceForm.specifications">
+          <el-col :span="8">
+            <el-form-item label="商品规格" prop="value">
+              <el-col>{{item.value}}</el-col>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="规格额外价格" prop="price">
+              <el-input v-model="item.price"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8" align="center">
+            <el-button v-permission="['PUT /admin/goods/updateSpecPrice']" type="primary" size="mini" @click="handleUpdateSpecPrice(item)">更新</el-button>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="clearPriceForm">取消</el-button>
+      </div>
+    </el-dialog>
 
-      <el-form ref="reviewForm" :model="reviewForm" status-icon label-position="left" label-width="100px">
+    <el-dialog :visible.sync="storeDialogVisiable" title="商品库存">
+      <el-form ref="priceForm" :model="storeForm" :rules="storeRules" status-icon label-position="left" label-width="100px">
         <el-form-item label="商品名称" prop="goodsName">
-          <el-input v-model="reviewForm.goodsName" :disabled="true"></el-input>
+          <el-col>{{storeForm.goodsName}}</el-col>
         </el-form-item>
-        <el-form-item label="备注信息" prop="content">
-          <el-input type="textarea" v-model="reviewForm.content"/>
+
+        <el-form-item label="商品库存" prop="number">
+          <el-input v-model.number="storeForm.number"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="priceDialogVisiable = false">取消</el-button>
-        <el-button v-permission="['POST /admin/goods/approve']" @click="reviewHandleReject()" type="danger">不通过</el-button>
-        <el-button v-permission="['POST /admin/goods/reject']" @click="reviewHandlePass()" type="primary">通过</el-button>
+        <el-button @click="storeDialogVisiable = false">取消</el-button>
+        <el-button @click="handleUpdateStore" type="primary">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -157,11 +199,12 @@
 </style>
 
 <script>
-import { listGoods, deleteGoods, approveGoods, rejectGoods, pushGoods, newProductGoods, recommendGoods } from '@/api/goods'
+import { listGoods, deleteGoods, approveGoods, rejectGoods, pushGoods, newProductGoods, recommendGoods, updatePriceGoods, updateSpecPriceGoods, getAllPriceGoods, updateStoreGoods } from '@/api/goods'
 import BackToTop from '@/components/BackToTop'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { allForPerm } from '@/api/shop'
 import checkPermission from '@/utils/permission'
+import ElColorAlphaSlider from "element-ui/packages/color-picker/src/components/alpha-slider";
 
 const reviewMap = {
   1: '待审核',
@@ -170,7 +213,7 @@ const reviewMap = {
 }
 export default {
   name: 'GoodsList',
-  components: { BackToTop, Pagination },
+  components: {ElColorAlphaSlider, BackToTop, Pagination },
   filters: {
     reviewFilter(review) {
       return reviewMap[review]
@@ -201,7 +244,25 @@ export default {
       detailDialogVisible: false,
       downloadLoading: false,
       reviewDialogVisiable:false,
-      shops:[]
+      shops:[],
+      priceDialogVisiable:false,
+      priceForm: {
+        id: undefined,
+        goodsName: undefined,
+        goodsSellPrice: undefined,
+        specifications: []
+      },
+      storeDialogVisiable: false,
+      storeForm: {
+        id: undefined,
+        number: undefined
+      },
+      storeRules: {
+        number: [
+          { required: true, message: '库存数量不能为空', trigger: 'blur' },
+          { type: 'number', message: '库存数量必须为数字' }
+        ]
+    }
     }
   },
   created() {
@@ -376,6 +437,82 @@ export default {
     },
     handlePermission(value){
       return !checkPermission(value)
+    },
+    handleUpdatePrice(){
+      let data = {
+        id: this.priceForm.id,
+        price: this.priceForm.goodsSellPrice
+      }
+      updatePriceGoods(data).then(res=>{
+        this.$notify.success({
+          title: '成功',
+          message: '修改成功'
+        })
+        this.getList()
+      }).catch(response => {
+        this.$notify.error({
+          title: '失败',
+          message: response.data.errmsg
+        })
+      })
+    },
+    handleUpdateSpecPrice(row){
+      let data = {
+        id: row.id,
+        price: row.price
+      }
+      updateSpecPriceGoods(data).then(res=>{
+        this.$notify.success({
+          title: '成功',
+          message: '修改成功'
+        })
+        this.getList()
+      }).catch(response => {
+        this.$notify.error({
+          title: '失败',
+          message: response.data.errmsg
+        })
+      })
+    },
+    getPriceDetail(row){
+      let param = {
+        goodsId: row.id,
+        shopId: row.shopId
+      }
+      getAllPriceGoods(param).then(response=>{
+        this.priceForm = response.data.data
+        this.priceDialogVisiable = true
+      })
+    },
+    clearPriceForm(){
+      this.priceDialogVisiable = false
+/*      this.priceForm = {
+        id: undefined,
+        goodsName: undefined,
+        goodsSellPrice: undefined,
+        specifications: []
+      }*/
+    },
+    handleUpdateStore(){
+      updateStoreGoods(this.storeForm).then(res=>{
+        this.$notify.success({
+          title: '成功',
+          message: '修改成功'
+        })
+        this.storeDialogVisiable = false
+        this.getList()
+      }).catch(response => {
+        this.$notify.error({
+          title: '失败',
+          message: response.data.errmsg
+        })
+      })
+    },
+    getStoreDetail(row){
+      this.storeForm.id = row.id
+      this.storeForm.number = row.number
+      this.storeForm.goodsName = row.name
+      this.storeDialogVisiable = true
     }
   }
 }

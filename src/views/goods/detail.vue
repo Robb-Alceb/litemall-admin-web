@@ -366,6 +366,7 @@
         stepPriceForms:[{
         }],
         moneyOfPriceForms:[{
+
         }],
         newKeywordVisible: false,
         newKeyword: '',
@@ -459,8 +460,8 @@
           this.attributes = response.data.data.attributes
           this.categoryIds = response.data.data.categoryIds
           this.productForm = this.products[0]
-          this.stepPriceForms = response.data.data.ladderPrices || [{}]
-          this.moneyOfPriceForms = response.data.data.maxMinusPrices || [{}]
+          this.stepPriceForms = response.data.data.ladderPrices.length > 0 ? response.data.data.ladderPrices : [{}]
+          this.moneyOfPriceForms = response.data.data.maxMinusPrices.length > 0 ? response.data.data.maxMinusPrices : [{}]
           this.vipPriceForm = response.data.data.vipGoodsPrice || {}
 
           this.galleryFileList = []
@@ -719,12 +720,15 @@
       },
       handleTabSwitch: function(tab){
         if(tab.name == 1){
+          this.goods.priceType = '1'
           this.moneyOfPriceForms = [{}]
           this.stepPriceForms = [{}]
         }else if(tab.name == 2){
+          this.goods.priceType = '2'
           this.vipPriceForm = {}
           this.moneyOfPriceForms = [{}]
         }else{
+          this.goods.priceType = '3'
           this.vipPriceForm = {}
           this.stepPriceForms = [{}]
         }
@@ -733,7 +737,7 @@
         const finalGoods = {
           goods: this.goods,
           specifications: this.specifications,
-          products: this.products,
+          products: [this.productForm],
           attributes: this.attributes,
         }
         if(this.goods.priceType == "1"){

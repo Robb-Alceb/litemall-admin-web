@@ -95,3 +95,36 @@ export function recommendGoods(data) {
     data
   })
 }
+
+export function updatePriceGoods(data) {
+  return request({
+    url: '/goods/updatePrice',
+    method: 'put',
+    data
+  })
+}
+
+export function updateSpecPriceGoods(data) {
+  return request({
+    url: '/goods/updateSpecPrice',
+    method: 'put',
+    data
+  })
+}
+
+export function getAllPriceGoods(query) {
+  return request({
+    url: '/goods/allPrice',
+    method: 'get',
+    params: query
+  })
+}
+
+
+export function updateStoreGoods(data) {
+  return request({
+    url: '/goods/updateStore',
+    method: 'put',
+    data
+  })
+}
