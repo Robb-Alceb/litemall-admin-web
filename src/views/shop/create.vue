@@ -11,13 +11,25 @@
         <el-form-item label="门店地址" prop="address">
           <el-input v-model="shop.address"/>
         </el-form-item>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="经度">
+              <el-input v-model="shop.longitude"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="纬度">
+              <el-input v-model="shop.latitude"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item label="门店经理" prop="shopManager">
-          <el-select v-model="shopManagerId" placeholder="从成员列表中设置账号为门店店长">
+          <el-select v-model="shopManagerId" placeholder="从成员列表中设置账号为门店经理">
             <el-option v-for="item in shopMembers" :value="item.id" :label="item.nickName"/>
           </el-select>
         </el-form-item>
         <el-form-item label="门店店长" prop="shopkeeper">
-          <el-select v-model="shopkeeperId">
+          <el-select v-model="shopkeeperId" placeholder="从成员列表中设置账号为门店店长">
             <el-option v-for="item in shopMembers" :value="item.id" :label="item.nickName"/>
           </el-select>
         </el-form-item>

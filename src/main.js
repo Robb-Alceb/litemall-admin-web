@@ -1,4 +1,10 @@
 import Vue from 'vue'
+import Print from 'vue-print-nb'
+import VueI18n from 'vue-i18n'
+import enLocale from 'element-ui/lib/locale/lang/en'
+import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
+import cn from '@/lang/cn'
+import en from '@/lang/en'
 
 import Cookies from 'js-cookie'
 
@@ -39,12 +45,37 @@ Object.keys(filters).forEach(key => {
 
 Vue.use(VCharts)
 
+Vue.use(Print)
+
+Vue.use(VueI18n)
+
 Vue.config.productionTip = false
 
 Vue.prototype._ = _
 
+const messages = {
+  en: {
+    ...en,
+    ...enLocale // 或者用 Object.assign({ message: 'hello' }, enLocale)
+  },
+  cn: {
+    ...cn,
+    ...zhLocale // 或者用 Object.assign({ message: '你好' }, zhLocale)
+  }
+}
+// Create VueI18n instance with options
+const i18n = new VueI18n({
+  locale: store.getters.language || 'en', // set locale
+  messages, // set locale messages
+})
+
+Vue.use(Element, {
+  i18n: (key, value) => i18n.t(key, value)
+})
+
 new Vue({
   el: '#app',
+  i18n,
   router,
   store,
   render: h => h(App)

@@ -15,6 +15,11 @@
           <size-select class="international right-menu-item"/>
         </el-tooltip>
 
+        <el-tooltip content="语言选择" effect="dark" placement="bottom">
+          <language-select class="international right-menu-item"/>
+        </el-tooltip>
+
+
       </template>
 
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
@@ -26,6 +31,7 @@
           <router-link to="/">
             <el-dropdown-item>
               首页
+<!--              {{$t('hello')}}-->
             </el-dropdown-item>
           </router-link>
           <!--          <el-dropdown-item divided>
@@ -58,13 +64,15 @@ import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
+import LanguageSelect from '@/components/LanguageSelect'
 
 export default {
   components: {
     Breadcrumb,
     Hamburger,
     Screenfull,
-    SizeSelect
+    SizeSelect,
+    LanguageSelect
   },
   computed: {
     ...mapGetters([

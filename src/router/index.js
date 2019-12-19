@@ -77,6 +77,7 @@ export default new Router({
   routes: constantRouterMap
 })
 
+
 export const asyncRouterMap = [
   {
     path: '/shop',
@@ -590,7 +591,7 @@ export const asyncRouterMap = [
     ]
   },
   {
-    path: '/notice',
+    path: '/message',
     component: Layout,
     redirect: 'noredirect',
     alwaysShow: true,
@@ -601,12 +602,22 @@ export const asyncRouterMap = [
     },
     children: [
       {
-        path: 'system',
-        // component: () => import('@/views/notice/home'),
-        name: 'system',
+        path: 'list',
+        component: () => import('@/views/message/list'),
+        name: 'messageList',
         meta: {
-          perms: ['GET /admin/admin/list', 'POST /admin/admin/create', 'POST /admin/admin/update', 'POST /admin/admin/delete'],
-          title: '系统消息',
+          perms: ['GET /admin/message/list'],
+          title: '消息列表',
+          noCache: true
+        }
+      },
+      {
+        path: 'create',
+        component: () => import('@/views/message/create'),
+        name: 'messageCreate',
+        meta: {
+          perms: ['POST /admin/message/create'],
+          title: '发布消息',
           noCache: true
         }
       }

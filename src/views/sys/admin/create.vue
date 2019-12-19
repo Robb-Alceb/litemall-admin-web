@@ -3,10 +3,10 @@
     <el-card class="box-card">
       <h3>添加用户</h3>
       <el-form ref="dataForm" :rules="rules" :model="admin" label-width="150px">
-        <el-form-item label="用户名称" prop="nickName">
+        <el-form-item label="员工名称" prop="nickName">
           <el-input v-model="admin.nickName"/>
         </el-form-item>
-        <el-form-item label="用户头像" prop="avatar">
+        <el-form-item label="员工头像" prop="avatar">
           <el-upload
             :headers="headers"
             :action="uploadPath"
@@ -42,9 +42,9 @@
         <el-form-item label="登录密码" prop="name">
           <el-input v-model="admin.password" show-password/>
         </el-form-item>
-        <el-form-item label="确认密码" prop="name">
+<!--        <el-form-item label="确认密码" prop="name">
           <el-input v-model="admin.confirm" show-password/>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item>
           <el-input v-model="admin.desc" type="textarea"/>
         </el-form-item>
@@ -102,7 +102,8 @@
           username: [
             { required: true, message: '管理员名称不能为空', trigger: 'blur' }
           ],
-          password: [{ required: true, message: '密码不能为空', trigger: 'blur' }]
+          password: [{ required: true, message: '密码不能为空', trigger: 'blur' },
+            { min: 6, max: 16, message: '密码长度在 6 到 16 个字符', trigger: 'blur' }]
         }
       }
     },

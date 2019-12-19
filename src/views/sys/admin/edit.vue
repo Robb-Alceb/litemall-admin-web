@@ -3,10 +3,10 @@
     <el-card class="box-card">
       <h3>用户详情</h3>
       <el-form ref="dataForm" :rules="rules" :model="admin" label-width="150px">
-        <el-form-item label="用户名称" prop="nickName">
+        <el-form-item label="员工名称" prop="nickName">
           <el-input v-model="admin.nickName"/>
         </el-form-item>
-        <el-form-item label="用户头像" prop="avatar">
+        <el-form-item label="员工头像" prop="avatar">
           <el-upload
             :headers="headers"
             :action="uploadPath"
@@ -98,7 +98,7 @@ import { getToken } from '@/utils/auth'
 import { listShop } from '@/api/shop'
 let validatePass = (rule, value, callback) => {
   if (value === '') {
-    callback(new Error('请再次输入密码'));
+    callback(new Error('请确认密码'));
   } else if (value !== this.admin.password) {
     callback(new Error('两次输入密码不一致!'));
   } else {

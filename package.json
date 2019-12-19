@@ -21,9 +21,8 @@
     ]
   },
   "dependencies": {
-    "@tinymce/tinymce-vue": "1.1.0",
     "@riophae/vue-treeselect": "0.0.37",
-    "v-charts": "1.19.0",
+    "@tinymce/tinymce-vue": "1.1.0",
     "axios": ">=0.18.1",
     "clipboard": "1.7.1",
     "connect": "3.6.6",
@@ -33,15 +32,18 @@
     "font-awesome": "4.7.0",
     "js-cookie": "2.2.0",
     "jszip": "3.1.5",
+    "lodash": "^4.17.15",
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
     "screenfull": "3.3.3",
+    "v-charts": "1.19.0",
     "vue": "2.5.17",
     "vue-count-to": "1.0.13",
+    "vue-i18n": "^8.15.3",
+    "vue-print-nb": "^1.4.0",
     "vue-router": "3.0.1",
     "vuex": "3.0.1",
-    "xlsx": "^0.11.16",
-    "lodash": "^4.17.15"
+    "xlsx": "^0.11.16"
   },
   "devDependencies": {
     "autoprefixer": "8.5.0",

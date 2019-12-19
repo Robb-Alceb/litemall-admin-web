@@ -3,8 +3,9 @@
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <span>订单打印</span>
-          <el-button style="float: right;" @click="print()">打印</el-button>
+          <el-button style="float: right;" v-print="'#printOrder'">打印</el-button>
         </div>
+        <div id="printOrder">
         <div class="text-center">
           <h1>订单信息</h1>
         </div>
@@ -19,46 +20,49 @@
             </template>
           </el-table-column>
         </el-table>
-        <div>
-          <div style="margin-top: 20px">
-            <svg-icon icon-class="marker" style="color: #606266"/>
+        <div style="border:2px solid #eeeeee;">
+          <div style="line-height:50px;background-color: #E6E6E6">
+<!--            <svg-icon icon-class="marker" style="color: #606266"/>-->
             <span class="font-small">订单备注</span>
           </div>
-          <div class="table-layout" style="margin-bottom: 20px;border:2px solid #eeeeee;">
-            <el-row style="margin: 30px">
-              <span class="font-small">
-                少糖。。。。
+          <div style="height:80px;">
+              <span v-if="orderDetail.order.message" class="font-small">
+                {{orderDetail.order.message}}
               </span>
-            </el-row>
+              <span v-else class="font-small">
+                无
+              </span>
+          </div>
+          <div>
+            <el-form :inline="true"  label-position="left" style="text-align: right;">
+                <el-form-item label="商品总价:">
+                  <el-tag>{{orderDetail.order.goodsPrice}}</el-tag>
+                </el-form-item>
+                <el-form-item label="运费:">
+                  <el-tag>{{orderDetail.order.freightPrice}}</el-tag>
+                </el-form-item>
+                <el-form-item label="订单总金额:">
+                  <el-tag>{{orderDetail.order.orderPrice}}</el-tag>
+                </el-form-item>
+                <el-form-item label="支付方式:">
+                  <el-tag>{{payTypeMap[orderDetail.order.payType]}}</el-tag>
+                </el-form-item>
+            </el-form>
           </div>
         </div>
-        <el-form :inline="true"  label-position="left" style="margin-left: 600px;">
-            <el-form-item label="商品总价:">
-              <el-tag>100</el-tag>
-            </el-form-item>
-            <el-form-item label="运费:">
-              <el-tag>10</el-tag>
-            </el-form-item>
-            <el-form-item label="订单总金额:">
-              <el-tag>10</el-tag>
-            </el-form-item>
-            <el-form-item label="支付方式:">
-              <el-tag>支付宝</el-tag>
-            </el-form-item>
-        </el-form>
         <div>
           <el-row style="margin-bottom: 20px;">
             <el-col :span="2">
               手机号码
             </el-col>
             <el-col :span="4">
-              130000000
+              {{orderDetail.order.mobile}}
             </el-col>
             <el-col :span="2">
               提交时间
             </el-col>
             <el-col :span="4">
-              2019-10-10 22:22:00
+              {{orderDetail.order.addTime}}
             </el-col>
           </el-row>
           <el-row>
@@ -66,31 +70,46 @@
               订单编号
             </el-col>
             <el-col :span="4">
-              N1000
+              {{orderDetail.order.orderSn}}
             </el-col>
             <el-col :span="2">
               收货地址
             </el-col>
             <el-col :span="4">
-              中国北京朝阳区
+              {{orderDetail.order.address}}
             </el-col>
           </el-row>
+        </div>
         </div>
       </el-card>
     </div>
 </template>
 
 <script>
+  const payTypeMap = {
+    "1":"未支付",
+    "2":"paypal",
+    "3":"globalpay",
+    "4":"monerispay",
+    "4":"apple pay"
+  }
   import { detailOrder } from '@/api/order'
   export default {
     name: "print",
     data(){
       return {
+        payTypeMap,
         orderDetail: {
           order: {},
           user: {},
           orderGoods: []
         },
+/*        printObject: {
+          id: "printOrder",
+          popTitle: 'good print',
+          extraCss: 'https://www.google.com,https://www.google.com',
+          extraHead: '<meta http-equiv="Content-Language"content="zh-cn"/>'
+        }*/
       }
     },
     created() {
@@ -106,7 +125,7 @@
         })
       },
       print(){
-
+        window.print()
       },
 
     },
@@ -151,5 +170,10 @@
     text-align: center;
     font-size: 14px;
     color: #303133;
+  }
+</style>
+<style media="printOrder">
+  @page {
+    margin: 0mm; /* this affects the margin in the printer settings */
   }
 </style>

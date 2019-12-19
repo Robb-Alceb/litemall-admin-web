@@ -37,6 +37,7 @@
           <el-form-item label="">
             <el-button v-if="orderDetail.order.orderStatus == 201" @click="consignment(orderDetail.order)">发货处理</el-button>
             <el-button @click="addMark(orderDetail.order)">添加备注</el-button>
+            <el-button @click="print(orderDetail.order)">打印订单</el-button>
           </el-form-item>
         </el-col>
       </el-form>
@@ -149,7 +150,7 @@
     </el-dialog>
 
     <!-- 添加备注对话框 -->
-    <el-dialog :visible.sync="markDialogVisible" title="发货">
+    <el-dialog :visible.sync="markDialogVisible" title="备注">
       <el-form ref="markForm" :model="markForm" :rules="markRules" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
         <el-form-item label="备注" prop="remark">
           <el-input v-model="markForm.remark" type="textarea"/>
@@ -189,7 +190,7 @@ export default {
       if (status == 1) {
         return '未支付'
       }else if(status == 2){
-        return 'paypal支付'
+        return 'paypal'
       }
     },
     orderSourceFilter(type){
@@ -251,7 +252,7 @@ export default {
       } else if (value === 301) {
         // 已发货
         return 3
-      } else if (value === 401) {
+      } else if (value === 401 || value === 402) {
         // 已完成
         return 4
       } else {
@@ -309,6 +310,9 @@ export default {
           })
         }
       })
+    },
+    print(order){
+      this.$router.push({path:'/order/print',query:{id:order.id}})
     }
   }
 }

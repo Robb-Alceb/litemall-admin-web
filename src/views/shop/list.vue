@@ -5,9 +5,9 @@
     <div class="filter-container">
       <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入门店名称"/>
       <el-select v-model="listQuery.status" clearable class="filter-item" placeholder="请选择">
-        <el-option :value="1" label="正在运营"/>
-        <el-option :value="2" label="歇业"/>
-        <el-option :value="3" label="正在装修"/>
+        <el-option :value="1" label="运营中"/>
+        <el-option :value="2" label="歇业中"/>
+        <el-option :value="3" label="装修中"/>
       </el-select>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button v-permission="['POST /admin/shop/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
@@ -19,7 +19,7 @@
 
       <el-table-column align="center" label="门店名称" prop="name"/>
 
-      <el-table-column align="center" label="门店位置" prop="address"/>
+      <el-table-column align="center" label="门店地址" prop="address"/>
 
       <el-table-column align="center" label="门店店长" prop="shopkeeper"/>
 
@@ -74,7 +74,7 @@ export default {
       goodsDetail: '',
       detailDialogVisible: false,
       downloadLoading: false,
-      consStatus:['','正在营业', '歇业', '正在装修']
+      consStatus:['','运营中', '歇业中', '装修中']
     }
   },
   created() {

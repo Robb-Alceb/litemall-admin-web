@@ -7,7 +7,7 @@
         <el-row style="margin-bottom: 20px;">
           <el-col :span="6" align="center">
             <el-row>
-              <span style="font-size: 30px;color: red;">{{overview.today}}</span>
+              <span style="font-size: 30px;color: red;">{{overview.userTodayCount}}</span>
             </el-row>
             <el-row>
               今日新增
@@ -15,7 +15,7 @@
           </el-col>
           <el-col :span="6" align="center">
             <el-row>
-              <span style="font-size: 30px;color: red;">{{overview.yesterday}}</span>
+              <span style="font-size: 30px;color: red;">{{overview.userYesterdayCount}}</span>
             </el-row>
             <el-row>
               昨日新增
@@ -23,7 +23,7 @@
           </el-col>
           <el-col :span="6" align="center">
             <el-row>
-              <span style="font-size: 30px;color: red;">{{overview.month}}</span>
+              <span style="font-size: 30px;color: red;">{{overview.userMonthCount}}</span>
             </el-row>
             <el-row>
               本月新增
@@ -31,7 +31,7 @@
           </el-col>
           <el-col :span="6" align="center">
             <el-row>
-              <span style="font-size: 30px;color: red;">{{overview.total}}</span>
+              <span style="font-size: 30px;color: red;">{{overview.userTotal}}</span>
             </el-row>
             <el-row>
               会员总数
@@ -47,6 +47,8 @@
                   v-model="dateRange"
                   type="daterange"
                   @change="handleDateChange"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd hh:mm:ss"
                   placeholder="选择日期">
                 </el-date-picker>
               </div>
@@ -55,12 +57,14 @@
                   v-model="dateRange"
                   type="monthrange"
                   @change="handleDateChange"
+                  format="yyyy-MM"
+                  value-format="yyyy-MM-dd hh:mm:ss"
                   placeholder="选择月份" style="width:350px;">
                 </el-date-picker>
               </div>
             </div>
             <div style="display: inline;float: right;width: 120px;">
-              <el-select v-model="countFilterType">
+              <el-select v-model="countFilterType" @change="changeType">
                 <el-option label="按日统计" :value="1"></el-option>
                 <el-option label="按月统计" :value="2"></el-option>
               </el-select>
@@ -80,6 +84,8 @@
                   v-model="amountDateRange"
                   type="daterange"
                   @change="handleAmountDateChange"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd hh:mm:ss"
                   placeholder="选择日期" style="width:350px;">
                 </el-date-picker>
               </div>
@@ -88,12 +94,14 @@
                   v-model="amountDateRange"
                   type="monthrange"
                   @change="handleAmountDateChange"
+                  format="yyyy-MM"
+                  value-format="yyyy-MM-dd hh:mm:ss"
                   placeholder="选择月份"  style="width:350px;">
                 </el-date-picker>
               </div>
             </div>
             <div style="display: inline;float: right;width: 120px;">
-              <el-select v-model="amountFilterType">
+              <el-select v-model="amountFilterType" @change="amountChangeType">
                 <el-option label="按日统计" :value="1"></el-option>
                 <el-option label="按月统计" :value="2"></el-option>
               </el-select>
@@ -118,24 +126,26 @@
 <script>
   import VeHistogram from 'v-charts/lib/histogram.common'
   import VeLine from 'v-charts/lib/line.common'
+  import { queryUserStatistics, queryAddUserStatistics} from '@/api/statistics'
+  import { formatDate } from '@/utils/date'
   export default {
     name: "userStatistics",
     components: { VeHistogram, VeLine },
     data() {
-      const startDate = new Date(new Date().getTime() - 3600 * 1000 * 24 * 30 * 6);
-      const endDate = new Date();
+      const startDate = formatDate(new Date(new Date().getTime() - 3600 * 1000 * 24 * 10), 'yyyy-MM-dd hh:mm:ss')
+      const endDate = formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss')
       return {
         overview:{
-          today:100,
-          yesterday:101,
-          month:300,
-          total: 10001
+          userTodayCount:0,
+          userYesterdayCount:0,
+          userMonthCount:0,
+          userTotal: 0
         },
         dateRange: [startDate, endDate],
         amountDateRange: [startDate, startDate],
         activeTable: "1",
-        countFilterType: 2,
-        amountFilterType: 2,
+        countFilterType: 1,
+        amountFilterType: 1,
         chartData: {
           columns: ['date', 'sales'],
           rows: [
@@ -150,7 +160,7 @@
           ]
         },
         lineData: {
-          columns: ['日期', '新增会员数'],
+          columns: ['addTime', 'count'],
           rows: [
             { '日期': '01月', '新增会员数': 1393 },
             { '日期': '02月', '新增会员数': 3530 },
@@ -163,14 +173,38 @@
       }
     },
     created(){
-
+      this.getData()
     },
     methods:{
+      getData(){
+        queryUserStatistics().then(res=>{
+          this.overview = res.data.data.data
+        })
+        let param = {
+          type: this.countFilterType,
+          startTime: this.dateRange[0],
+          endTime: this.dateRange[1]
+        }
+        queryAddUserStatistics(param).then(res=>{
+          this.lineData.rows = res.data.data.data
+        })
+      },
       handleAmountDateChange(dateRange){
         console.log(dateRange)
+        this.amountDateRange = dateRange
+        this.getData()
       },
       handleDateChange(dateRange){
         console.log(dateRange)
+        this.dateRange = dateRange
+        this.getData()
+      },
+      amountChangeType(){
+        this.getData()
+      }
+      ,
+      changeType(){
+        this.getData()
       }
     }
   }

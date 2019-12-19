@@ -213,7 +213,7 @@ export default {
               this.dialogFormVisible = false
               this.$notify.success({
                 title: '成功',
-                message: '更新管理员成功'
+                message: '更新成功'
               })
             })
             .catch(response => {
@@ -230,7 +230,7 @@ export default {
         .then(response => {
           this.$notify.success({
             title: '成功',
-            message: '删除管理员成功'
+            message: '删除成功'
           })
           const index = this.list.indexOf(row)
           this.list.splice(index, 1)

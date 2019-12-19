@@ -15,3 +15,23 @@ export function goodsSalesStatistics(query) {
     params: query
   })
 }
+
+
+
+
+export function queryUserStatistics(query) {
+  return request({
+    url: '/user/queryUserStatistics',
+    method: 'get',
+    params: query
+  })
+}
+
+
+export function queryAddUserStatistics(query) {
+  return request({
+    url: '/user/queryAddUserStatistics',
+    method: 'get',
+    params: query
+  })
+}

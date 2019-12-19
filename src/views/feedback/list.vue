@@ -62,7 +62,6 @@
   export default {
     name: "feedbackList",
     components: { ElSelectDropdown, BackToTop, Pagination },
-    components: { ElSelectDropdown, BackToTop, Pagination },
     data() {
       return {
         statusMap,
