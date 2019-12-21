@@ -469,7 +469,8 @@ export const asyncRouterMap = [
           perms: ['GET /admin/coupon/list', 'POST /admin/coupon/create', 'POST /admin/coupon/update', 'POST /admin/coupon/delete'],
           title: '优惠券管理',
           noCache: true
-        }
+        },
+        hidden: true
       },
       /*{
         path: 'couponDetail',
@@ -619,7 +620,8 @@ export const asyncRouterMap = [
           perms: ['POST /admin/message/create'],
           title: '发布消息',
           noCache: true
-        }
+        },
+        hidden: true
       }
     ]
   },

@@ -17,7 +17,21 @@ export function goodsSalesStatistics(query) {
 }
 
 
+export function transactionData(query) {
+  return request({
+    url: '/order/transactionData',
+    method: 'get',
+    params: query
+  })
+}
 
+export function salesStatistics(query) {
+  return request({
+    url: '/order/salesStatistics',
+    method: 'get',
+    params: query
+  })
+}
 
 export function queryUserStatistics(query) {
   return request({

@@ -77,7 +77,7 @@
           </el-input>
         </el-form-item>
         <el-form-item label="商品税率" prop="tax">
-          <el-input v-model="goods.tax">
+          <el-input v-model="productForm.tax">
             <template slot="append">%</template>
           </el-input>
         </el-form-item>
@@ -386,7 +386,8 @@
           specifications: [],
           price: 0.0,
           number: 0,
-          url: ''
+          url: '',
+          tax:0.0
         },
         attributeVisiable: false,
         attributeForm: { attribute: '', value: '' },

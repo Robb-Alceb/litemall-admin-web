@@ -62,13 +62,13 @@
         </div>
         <el-row>
           <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-            <el-table-column align="center" label="商品名称" prop="name"/>
-            <el-table-column align="center" label="浏览量" prop="visit"/>
-            <el-table-column align="center" label="浏览人数" prop="visitPeople"/>
-            <el-table-column align="center" label="付款人数" prop="payNumber"/>
-            <el-table-column align="center" label="单品转化率" prop="convertRatio"/>
-            <el-table-column align="center" label="件数" prop="goodsNumber"/>
-            <el-table-column align="center" label="金额" prop="money"/>
+            <el-table-column align="center" label="商品名称" prop="goodsName"/>
+            <el-table-column align="center" label="浏览量" prop="browseNum"/>
+            <el-table-column align="center" label="浏览人数" prop="browseUserNum"/>
+            <el-table-column align="center" label="付款人数" prop="payUserNum"/>
+            <el-table-column align="center" label="单品转化率" prop="goodsConversionRate"/>
+            <el-table-column align="center" label="件数" prop="salesNum"/>
+            <el-table-column align="center" label="金额" prop="actualPrice"/>
           </el-table>
         </el-row>
       </el-card>
@@ -127,25 +127,13 @@ export default {
       },
       listLoading: false,
       goodsData: {
-        columns: ['日期', '访问用户'],
+        columns: ['name', 'count'],
         rows: [
-          { '日期': '拿铁', '访问用户': 1393 },
-          { '日期': '卡布奇诺', '访问用户': 3530 },
-          { '日期': '黑咖啡', '访问用户': 2923 },
-          { '日期': '蓝咖啡', '访问用户': 1723 },
-          { '日期': '白咖啡', '访问用户': 3792 },
-          { '日期': '其他', '访问用户': 4593 }
         ]
       },
       categoryData: {
-        columns: ['日期', '访问用户'],
+        columns: ['name', 'count'],
         rows: [
-          { '日期': '咖啡', '访问用户': 1393 },
-          { '日期': '杯子', '访问用户': 3530 },
-          { '日期': '牛奶', '访问用户': 2923 },
-          { '日期': '咖啡豆', '访问用户': 1723 },
-          { '日期': '咖啡机', '访问用户': 3792 },
-          { '日期': '其他', '访问用户': 4593 }
         ]
       },
       list: [{
@@ -210,11 +198,23 @@ export default {
       goodsStatistics(param).then(response=>{
         console.log(response)
         if(response.data.data){
+          this.goodsData.rows = []
+          this.categoryData.rows = []
           if(response.data.data.orderGoods){
-            this.goodsData = response.data.data.orderGoods
+            response.data.data.orderGoods.forEach(goods=>{
+              this.goodsData.rows.push({
+                name:goods.goodsName,
+                count:goods.number
+              })
+            })
           }
           if(response.data.data.categorys){
-            this.categoryData = response.data.data.categorys
+            response.data.data.categorys.forEach(cate=>{
+              this.categoryData.rows.push({
+                name:cate.categoryName,
+                count:cate.number
+              })
+            })
           }
         }
       })
@@ -254,6 +254,9 @@ export default {
 
     },
     handleListClick() {
+
+    },
+    testBlur(val){
 
     }
   }

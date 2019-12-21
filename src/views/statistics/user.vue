@@ -48,7 +48,7 @@
                   type="daterange"
                   @change="handleDateChange"
                   format="yyyy-MM-dd"
-                  value-format="yyyy-MM-dd hh:mm:ss"
+                  value-format="yyyy-MM-dd hh:mm"
                   placeholder="选择日期">
                 </el-date-picker>
               </div>
@@ -58,7 +58,7 @@
                   type="monthrange"
                   @change="handleDateChange"
                   format="yyyy-MM"
-                  value-format="yyyy-MM-dd hh:mm:ss"
+                  value-format="yyyy-MM-dd hh:mm"
                   placeholder="选择月份" style="width:350px;">
                 </el-date-picker>
               </div>
@@ -85,7 +85,7 @@
                   type="daterange"
                   @change="handleAmountDateChange"
                   format="yyyy-MM-dd"
-                  value-format="yyyy-MM-dd hh:mm:ss"
+                  value-format="yyyy-MM-dd hh:mm"
                   placeholder="选择日期" style="width:350px;">
                 </el-date-picker>
               </div>
@@ -95,7 +95,7 @@
                   type="monthrange"
                   @change="handleAmountDateChange"
                   format="yyyy-MM"
-                  value-format="yyyy-MM-dd hh:mm:ss"
+                  value-format="yyyy-MM-dd hh:mm"
                   placeholder="选择月份"  style="width:350px;">
                 </el-date-picker>
               </div>
@@ -124,17 +124,30 @@
 </template>
 
 <script>
+  const chartRowMap = {
+    fifty: '0-50',
+    hundred: '51-100',
+    twoHundred: '101-200',
+    fiveHundred: '201-500',
+    thousand: '501-1000',
+    fiveThousand: '1001-5000',
+    tenThousand: '5001-10000',
+    greaterThanTenThousand: '10001以上',
+
+  }
   import VeHistogram from 'v-charts/lib/histogram.common'
   import VeLine from 'v-charts/lib/line.common'
   import { queryUserStatistics, queryAddUserStatistics} from '@/api/statistics'
   import { formatDate } from '@/utils/date'
+  import { transactionData } from '@/api/statistics'
   export default {
     name: "userStatistics",
     components: { VeHistogram, VeLine },
     data() {
-      const startDate = formatDate(new Date(new Date().getTime() - 3600 * 1000 * 24 * 10), 'yyyy-MM-dd hh:mm:ss')
-      const endDate = formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss')
+      const startDate = formatDate(new Date(new Date().getTime() - 3600 * 1000 * 24 * 10), 'yyyy-MM-dd hh:mm')
+      const endDate = formatDate(new Date(), 'yyyy-MM-dd hh:mm')
       return {
+        chartRowMap,
         overview:{
           userTodayCount:0,
           userYesterdayCount:0,
@@ -147,16 +160,8 @@
         countFilterType: 1,
         amountFilterType: 1,
         chartData: {
-          columns: ['date', 'sales'],
+          columns: ['amount', 'sales'],
           rows: [
-            {'date': '0-50元', 'sales': 1},
-            {'date': '50-100元', 'sales': 12},
-            {'date': '100-200元', 'sales': 30},
-            {'date': '200-500元', 'sales': 17},
-            {'date': '500-1000元', 'sales': 20},
-            {'date': '1000-5000元', 'sales': 11},
-            {'date': '5000-10000元', 'sales': 1},
-            {'date': '10000以上', 'sales': 1}
           ]
         },
         lineData: {
@@ -174,6 +179,7 @@
     },
     created(){
       this.getData()
+      this.getTransactionData()
     },
     methods:{
       getData(){
@@ -189,10 +195,28 @@
           this.lineData.rows = res.data.data.data
         })
       },
+      getTransactionData(){
+        let param1 = {
+          startTime: this.amountDateRange[0],
+          endTime: this.amountDateRange[1]
+        }
+        this.chartData.rows.splice(0,this.chartData.rows.length)
+        transactionData(param1).then(response=>{
+          console.log(response)
+          if(response.data.data){
+            for(let item in response.data.data){
+              this.chartData.rows.push({
+                amount:chartRowMap[item],
+                sales: response.data.data[item]
+              })
+            }
+          }
+        })
+      },
       handleAmountDateChange(dateRange){
         console.log(dateRange)
         this.amountDateRange = dateRange
-        this.getData()
+        this.getTransactionData()
       },
       handleDateChange(dateRange){
         console.log(dateRange)
@@ -200,7 +224,7 @@
         this.getData()
       },
       amountChangeType(){
-        this.getData()
+        this.getTransactionData()
       }
       ,
       changeType(){

@@ -31,10 +31,29 @@
       <el-button v-permission="['POST /admin/message/create']" type="primary" @click="handleCreate">提交</el-button>
     </div>
 
+    <!-- 选择用户对话框 -->
+    <el-dialog :visible.sync="userDialogVisible" title="详情">
+      <template>
+        <el-transfer
+          filterable
+          :titles="['用户', '已选择']"
+          :filter-method="filterUserMethod"
+          filter-placeholder="请输入用户名"
+          v-model="selecteds"
+          :data="users">
+        </el-transfer>
+      </template>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="userDialogVisible = false">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+  import {userOption} from '@/api/user'
+  import { createMessage } from '@/api/message'
+  import { MessageBox } from 'element-ui'
   export default {
     name: "createMessage",
     data(){
@@ -53,18 +72,68 @@
             { required: true, message: '消息类型不能为空', trigger: 'blur' }
           ],
           content: [{ required: true, message: '消息内容不能为空', trigger: 'blur' }]
-        }
+        },
+        userDialogVisible: false,
+        users:[{
+          label:'张三',
+          key:1
+        },{
+          label:'李四',
+          key:2
+        },{
+          label:'王五',
+          key:3
+        },{
+          label:'赵六',
+          key:4
+        },{
+          label:'卓七',
+          key:5
+        }],
+        selecteds:[]
       }
     },
+    created(){
+      this.getData()
+    },
     methods: {
+      getData(){
+        userOption().then(response=>{
+          this.users = response.data.data
+        })
+      },
       handleCreate(){
-
+        this.$refs['message'].validate(valid=>{
+          if(valid){
+            let data = {
+              message: this.message,
+              users: this.selecteds
+            }
+            createMessage(data)
+              .then(response => {
+              this.$notify.success({
+                title: '成功',
+                message: '创建成功'
+              })
+              this.$router.push({ path: '/shop/list' })
+            })
+              .catch(response => {
+                MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
+                  confirmButtonText: '确定',
+                  type: 'error'
+                })
+              })
+          }
+        })
       },
       handleCancel(){
         this.$router.push({path:'/message/list'})
       },
       handleAdd(){
-
+        this.userDialogVisible = true
+      },
+      filterUserMethod(query, item){
+        return item.label.indexOf(query) > -1
       }
     }
   }

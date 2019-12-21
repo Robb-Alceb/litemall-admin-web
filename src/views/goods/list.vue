@@ -266,6 +266,9 @@ export default {
     }
   },
   created() {
+    if(this.$route.query && this.$route.query.shopId){
+      this.listQuery.shopId = this.$route.query.shopId
+    }
     this.getList()
     allForPerm().then(response=>{
       this.shops = response.data.data.list

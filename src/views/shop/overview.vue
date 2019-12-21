@@ -42,7 +42,7 @@
               </div>
               <div class="card-panel-description">
                 <div class="card-panel-text">今日销售额</div>
-                <count-to :start-val="0" :end-val="1" :duration="2600" class="card-panel-num"/>
+                <count-to :start-val="0" :end-val="salesStatistics.today" :duration="2600" class="card-panel-num"/>
               </div>
             </div>
           </el-col>
@@ -53,7 +53,7 @@
               </div>
               <div class="card-panel-description">
                 <div class="card-panel-text">最近7日销售额</div>
-                <count-to :start-val="0" :end-val="goodsTotal" :duration="3000" class="card-panel-num"/>
+                <count-to :start-val="0" :end-val="salesStatistics.week" :duration="3000" class="card-panel-num"/>
               </div>
             </div>
           </el-col>
@@ -64,7 +64,7 @@
               </div>
               <div class="card-panel-description">
                 <div class="card-panel-text">历史销售额</div>
-                <count-to :start-val="0" :end-val="productTotal" :duration="3200" class="card-panel-num"/>
+                <count-to :start-val="0" :end-val="salesStatistics.history" :duration="3200" class="card-panel-num"/>
               </div>
             </div>
           </el-col>
@@ -84,7 +84,7 @@
               </div>
               <div class="card-panel-description">
                 <div class="card-panel-text">今日订单总量</div>
-                <count-to :start-val="0" :end-val="1" :duration="2600" class="card-panel-num"/>
+                <count-to :start-val="0" :end-val="orderStatistice.today" :duration="2600" class="card-panel-num"/>
               </div>
             </div>
           </el-col>
@@ -95,7 +95,7 @@
               </div>
               <div class="card-panel-description">
                 <div class="card-panel-text">正在进行的订单</div>
-                <count-to :start-val="0" :end-val="goodsTotal" :duration="3000" class="card-panel-num"/>
+                <count-to :start-val="0" :end-val="orderStatistice.process" :duration="3000" class="card-panel-num"/>
               </div>
             </div>
           </el-col>
@@ -106,7 +106,7 @@
               </div>
               <div class="card-panel-description">
                 <div class="card-panel-text">历史总订单</div>
-                <count-to :start-val="0" :end-val="productTotal" :duration="3200" class="card-panel-num"/>
+                <count-to :start-val="0" :end-val="orderStatistice.history" :duration="3200" class="card-panel-num"/>
               </div>
             </div>
           </el-col>
@@ -123,13 +123,13 @@
           总上架商品:
         </el-col>
         <el-col :span="4">
-          （100）
+          （{{goodsInfo.total}}）
         </el-col>
         <el-col :span="4" align="right">
           待处理进货请求:
         </el-col>
         <el-col :span="4">
-          （10）
+          （{{goodsInfo.orderNumber}}）
         </el-col>
       </el-row>
     </el-card>
@@ -147,17 +147,31 @@
         shop:{},
         shopkeeper:{},
         shopManager:{},
-        shopMembers:[]
+        shopMembers:[],
+        salesStatistics:{
+          today: 0,
+          week: 0,
+          history: 0
+        },
+        orderStatistice: {
+          today: 0,
+          process: 0,
+          history: 0
+        },
+        goodsInfo: {
+          total: 0,
+          orderNumber: 0
+        }
       }
     },
     components: {
       CountTo
     },
     created(){
-
+      this.getData()
     },
     methods:{
-      initData(){
+      getData(){
         const shopId = this.$route.query.id
         detailShop(shopId).then(response => {
           this.shop = response.data.data
@@ -180,16 +194,16 @@
         })
       },
       shopDetail(){
-        this.$router.push({path: '/shop/edit', query: {id: this.$route.query.id}})
+        this.$router.push({path: '/shop/edit', query: {shopId: this.$route.query.id}})
       },
       goodsDetail(){
-        this.$router.push({path: '/goods/list', query: {id: this.$route.query.id}})
+        this.$router.push({path: '/goods/list', query: {shopId: this.$route.query.id}})
       },
       orderDetail(){
-        this.$router.push({path: '/order/list', query: {id: this.$route.query.id}})
+        this.$router.push({path: '/order/list', query: {shopId: this.$route.query.id}})
       },
       salesDetail(){
-        this.$router.push({path: '/statistics/sales', query: {id: this.$route.query.id}})
+        this.$router.push({path: '/statistics/sales', query: {shopId: this.$route.query.id}})
       }
     }
   }

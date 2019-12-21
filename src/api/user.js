@@ -48,3 +48,12 @@ export function listHistory(query) {
   })
 }
 
+
+export function userOption(query) {
+  return request({
+    url: '/user/option',
+    method: 'get',
+    params: query
+  })
+}
+
