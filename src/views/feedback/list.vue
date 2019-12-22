@@ -26,8 +26,8 @@
 
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-show="scope.row.status != 1" v-permission="['POST /admin/feedback/reply']" type="primary" size="mini" @click="handleReply(scope.row)">回复</el-button>
-          <el-button v-show="scope.row.status != 2" v-permission="['POST /admin/feedback/ignore']" type="info" size="mini" @click="handleIgnore(scope.row)">忽略</el-button>
+          <el-button v-permission="['POST /admin/feedback/reply']" type="primary" size="mini" @click="handleReply(scope.row)">回复</el-button>
+          <el-button v-permission="['POST /admin/feedback/ignore']" type="info" size="mini" @click="handleIgnore(scope.row)">忽略</el-button>
         </template>
       </el-table-column>
     </el-table>
