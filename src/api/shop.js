@@ -137,3 +137,12 @@ export function merchandiseNumber(query) {
     params: query
   })
 }
+
+export function shopOverview(id) {
+  return request({
+    url: '/shop/shopOverview',
+    method: 'get',
+    params: {id}
+  })
+}
+

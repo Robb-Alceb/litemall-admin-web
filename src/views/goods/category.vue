@@ -262,6 +262,17 @@ export default {
       })
     },
     handleUpdate(row) {
+      this.categoryIds.splice(0,this.categoryIds.length)
+      this.list.forEach(first=>{
+        if(first.children){
+          first.children.forEach(second=>{
+            if(second.id == row.pid){
+              this.categoryIds.push(first.id)
+              this.categoryIds.push(second.id)
+            }
+          })
+        }
+      })
       this.dataForm = Object.assign({}, row)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true

@@ -50,7 +50,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="门店介绍" prop="description">
-          <el-input v-model="shop.description" type="textarea" placeholder=""/>
+          <el-input v-model="shop.description" type="textarea" placeholder="" autosize/>
         </el-form-item>
         <el-form-item label="服务范围" prop="range">
           <el-radio-group v-model="limited">

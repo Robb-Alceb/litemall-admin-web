@@ -402,6 +402,7 @@ export default {
           title: '失败',
           message: response.data.errmsg
         })
+        row.isOnSale = false
       })
     },
     handleNewProduce(row){

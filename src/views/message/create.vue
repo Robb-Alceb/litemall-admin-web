@@ -103,6 +103,9 @@
         })
       },
       handleCreate(){
+        if(this.selecteds.length){
+          this.message.receiverNumber = this.selecteds.length
+        }
         this.$refs['message'].validate(valid=>{
           if(valid){
             let data = {
@@ -115,7 +118,7 @@
                 title: '成功',
                 message: '创建成功'
               })
-              this.$router.push({ path: '/shop/list' })
+              this.$router.push({ path: '/message/list' })
             })
               .catch(response => {
                 MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {

@@ -232,7 +232,7 @@ export const asyncRouterMap = [
         },
         hidden: true
       },
-      {
+/*      {
         path: 'comment',
         component: () => import('@/views/goods/comment'),
         name: 'goodsComment',
@@ -241,7 +241,7 @@ export const asyncRouterMap = [
           title: '商品评论',
           noCache: true
         }
-      },
+      },*/
       {
         path: 'logs',
         component: () => import('@/views/goods/logs'),

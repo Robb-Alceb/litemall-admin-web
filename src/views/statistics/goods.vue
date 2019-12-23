@@ -32,11 +32,11 @@
         <el-row>
           <el-col :span="12">
             <ve-pie :data="goodsData"
-                    :events="chartEvents"/>
+                    :events="goodsChartEvents"/>
           </el-col>
           <el-col :span="12">
             <ve-pie :data="categoryData"
-                    :events="chartEvents"/>
+                    :events="categoryChartEvents"/>
           </el-col>
         </el-row>
       </el-card>
@@ -61,7 +61,7 @@
           </div>-->
         </div>
         <el-row>
-          <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+          <el-table v-if="listQuery.type == '1'" v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
             <el-table-column align="center" label="商品名称" prop="goodsName"/>
             <el-table-column align="center" label="浏览量" prop="browseNum"/>
             <el-table-column align="center" label="浏览人数" prop="browseUserNum"/>
@@ -70,6 +70,16 @@
             <el-table-column align="center" label="件数" prop="salesNum"/>
             <el-table-column align="center" label="金额" prop="actualPrice"/>
           </el-table>
+          <el-table v-else v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+            <el-table-column align="center" label="类目名称" prop="categoryName"/>
+            <el-table-column align="center" label="浏览量" prop="browseNum"/>
+            <el-table-column align="center" label="浏览人数" prop="browseUserNum"/>
+            <el-table-column align="center" label="付款人数" prop="payUserNum"/>
+            <el-table-column align="center" label="单品转化率" prop="goodsConversionRate"/>
+            <el-table-column align="center" label="件数" prop="salesNum"/>
+            <el-table-column align="center" label="金额" prop="actualPrice"/>
+          </el-table>
+
         </el-row>
       </el-card>
     </el-card>
@@ -81,13 +91,28 @@ import VePie from 'v-charts/lib/pie.common'
 import {goodsStatistics, goodsSalesStatistics} from '@/api/statistics'
 import { allForPerm } from '@/api/shop'
 import { formatDate } from '@/utils/date'
+
 export default {
   name: 'GoodsStatistics',
   components: { VePie },
   data() {
-    const startDate = formatDate(new Date(new Date().getTime() - 3600 * 1000 * 24 * 1), 'yyyy-MM-dd hh:mm')
+    const startDate = formatDate(new Date(new Date().getTime() - 3600 * 1000 * 24 * 7), 'yyyy-MM-dd hh:mm')
     const endDate = formatDate(new Date(), 'yyyy-MM-dd hh:mm')
+    let goodsChartEvents = {
+      click: (e)=>{
+        this.saleDateRange = this.dateRange
+        this.getList('1')
+      }
+    }
+    let categoryChartEvents = {
+      click: (e)=>{
+        this.saleDateRange = this.dateRange
+        this.getList('2')
+      }
+    }
     return {
+      goodsChartEvents,
+      categoryChartEvents,
       queryParam:{
         shopId:undefined
       },
@@ -127,54 +152,22 @@ export default {
       },
       listLoading: false,
       goodsData: {
-        columns: ['name', 'count'],
+        columns: ['goods', 'count'],
         rows: [
         ]
       },
       categoryData: {
-        columns: ['name', 'count'],
+        columns: ['category', 'count'],
         rows: [
         ]
       },
-      list: [{
-        name: '咖啡',
-        visit: 90,
-        visitPeople: 34,
-        payNumber: 12,
-        convertRatio: 33,
-        goodsNumber: 10,
-        money: 1000
-      }, {
-        name: '咖啡',
-        visit: 90,
-        visitPeople: 34,
-        payNumber: 12,
-        convertRatio: 33,
-        goodsNumber: 10,
-        money: 1000
-      }, {
-        name: '咖啡',
-        visit: 90,
-        visitPeople: 34,
-        payNumber: 12,
-        convertRatio: 33,
-        goodsNumber: 10,
-        money: 1000
-      }, {
-        name: '咖啡',
-        visit: 90,
-        visitPeople: 34,
-        payNumber: 12,
-        convertRatio: 33,
-        goodsNumber: 10,
-        money: 1000
-      }],
-      chartEvents: {
-        click: function (e) {
-          self.name = e.name
-          console.log(e)
-        }
-      }
+      list: [],
+/*      goodsChartEvents: {
+        click: this.getList
+      },
+      categoryChartEvents: {
+        click: this.getList
+      }*/
 
     }
   },
@@ -195,15 +188,15 @@ export default {
         startTime: this.dateRange[0],
         endTime: this.dateRange[1]
       }
+      this.goodsData.rows.splice(0,this.goodsData.rows.length)
+      this.categoryData.rows.splice(0,this.categoryData.rows.length)
       goodsStatistics(param).then(response=>{
         console.log(response)
         if(response.data.data){
-          this.goodsData.rows = []
-          this.categoryData.rows = []
           if(response.data.data.orderGoods){
             response.data.data.orderGoods.forEach(goods=>{
               this.goodsData.rows.push({
-                name:goods.goodsName,
+                goods:goods.goodsName,
                 count:goods.number
               })
             })
@@ -211,8 +204,8 @@ export default {
           if(response.data.data.categorys){
             response.data.data.categorys.forEach(cate=>{
               this.categoryData.rows.push({
-                name:cate.categoryName,
-                count:cate.number
+                category:cate.categoryName,
+                count:cate.number,
               })
             })
           }
@@ -220,10 +213,13 @@ export default {
       })
       this.getList()
     },
-    getList(){
+    getList(type){
+      if(type){
+        this.listQuery.type = type;
+      }
       let param = {
         shopId: this.queryParam.shopId,
-        type: this.listQuery.type,
+        type: type || this.listQuery.type,
         startTime: this.saleDateRange[0],
         endTime: this.saleDateRange[1]
       }
@@ -256,9 +252,6 @@ export default {
     handleListClick() {
 
     },
-    testBlur(val){
-
-    }
   }
 }
 </script>

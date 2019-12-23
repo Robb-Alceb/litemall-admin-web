@@ -53,15 +53,15 @@
             <el-col>{{ shop.name }}</el-col>
           </el-form-item>
           <el-form-item label="订货描述" prop="mobile">
-            <el-input v-model="orderDetail.remark" type="textarea"/>
+            <el-input v-model="orderDetail.remark" type="textarea" autosize/>
           </el-form-item>
         </el-form>
       </el-card>
     </el-card>
 
-    <div class="op-container">
+    <div class="op-container" style="margin-top: 30px;">
       <el-button @click="handleCancel">取消</el-button>
-      <el-button v-permission="['POST /admin/shopOrder/orderApplying']" type="primary" @click="handleApplying">申请发货</el-button>
+      <el-button v-permission="['POST /admin/shopOrder/orderApplying']" type="primary" @click="handleApplying">申请</el-button>
     </div>
 
   </div>
@@ -136,7 +136,7 @@ export default {
       })
     },
     handleCancel() {
-      this.$router.push({ path: 'repository/merchandise' })
+      this.$router.push({ path: '/repository/merchandise' })
     },
     changeAdmin() {
       this.shopMembers.forEach((admin) => {

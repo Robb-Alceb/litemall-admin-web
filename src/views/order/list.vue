@@ -343,11 +343,14 @@ export default {
         })
     },
     getShopName(shopId){
-      return this.shops.find(shop=>{
+      let shop =  this.shops.find(shop=>{
         if(shop.id == shopId){
           return true
         }
-      }).name
+      })
+      if(shop){
+        return shop.name
+      }
     }
   }
 }
