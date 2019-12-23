@@ -121,7 +121,7 @@ export default {
       uploadPath,
       list: null,
       total: 0,
-      roleOptions: null,
+      roleOptions: [],
       listLoading: true,
       listQuery: {
         page: 1,

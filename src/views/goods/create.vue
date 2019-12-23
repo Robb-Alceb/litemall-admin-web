@@ -360,6 +360,13 @@
           callback()
         }
       }
+      const validateCategory = (rule, value, callback) => {
+        if (this.categoryIds.length == 0) {
+          callback(new Error('所属分类不能为空'))
+        } else {
+          callback()
+        }
+      }
       return {
         shops:[],
         uploadPath,
@@ -397,8 +404,8 @@
             { required: true, message: '商品编号不能为空', trigger: 'blur' }
           ],
           name: [{ required: true, message: '商品名称不能为空', trigger: 'blur' }],
-          shopId: [{ required: true, message: '所属门店不能为空', trigger: 'blur' }],
-          categoryId: [{ required: true, message: '所属分类不能为空', trigger: 'blur' }]
+          shopId: [{ required: true, message: '所属门店不能为空', trigger: 'change' }],
+          categoryId: [{ required: true, message: '所属分类不能为空', trigger: 'change',validator: validateCategory }]
         },
         productRules:{
           number: [

@@ -5,7 +5,7 @@
     <div class="filter-container">
       <el-input v-model="listQuery.merchandiseSn" clearable class="filter-item" style="width: 200px;" placeholder="货号"/>
       <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="货品名称"/>
-      <el-button v-permission="['GET /admin/repository/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+      <el-button v-permission="['GET /admin/merchandise/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button v-permission="['POST /admin/merchandise/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
       <el-button v-permission="['POST /admin/shopOrder/orderApplying']" v-shop="true" class="filter-item" type="primary" icon="el-icon-edit" @click="handleGetAllmerchandise">货品申请</el-button>
 <!--      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>-->
@@ -32,8 +32,9 @@
 
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-permission="['GET /admin/merchandise/list']" type="primary" size="mini" @click="handleAdd(scope.row)">补充</el-button>
-          <el-button v-permission="['GET /admin/merchandise/list']" type="primary" size="mini" @click="handleEdit(scope.row)">详情</el-button>
+          <el-button v-shop="false" v-permission="['GET /admin/merchandise/list']" type="primary" size="mini" @click="handleAdd(scope.row)">补充</el-button>
+          <el-button v-shop="true" v-permission="['GET /admin/merchandise/list']" type="primary" size="mini" @click="handleApplying(scope.row)">补充</el-button>
+          <el-button v-permission="['GET /admin/merchandise/update']" type="primary" size="mini" @click="handleEdit(scope.row)">详情</el-button>
         </template>
       </el-table-column>
     </el-table>

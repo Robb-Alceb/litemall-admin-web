@@ -42,7 +42,7 @@
               </div>
               <div class="card-panel-description">
                 <div class="card-panel-text">今日销售额</div>
-                <count-to :start-val="0" :end-val="salesStatistics.today" :duration="2600" class="card-panel-num"/>
+                <count-to :start-val="0" :end-val="summary.todayAmount" :duration="2600" class="card-panel-num"/>
               </div>
             </div>
           </el-col>
@@ -53,7 +53,7 @@
               </div>
               <div class="card-panel-description">
                 <div class="card-panel-text">最近7日销售额</div>
-                <count-to :start-val="0" :end-val="salesStatistics.week" :duration="3000" class="card-panel-num"/>
+                <count-to :start-val="0" :end-val="summary.sevenAmount" :duration="3000" class="card-panel-num"/>
               </div>
             </div>
           </el-col>
@@ -64,7 +64,7 @@
               </div>
               <div class="card-panel-description">
                 <div class="card-panel-text">历史销售额</div>
-                <count-to :start-val="0" :end-val="salesStatistics.history" :duration="3200" class="card-panel-num"/>
+                <count-to :start-val="0" :end-val="summary.allAmount" :duration="3200" class="card-panel-num"/>
               </div>
             </div>
           </el-col>
@@ -84,7 +84,7 @@
               </div>
               <div class="card-panel-description">
                 <div class="card-panel-text">今日订单总量</div>
-                <count-to :start-val="0" :end-val="orderStatistice.today" :duration="2600" class="card-panel-num"/>
+                <count-to :start-val="0" :end-val="summary.todayCount" :duration="2600" class="card-panel-num"/>
               </div>
             </div>
           </el-col>
@@ -95,7 +95,7 @@
               </div>
               <div class="card-panel-description">
                 <div class="card-panel-text">正在进行的订单</div>
-                <count-to :start-val="0" :end-val="orderStatistice.process" :duration="3000" class="card-panel-num"/>
+                <count-to :start-val="0" :end-val="summary.sevenCount" :duration="3000" class="card-panel-num"/>
               </div>
             </div>
           </el-col>
@@ -106,7 +106,7 @@
               </div>
               <div class="card-panel-description">
                 <div class="card-panel-text">历史总订单</div>
-                <count-to :start-val="0" :end-val="orderStatistice.history" :duration="3200" class="card-panel-num"/>
+                <count-to :start-val="0" :end-val="summary.allCount" :duration="3200" class="card-panel-num"/>
               </div>
             </div>
           </el-col>
@@ -123,13 +123,13 @@
           总上架商品:
         </el-col>
         <el-col :span="4">
-          （{{goodsInfo.total}}）
+          （{{summary.putOnSaleGoods}}）
         </el-col>
         <el-col :span="4" align="right">
           待处理进货请求:
         </el-col>
         <el-col :span="4">
-          （{{goodsInfo.orderNumber}}）
+          （{{summary.processingCount}}）
         </el-col>
       </el-row>
     </el-card>
@@ -138,7 +138,7 @@
 
 <script>
   import CountTo from 'vue-count-to'
-  import { detailShop } from '@/api/shop'
+  import { detailShop, shopOverview } from '@/api/shop'
   import { getShopkeeper, getShopManager, getShopMembers } from '@/api/admin'
   export default {
     name: "overview",
@@ -148,19 +148,15 @@
         shopkeeper:{},
         shopManager:{},
         shopMembers:[],
-        salesStatistics:{
-          today: 0,
-          week: 0,
-          history: 0
-        },
-        orderStatistice: {
-          today: 0,
-          process: 0,
-          history: 0
-        },
-        goodsInfo: {
-          total: 0,
-          orderNumber: 0
+        summary:{
+          todayAmount:0,
+          sevenAmount:0,
+          allAmount:0,
+          todayCount:0,
+          sevenCount:0,
+          allCount:0,
+          putOnSaleGoods:0,
+          processingCount:0
         }
       }
     },
@@ -168,13 +164,18 @@
       CountTo
     },
     created(){
-      this.getData()
+      this.initData()
     },
     methods:{
-      getData(){
+      initData(){
         const shopId = this.$route.query.id
         detailShop(shopId).then(response => {
           this.shop = response.data.data
+        })
+
+        //统计情况
+        shopOverview(shopId).then(response => {
+          this.summary = response.data.data
         })
         // 店长
         getShopkeeper(shopId).then(res=> {
@@ -194,7 +195,7 @@
         })
       },
       shopDetail(){
-        this.$router.push({path: '/shop/edit', query: {shopId: this.$route.query.id}})
+        this.$router.push({path: '/shop/edit', query: {id: this.$route.query.id}})
       },
       goodsDetail(){
         this.$router.push({path: '/goods/list', query: {shopId: this.$route.query.id}})

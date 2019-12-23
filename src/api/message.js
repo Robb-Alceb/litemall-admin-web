@@ -1,12 +1,14 @@
 import request from '@/utils/request'
 
+
 export function listMessage(query) {
   return request({
-    url: '/message/list',
+    url: '/message/queryMessageList',
     method: 'get',
     params: query
   })
 }
+
 
 export function createMessage(data) {
   return request({
@@ -16,4 +18,10 @@ export function createMessage(data) {
   })
 }
 
-
+export function deleteMessage(id) {
+  return request({
+    url: '/message/create',
+    method: 'delete',
+    params: {id}
+  })
+}
