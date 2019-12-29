@@ -156,9 +156,9 @@
         <el-form-item label="购买时赠送积分" prop="giveAwayPoints">
           <el-input v-model.number="goods.giveAwayPoints"/>
         </el-form-item>
-        <el-form-item label="商品上架" prop="isOnSale">
+<!--        <el-form-item label="商品上架" prop="isOnSale">
           <el-switch v-model="goods.isOnSale" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="商品标签">
           <el-checkbox :value="true" v-model="goods.isNew">新品</el-checkbox>
           <el-checkbox :value="true" v-model="goods.isHot">推荐</el-checkbox>
