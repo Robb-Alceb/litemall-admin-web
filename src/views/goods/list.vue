@@ -157,6 +157,96 @@
           </el-col>
         </el-row>
       </el-form>
+      <el-card class="el-card">
+        <div slot="header" class="clearfix">
+          <span>优惠价格</span>
+          <el-button v-permission="['PUT /admin/goods/updateDiscountPrice']" style="float: right;" type="primary" @click="handleUpdateDiscountPrice">更新优惠价格</el-button>
+        </div>
+        <el-tabs :value="priceForm.priceType" @tab-click="handleTabSwitch" tab-position="top">
+          <el-tab-pane label="会员价格" name="1">
+            <el-form ref="vipPriceForm" :rules="rules" :model="priceForm.vipPriceForm" label-width="150px">
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="白银会员" prop="silverVipPrice">
+                    <el-input v-model="priceForm.vipPriceForm.silverVipPrice">
+                      <template slot="append">元</template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="黄金会员" prop="goldVipPrice">
+                    <el-input v-model="priceForm.vipPriceForm.goldVipPrice">
+                      <template slot="append">元</template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="白金会员" prop="platinumVipPrice">
+                    <el-input v-model="priceForm.vipPriceForm.platinumVipPrice">
+                      <template slot="append">元</template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="钻石会员" prop="diamondVipPrice">
+                    <el-input v-model="priceForm.vipPriceForm.diamondVipPrice">
+                      <template slot="append">元</template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form>
+          </el-tab-pane>
+          <el-tab-pane label="阶梯价格" name="2">
+            <el-table :data="priceForm.stepPriceForms" border fit highlight-current-row>
+              <el-table-column align="center" label="数量" prop="number">
+                <template slot-scope="scope">
+                  <el-input v-model="priceForm.stepPriceForms[scope.$index].number"/>
+                </template>
+              </el-table-column>
+              <el-table-column align="center" label="价格" prop="price">
+                <template slot-scope="scope">
+                  <el-input v-model="priceForm.stepPriceForms[scope.$index].price">
+                    <template slot="append">元</template>
+                  </el-input>
+                </template>
+              </el-table-column>
+              <el-table-column align="center" label="操作">
+                <template slot-scope="scope">
+                  <el-button type="primary" size="mini" @click="handleStepAdd(scope.row)">增加</el-button>
+                  <el-button type="danger" size="mini" @click="handleStepDelete(scope)">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+          <el-tab-pane label="满减价格"  name="3" >
+            <el-table :data="priceForm.moneyOfPriceForms" border fit highlight-current-row>
+              <el-table-column align="center" label="满" prop="minusPrice">
+                <template slot-scope="scope">
+                  <el-input v-model="priceForm.moneyOfPriceForms[scope.$index].minusPrice">
+                    <template slot="append">元</template>
+                  </el-input>
+                </template>
+              </el-table-column>
+              <el-table-column align="center" label="立减" prop="maxPrice">
+                <template slot-scope="scope">
+                  <el-input v-model="priceForm.moneyOfPriceForms[scope.$index].maxPrice">
+                    <template slot="append">元</template>
+                  </el-input>
+                </template>
+              </el-table-column>
+              <el-table-column align="center" label="操作">
+                <template slot-scope="scope">
+                  <el-button type="primary" size="mini" @click="handleMoneyOfAdd(scope.row)">增加</el-button>
+                  <el-button type="danger" size="mini" @click="handleMoneyOfDelete(scope)">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+        </el-tabs>
+      </el-card>
       <div slot="footer" class="dialog-footer">
         <el-button @click="clearPriceForm">取消</el-button>
       </div>
@@ -199,7 +289,7 @@
 </style>
 
 <script>
-import { listGoods, deleteGoods, approveGoods, rejectGoods, pushGoods, newProductGoods, recommendGoods, updatePriceGoods, updateSpecPriceGoods, getAllPriceGoods, updateStoreGoods } from '@/api/goods'
+import { listGoods, deleteGoods, approveGoods, rejectGoods, pushGoods, newProductGoods, recommendGoods, updatePriceGoods, updateSpecPriceGoods, getAllPriceGoods, updateStoreGoods, updateGoodsDiscountPrice } from '@/api/goods'
 import BackToTop from '@/components/BackToTop'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { allForPerm } from '@/api/shop'
@@ -221,6 +311,14 @@ export default {
   },
   data() {
     return {
+      rules: {
+        goodsSn: [
+          { required: true, message: '商品编号不能为空', trigger: 'blur' }
+        ],
+        name: [{ required: true, message: '商品名称不能为空', trigger: 'blur' }]
+      },
+
+
       list: [],
       total: 0,
       listLoading: true,
@@ -250,7 +348,11 @@ export default {
         id: undefined,
         goodsName: undefined,
         goodsSellPrice: undefined,
-        specifications: []
+        priceType: '1',
+        specifications: [],
+        vipPriceForm:{},
+        stepPriceForms:[{}],
+        moneyOfPriceForms:[{}],
       },
       storeDialogVisiable: false,
       storeForm: {
@@ -484,12 +586,24 @@ export default {
         shopId: row.shopId
       }
       getAllPriceGoods(param).then(response=>{
-        this.priceForm = response.data.data
+        console.log(response.data.data)
+        this.priceForm.id = response.data.data.id
+        this.priceForm.goodsSn = response.data.data.goodsSn
+        this.priceForm.goodsName = response.data.data.goodsName
+        this.priceForm.goodsSellPrice = response.data.data.goodsSellPrice
+        this.priceForm.priceType = response.data.data.priceType+""
+        this.priceForm.specifications = response.data.data.specifications
+        this.priceForm.vipGoodsPrice = response.data.data.vipGoodsPrice || {}
+        this.priceForm.moneyOfPriceForms = response.data.data.maxMinusPrices || [{}]
+        this.priceForm.stepPriceForms = response.data.data.ladderPrices || [{}]
         this.priceDialogVisiable = true
       })
     },
     clearPriceForm(){
       this.priceDialogVisiable = false
+      this.priceForm.vipGoodsPrice = {}
+      this.priceForm.moneyOfPriceForms = [{}]
+      this.priceForm.stepPriceForms = [{}]
 /*      this.priceForm = {
         id: undefined,
         goodsName: undefined,
@@ -517,6 +631,84 @@ export default {
       this.storeForm.number = row.number
       this.storeForm.goodsName = row.name
       this.storeDialogVisiable = true
+    },
+
+    handleTabSwitch: function(tab){
+      if(tab.name == 1){
+        this.priceForm.priceType = '1'
+        // this.priceForm.moneyOfPriceForms = [{}]
+        // this.priceForm.stepPriceForms = [{}]
+      }else if(tab.name == 2){
+        this.priceForm.priceType = '2'
+        // this.priceForm.vipPriceForm = {}
+        // this.priceForm.moneyOfPriceForms = [{}]
+      }else{
+        this.priceForm.priceType = '3'
+        // this.priceForm.vipPriceForm = {}
+        // this.priceForm.stepPriceForms = [{}]
+      }
+    },
+    handleStepAdd(row){
+      this.priceForm.stepPriceForms.push({
+        number:undefined,
+        price:undefined
+      })
+    },
+    handleStepDelete(scope){
+      if(this.priceForm.stepPriceForms.length > 1){
+        this.priceForm.stepPriceForms.splice(scope.$index,1)
+      }else{
+        this.priceForm.stepPriceForms[0] = {
+          number:undefined,
+          price:undefined
+        }
+      }
+    },
+    handleMoneyOfAdd(row){
+      this.priceForm.moneyOfPriceForms.push({
+        maxPrice:undefined,
+        minusPrice:undefined
+      })
+    },
+    handleMoneyOfDelete(scope){
+      if(this.priceForm.moneyOfPriceForms.length > 1){
+        this.priceForm.moneyOfPriceForms.splice(scope.$index,1)
+      }else{
+        this.priceForm.moneyOfPriceForms[0] = {
+          maxPrice:undefined,
+          minusPrice:undefined
+        }
+      }
+    },
+    handleUpdateDiscountPrice(){
+      let goodsAllinone = {
+        goods: {
+          id: this.priceForm.id,
+          priceType: this.priceForm.priceType
+        }
+      }
+      if(this.priceForm.priceType == 1){
+        goodsAllinone.vipPrice = this.priceForm.vipPriceForm
+      }
+      if(this.priceForm.priceType == 2){
+        goodsAllinone.ladderPrices = this.priceForm.stepPriceForms
+      }
+      if(this.priceForm.priceType == 3){
+        this.maxMinusPrices = this.priceForm.moneyOfPriceForms
+      }
+      updateGoodsDiscountPrice(goodsAllinone).then(res=>{
+        this.$notify.success({
+          title: '成功',
+          message: '修改成功'
+        })
+        this.storeDialogVisiable = false
+        this.getList()
+      }).catch(response => {
+        this.$notify.error({
+          title: '失败',
+          message: response.data.errmsg
+        })
+      })
     }
   }
 }

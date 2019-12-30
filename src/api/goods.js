@@ -128,3 +128,11 @@ export function updateStoreGoods(data) {
     data
   })
 }
+
+export function updateGoodsDiscountPrice(data) {
+  return request({
+    url: '/goods/updateDiscountPrice',
+    method: 'put',
+    data
+  })
+}
