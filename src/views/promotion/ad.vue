@@ -7,7 +7,7 @@
       <el-input v-model="listQuery.content" clearable class="filter-item" style="width: 200px;" placeholder="请输入广告内容"/>
       <el-button v-permission="['GET /admin/ad/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button v-permission="['POST /admin/ad/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
+<!--      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>-->
     </div>
 
     <!-- 查询结果 -->
@@ -189,11 +189,14 @@ export default {
   },
   filters: {
     shopNameFilter(data){
-      return data.shops.find(shop=>{
+      let shop = data.shops.find(shop=>{
         if(shop.id == data.shopId){
           return shop.name
         }
-      }).name
+      })
+      if(shop){
+        return shop.name;
+      }
     }
   },
   computed: {
