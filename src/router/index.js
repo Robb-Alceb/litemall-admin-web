@@ -436,6 +436,17 @@ export const asyncRouterMap = [
           title: '搜索历史',
           noCache: true
         }
+      },
+      {
+        path: 'overview',
+        component: () => import('@/views/user/overview'),
+        name: 'userOverview',
+        meta: {
+          perms: ['GET /admin/user/read'],
+          title: '用户信息',
+          noCache: true
+        },
+        hidden: true
       }
     ]
   },
