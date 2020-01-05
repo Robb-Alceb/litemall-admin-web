@@ -30,11 +30,35 @@
         <el-col :span="4" class="table-cell">{{ coupon.limit }}</el-col>
         <el-col :span="4" class="table-cell">{{ coupon.status | formatStatus }}</el-col>
         <el-col :span="4" class="table-cell">{{ coupon.goodsType | formatGoodsType }}</el-col>
-        <el-col :span="4" class="table-cell">{{ getTimeScope() }}</el-col>
+        <el-col :span="4" class="table-cell" :title="getTimeScope()">{{ getTimeScope() }}</el-col>
         <el-col :span="4" class="table-cell">{{ coupon.code }}</el-col>
         <el-col :span="4" class="table-cell">{{ coupon.total === 0 ? "不限" : coupon.total }}</el-col>
       </el-row>
+      <el-row>
+        <el-col :span="8" class="table-cell-title">使用门槛</el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="8" class="table-cell">
+          <el-tag v-if="!coupon.userLevel || !coupon.userLevel.length">无限制</el-tag>
+          <el-tag v-else v-for="item in coupon.userLevel">{{item | userLeverFilter}}</el-tag>
+        </el-col>
+      </el-row>
     </div>
+    <el-card>
+      <div slot="header" class="clearfix">
+        <span>指定商品列表</span>
+      </div>
+      <!-- 查询结果 -->
+      <el-table v-loading="listGoodsLoading" :data="goodsList" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+        <el-table-column align="center" label="所属门店" prop="shopName">
+        </el-table-column>
+        <el-table-column align="center" label="商品名称" prop="name"/>
+        <el-table-column align="center" label="商品编号" prop="goodsSn"/>
+
+      </el-table>
+
+      <pagination v-show="goodsTotal>0" :total="goodsTotal" :page.sync="listGoodsQuery.page" :limit.sync="listGoodsQuery.limit" @pagination="getGoodsList" />
+    </el-card>
 
     <!-- 查询操作 -->
     <div class="filter-container">
@@ -70,8 +94,9 @@
 </template>
 
 <script>
-import { readCoupon, listCouponUser } from '@/api/coupon'
+import { readCoupon, listCouponUser, listCouponGoods } from '@/api/coupon'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import { allForPerm } from '@/api/shop'
 
 const defaultTypeOptions = [
   {
@@ -147,6 +172,19 @@ export default {
       } else {
         return '已下架'
       }
+    },
+    userLeverFilter(level){
+      if (level === 1) {
+        return '白银会员'
+      } else if (level === 2) {
+        return '黄金会员'
+      } else if (level === 3) {
+        return '铂金会员'
+      } else if (level === 4) {
+        return '钻石会员'
+      } else{
+        return '无限制'
+      }
     }
   },
   data() {
@@ -166,11 +204,30 @@ export default {
         sort: 'add_time',
         order: 'desc'
       },
-      downloadLoading: false
+      goodsList: [],
+      goodsTotal: 0,
+      listGoodsLoading: true,
+      listGoodsQuery: {
+        page: 1,
+        limit: 20,
+        id: 0,
+        sort: 'add_time',
+        order: 'desc'
+      },
+      downloadLoading: false,
+      shops:[],
     }
   },
   created() {
     this.init()
+    if (this.$route.query.id == null) {
+      return
+    }
+    this.listGoodsQuery.id = this.$route.query.id;
+    this.getGoodsList()
+    allForPerm().then(response=>{
+      this.shops = response.data.data.list
+    })
   },
   methods: {
     init: function() {
@@ -197,6 +254,20 @@ export default {
           this.listLoading = false
         })
     },
+    getGoodsList(){
+      this.listGoodsLoading = true
+      listCouponGoods(this.listGoodsQuery)
+        .then(response => {
+          this.goodsList = response.data.data.list
+          this.goodsTotal = response.data.data.total
+          this.listGoodsLoading = false
+        })
+        .catch(() => {
+          this.goodsList = []
+          this.goodsTotal = 0
+          this.listGoodsLoading = false
+        })
+    },
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
@@ -211,7 +282,8 @@ export default {
       }
     },
     getGoodsScope() {
-    }
+    },
+
   }
 }
 </script>

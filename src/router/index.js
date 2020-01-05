@@ -408,6 +408,16 @@ export const asyncRouterMap = [
         }
       },
       {
+        path: 'bill',
+        component: () => import('@/views/user/bill'),
+        name: 'userBill',
+        meta: {
+          perms: ['GET /admin/user/rechargeConsumptionList'],
+          title: '账户明细',
+          noCache: true
+        }
+      },
+      {
         path: 'collect',
         component: () => import('@/views/user/collect'),
         name: 'collect',

@@ -32,7 +32,7 @@
           </el-col>
         </el-form-item>
         <el-form-item label="所属门店" prop="shop">
-          <el-select v-model="admin.shopId">
+          <el-select v-model="admin.shopId" clearable>
             <el-option v-for="item in shops" :value="item.shopId" :label="item.name"/>
           </el-select>
         </el-form-item>

@@ -16,7 +16,7 @@
       <el-table-column align="center" label="门店">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.type == 0">所有门店</el-tag>
-          <el-tag v-else>{{{shopId:scope.row.shopId,shops} | shopNameFilter}}</el-tag>
+          <el-tag v-else v-for="item in scope.row.shopIds">{{{shopId:item,shops} | shopNameFilter}}</el-tag>
         </template>
       </el-table-column>
 
@@ -53,11 +53,11 @@
     <!-- 添加或修改对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="门店" prop="shopId">
-          <el-select v-if="!store.state.user.shop" v-model="dataForm.shopId" clearable @change="handleAdTypeChange" placeholder="所有门店">
+        <el-form-item label="门店" prop="shopIds">
+          <el-select v-if="!store.state.user.shop" v-model="dataForm.shopIds" multiple clearable @change="handleAdTypeChange" placeholder="所有门店">
             <el-option v-for="item in shops" :value="item.id" :label="item.name"></el-option>
           </el-select>
-          <el-select v-else v-model="dataForm.shopId" @change="handleAdTypeChange">
+          <el-select v-else v-model="dataForm.shopIds" @change="handleAdTypeChange">
             <el-option v-for="item in shops" :value="item.id" :label="item.name"></el-option>
           </el-select>
         </el-form-item>
@@ -66,6 +66,15 @@
         </el-form-item>
         <el-form-item label="广告内容" prop="content">
           <el-input v-model="dataForm.content"/>
+        </el-form-item>
+        <el-form-item>
+          <el-col :span="11">
+            <el-date-picker v-model="dataForm.startTime" type="datetime" placeholder="开始时间" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%;"/>
+          </el-col>
+          <el-col :span="2" class="line">至</el-col>
+          <el-col :span="11">
+            <el-date-picker v-model="dataForm.endTime" type="datetime" placeholder="结束时间" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%;"/>
+          </el-col>
         </el-form-item>
         <el-form-item label="广告图片" prop="url">
           <el-upload
@@ -160,7 +169,7 @@ export default {
       },
       dataForm: {
         id: undefined,
-        shopId: undefined,
+        shopIds: undefined,
         name: undefined,
         content: undefined,
         url: undefined,
@@ -372,11 +381,9 @@ export default {
       })
     },
     handleAdTypeChange(){
-      if(this.dataForm.shopId){
+      if(this.dataForm.shopIds && this.dataForm.shopIds.length > 0){
         this.dataForm.type = 1
       }else{
-        this.dataForm.shopId = null
-        this.dataForm.shopName = null
         this.dataForm.type = 0
       }
     },

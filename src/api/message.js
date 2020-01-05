@@ -20,7 +20,7 @@ export function createMessage(data) {
 
 export function deleteMessage(id) {
   return request({
-    url: '/message/create',
+    url: '/message/delete',
     method: 'delete',
     params: {id}
   })

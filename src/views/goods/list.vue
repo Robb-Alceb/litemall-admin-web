@@ -16,7 +16,11 @@
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
 
-      <el-table-column align="center" label="门店" prop="shopName"/>
+      <el-table-column align="center" label="门店" prop="shopName">
+        <template slot-scope="scope">
+          {{getShopName(scope.row.shopId)}}
+        </template>
+      </el-table-column>
 
       <el-table-column align="center" label="商品编号" prop="goodsSn"/>
 
@@ -507,6 +511,18 @@ export default {
         row.isOnSale = false
       })
     },
+    getShopName(shopId){
+      if(this.shops){
+        let shop =  this.shops.find(shop=>{
+          if(shop.id == shopId){
+            return true
+          }
+        })
+        if(shop){
+          return shop.name
+        }
+      }
+    },
     handleNewProduce(row){
       const goodsDto = {
         isNew: row.isNew,
@@ -593,7 +609,7 @@ export default {
         this.priceForm.goodsSellPrice = response.data.data.goodsSellPrice
         this.priceForm.priceType = response.data.data.priceType+""
         this.priceForm.specifications = response.data.data.specifications
-        this.priceForm.vipGoodsPrice = response.data.data.vipGoodsPrice || {}
+        this.priceForm.vipGoodsPrice = response.data.data.vipGoodsPrice
         this.priceForm.moneyOfPriceForms = response.data.data.maxMinusPrices || [{}]
         this.priceForm.stepPriceForms = response.data.data.ladderPrices || [{}]
         this.priceDialogVisiable = true

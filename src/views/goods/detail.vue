@@ -297,7 +297,7 @@
 
     <div class="op-container">
       <el-button @click="handleCancel">取消</el-button>
-      <el-button type="primary" @click="handleEdit">更新商品</el-button>
+      <el-button v-permission="['POST /admin/goods/update']"  type="primary" @click="handleEdit">更新商品</el-button>
     </div>
   </div>
 </template>

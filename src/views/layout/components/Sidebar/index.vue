@@ -10,9 +10,9 @@
       active-text-color="#409EFF"
     >
       <sidebar-item v-for="route in permission_routers" :key="route.path" :item="route" :base-path="route.path"/>
-      <div v-show="!isCollapse" align="center" style="width: 80%;position:absolute;bottom:20px;padding-left:10px;">
+<!--      <div v-show="!isCollapse" align="center" style="width: 80%;position:absolute;bottom:20px;padding-left:10px;">
         <a href="http://www.yliyun.com" target="_blank"style="font-size:12px;color: rgb(48, 80, 86);">由深圳一粒云科技有限公司提供技术支持</a>
-      </div>
+      </div>-->
     </el-menu>
 
   </el-scrollbar>

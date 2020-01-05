@@ -67,7 +67,7 @@
 
     <!-- 添加或修改对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
+      <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-position="left" label-width="100px" style="width: 600px; margin-left:50px;">
         <el-form-item label="优惠券名称" prop="name">
           <el-input v-model="dataForm.name"/>
         </el-form-item>
@@ -76,6 +76,15 @@
         </el-form-item>
         <el-form-item label="标签" prop="tag">
           <el-input v-model="dataForm.tag"/>
+        </el-form-item>
+        <el-form-item label="使用门槛" prop="userLevel" >
+          <el-checkbox-group v-model="dataForm.userLevel" @change="nolimit()">
+            <el-checkbox :label="0" >无限制</el-checkbox>
+            <el-checkbox :label="1" >白银会员</el-checkbox>
+            <el-checkbox :label="2" >黄金会员</el-checkbox>
+            <el-checkbox :label="3" >铂金会员</el-checkbox>
+            <el-checkbox :label="4" >钻石会员</el-checkbox>
+          </el-checkbox-group>
         </el-form-item>
         <el-form-item label="最低消费" prop="min">
           <el-input v-model="dataForm.min">
@@ -129,15 +138,24 @@
         <el-form-item label="商品限制范围">
           <el-radio-group v-model="dataForm.goodsType">
             <el-radio-button :label="0">全场通用</el-radio-button>
-<!--            <el-radio-button :label="1">指定分类</el-radio-button>
-            <el-radio-button :label="2">指定商品</el-radio-button>-->
+<!--            <el-radio-button :label="1">指定分类</el-radio-button>-->
+            <el-radio-button :label="2">指定商品</el-radio-button>
           </el-radio-group>
         </el-form-item>
         <el-form-item v-show="dataForm.goodsType === 1">
           目前不支持
         </el-form-item>
         <el-form-item v-show="dataForm.goodsType === 2">
-          目前不支持
+          <template>
+            <el-transfer
+              filterable
+              :titles="['商品', '已选择']"
+              :filter-method="filterGoodsMethod"
+              filter-placeholder="请输入商品名"
+              v-model="dataForm.goodsValue"
+              :data="goodsList">
+            </el-transfer>
+          </template>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -179,6 +197,7 @@
 <script>
 import { listCoupon, createCoupon, updateCoupon, deleteCoupon } from '@/api/coupon'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import { listGoods } from '@/api/goods'
 
 const defaultTypeOptions = [
   {
@@ -189,10 +208,10 @@ const defaultTypeOptions = [
     label: '注册赠券',
     value: 1
   },
-  {
+/*  {
     label: '兑换码',
     value: 2
-  }
+  }*/
 ]
 
 const defaultStatusOptions = [
@@ -257,6 +276,13 @@ export default {
         sort: 'add_time',
         order: 'desc'
       },
+      goodsList: [],
+      listGoodsQuery: {
+        page: 1,
+        limit: 10000,
+        sort: 'add_time',
+        order: 'desc'
+      },
       dataForm: {
         id: undefined,
         name: undefined,
@@ -273,7 +299,8 @@ export default {
         timeType: 0,
         days: 0,
         startTime: null,
-        endTime: null
+        endTime: null,
+        userLevel: []
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -291,8 +318,23 @@ export default {
   },
   created() {
     this.getList()
+    this.getGoods()
   },
   methods: {
+    getGoods() {
+      this.listLoading = true
+      listGoods(this.listGoodsQuery).then(response => {
+        console.log(response.data.data.list)
+        this.goodsList = response.data.data.list.map(goods=>{
+          return {
+            label: goods.name,
+            key: goods.id
+          }
+        })
+      }).catch(() => {
+        this.list = []
+      })
+    },
     getList() {
       this.listLoading = true
       listCoupon(this.listQuery)
@@ -328,7 +370,8 @@ export default {
         timeType: 0,
         days: 0,
         startTime: null,
-        endTime: null
+        endTime: null,
+        userLevel: []
       }
     },
     handleCreate() {
@@ -420,6 +463,14 @@ export default {
     },
     handleDetail(row) {
       this.$router.push({ path: '/promotion/couponDetail', query: { id: row.id }})
+    },
+    filterGoodsMethod(query, item){
+      return item.label.indexOf(query) > -1
+    },
+    nolimit(){
+      if(this.dataForm.userLevel && this.dataForm.userLevel.indexOf(0) > -1){
+        this.dataForm.userLevel = [0]
+      }
     },
     handleDownload() {
       this.downloadLoading = true

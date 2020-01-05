@@ -118,14 +118,12 @@
           <el-col :span="6" class="table-cell">{{ orderDetail.order.integralPrice }}</el-col>
         </el-row>
         <el-row>
-          <el-col :span="6" class="table-cell-title">活动优惠</el-col>
-          <el-col :span="6" class="table-cell-title">折扣金额</el-col>
+          <el-col :span="6" class="table-cell-title">税费</el-col>
           <el-col :span="6" class="table-cell-title">订单总金额</el-col>
           <el-col :span="6" class="table-cell-title">应付款金额</el-col>
         </el-row>
         <el-row>
-          <el-col :span="6" class="table-cell">0</el-col>
-          <el-col :span="6" class="table-cell">0</el-col>
+          <el-col :span="6" class="table-cell">{{ orderDetail.order.taxPrice }}</el-col>
           <el-col :span="6" class="table-cell">{{ orderDetail.order.actualPrice }}</el-col>
           <el-col :span="6" class="table-cell">{{ orderDetail.order.actualPrice }}</el-col>
         </el-row>

@@ -28,13 +28,13 @@
           </el-col>
         </el-row>
         <el-form-item label="门店经理" prop="shopManager">
-          <el-select  v-model="shopManager.id"  placeholder="从成员列表中设置账号为门店店长">
+          <el-select  v-model="shopManager.id"  placeholder="从成员列表中设置账号为门店店长" clearable>
             <el-option v-for="item in shopMembers" :value="item.id" :label="item.nickName"/>
           </el-select>
         </el-form-item>
         <el-form-item label="门店店长" prop="shopkeeper">
-          <el-select  v-model="shopkeeper.id">
-            <el-option v-for="item in shopMembers" :value="item.id" :label="item.nickName"/>
+          <el-select  v-model="shopkeeper.id" clearable>
+            <el-option v-for="item in shopMembers" :value="item.id" :label="item.nickName" />
           </el-select>
         </el-form-item>
         <el-form-item label="联系电话" prop="mobile">

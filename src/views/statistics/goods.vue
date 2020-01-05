@@ -92,6 +92,7 @@ import {goodsStatistics, goodsSalesStatistics} from '@/api/statistics'
 import { allForPerm } from '@/api/shop'
 import { formatDate } from '@/utils/date'
 
+
 export default {
   name: 'GoodsStatistics',
   components: { VePie },
@@ -121,7 +122,7 @@ export default {
       },
       shops:[],
       dateRange: [startDate, endDate],
-      saleDateRange: [startDate, startDate],
+      saleDateRange: [startDate, endDate],
       activeTable: '1',
       pickerOptions: {
         shortcuts: [{
@@ -195,10 +196,19 @@ export default {
         if(response.data.data){
           if(response.data.data.orderGoods){
             response.data.data.orderGoods.forEach(goods=>{
-              this.goodsData.rows.push({
-                goods:goods.goodsName,
-                count:goods.number
+              let exist = this.goodsData.rows.find(goods=>{
+                if(goods.goods == goods.goodsName){
+                  return goods;
+                }
               })
+              if(exist){
+                exist.count = exist.count + goods.number;
+              }else{
+                this.goodsData.rows.push({
+                  goods:goods.goodsName,
+                  count:goods.number
+                })
+              }
             })
           }
           if(response.data.data.categorys){
@@ -228,7 +238,33 @@ export default {
         if(!response.data.data){
           this.list = []
         }else{
-          this.list = response.data.data.list
+          let cpMap = {};
+          response.data.data.list.forEach(data=>{
+            //商品
+            if(data.goodsName){
+              if(cpMap[data.goodsName]){
+                let tmp = cpMap[data.goodsName];
+                tmp.browseUserNum += data.browseUserNum
+                tmp.browseNum += data.browseNum
+                tmp.payUserNum += data.payUserNum
+              }else{
+                cpMap[data.goodsName] = data
+              }
+            //类目
+            }else if(data.categoryName){
+              if(cpMap[data.categoryName]){
+                let tmp = cpMap[data.categoryName];
+                tmp.browseUserNum += data.browseUserNum
+                tmp.browseNum += data.browseNum
+                tmp.payUserNum += data.payUserNum
+              }else{
+                cpMap[data.categoryName] = data
+              }
+            }
+          })
+          for(let item in cpMap){
+            this.list.push(cpMap[item])
+          }
         }
       })
     },

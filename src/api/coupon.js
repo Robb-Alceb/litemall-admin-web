@@ -47,3 +47,11 @@ export function listCouponUser(query) {
     params: query
   })
 }
+
+export function listCouponGoods(query) {
+  return request({
+    url: '/coupon/goodsList',
+    method: 'get',
+    params: query
+  })
+}

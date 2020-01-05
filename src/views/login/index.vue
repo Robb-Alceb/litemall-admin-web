@@ -22,6 +22,9 @@
       </el-form-item>
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
+      <div style="position:relative;margin-top: 50px;" align="center">
+        <a href="http://www.yliyun.com" target="_blank"style="color: white;">由深圳一粒云科技有限公司提供技术支持</a>
+      </div>
 
 <!--      <div style="position:relative">
         <div class="tips">

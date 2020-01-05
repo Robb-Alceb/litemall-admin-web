@@ -57,3 +57,28 @@ export function userOption(query) {
   })
 }
 
+
+export function userBill(query) {
+  return request({
+    url: '/user/rechargeConsumptionList',
+    method: 'get',
+    params: query
+  })
+}
+
+export function userInfo(userId) {
+  return request({
+    url: '/user/info',
+    method: 'get',
+    params: {userId}
+  })
+}
+
+
+export function couponCount(userId) {
+  return request({
+    url: '/user/queryUserCoupon',
+    method: 'get',
+    params: {userId}
+  })
+}

@@ -243,6 +243,9 @@ export default {
     }
   },
   created() {
+    if(this.$route.query && this.$route.query.id){
+      this.listQuery.id = this.$route.query.id
+    }
     if(this.$route.query && this.$route.query.shopId){
       this.listQuery.shopId = this.$route.query.shopId
     }
