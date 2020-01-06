@@ -124,7 +124,7 @@ export default {
               title: '成功',
               message: '申请成功'
             })
-            this.$router.push({ path: '/shop/order' })
+            this.$router.push({ path: '/repository/list' })
           })
             .catch(response => {
               MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {

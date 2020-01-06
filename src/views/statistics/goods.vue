@@ -239,6 +239,7 @@ export default {
           this.list = []
         }else{
           let cpMap = {};
+          this.list = [];
           response.data.data.list.forEach(data=>{
             //商品
             if(data.goodsName){
