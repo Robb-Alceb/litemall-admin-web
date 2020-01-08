@@ -6,27 +6,27 @@
       <el-select v-model="listQuery.shopId" clearable>
           <el-option v-for="item in shops" :value="item.id" :label="item.name"></el-option>
       </el-select>
-      <el-input v-model="listQuery.goodsSn" clearable class="filter-item" style="width: 200px;" placeholder="请输入商品编号"/>
-      <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入商品名称"/>
-      <el-button v-permission="['GET /admin/goods/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button v-permission="['POST /admin/goods/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
+      <el-input v-model="listQuery.goodsSn" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Please_enter_merchandise_ID')"/>
+      <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Please_enter_merchandise_name')"/>
+      <el-button v-permission="['GET /admin/goods/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('Search')}}</el-button>
+      <el-button v-permission="['POST /admin/goods/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">{{$t('Add')}}</el-button>
+<!--      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{$t('Find')}}</el-button>-->
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
 
-      <el-table-column align="center" label="门店" prop="shopName">
+      <el-table-column align="center" :label="$t('Store')" prop="shopName">
         <template slot-scope="scope">
           {{getShopName(scope.row.shopId)}}
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="商品编号" prop="goodsSn"/>
+      <el-table-column align="center" :label="$t('Merchandise_code')" prop="goodsSn"/>
 
-      <el-table-column align="center" min-width="100" label="名称" prop="name"/>
+      <el-table-column align="center" min-width="100" :label="$t('Name')" prop="name"/>
 
-      <el-table-column align="center" property="iconUrl" label="图片">
+      <el-table-column align="center" property="iconUrl" :label="$t('Picture')">
         <template slot-scope="scope">
           <img :src="scope.row.picUrl" width="40">
         </template>
@@ -49,56 +49,56 @@
 
       <!--<el-table-column align="center" label="专柜价格" prop="counterPrice"/>-->
 
-      <el-table-column align="center" label="价格" prop="retailPrice"/>
+      <el-table-column align="center" :label="$t('Price')" prop="retailPrice"/>
 
 <!--      <el-table-column align="center" label="货号" prop="goodsNum"/>-->
 
-      <el-table-column align="center" label="标签">
+      <el-table-column align="center" :label="$t('Label')">
         <template slot-scope="scope">
           <el-row>
-            <span>上架:</span>
+            <span>{{$t('Launch')}}:</span>
             <el-switch v-model="scope.row.isOnSale" :disabled="handlePermission(['PUT /admin/goods/push'])" @change="handlePush(scope.row)" :active-value="true" :nactive-value="false" active-color="#13ce66" inactive-color="#ff4949"/>
           </el-row>
           <el-row>
-            <span>新品:</span>
+            <span>{{$t('New_product')}}:</span>
             <el-switch v-model="scope.row.isNew" :disabled="handlePermission(['PUT /admin/goods/newProduce'])" @change="handleNewProduce(scope.row)"  :active-value="true" :nactive-value="false" active-color="#13ce66" inactive-color="#ff4949"/>
           </el-row>
           <el-row>
-            <span>推荐:</span>
+            <span>{{$t('Recommendation')}}:</span>
             <el-switch v-model="scope.row.isHot" :disabled="handlePermission(['PUT /admin/goods/recommend'])" @change="handleRecommend(scope.row)"  :active-value="true" :nactive-value="false" active-color="#13ce66" inactive-color="#ff4949"/>
           </el-row>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="上架时间" prop="updateTime">
+      <el-table-column align="center" :label="$t('Launch_time')" prop="updateTime">
         <template slot-scope="scope">
           <span v-show="scope.row.isOnSale">{{scope.row.updateTime}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="库存" prop="number"/>
+      <el-table-column align="center" :label="$t('Stock')" prop="number"/>
 
-      <el-table-column align="center" label="销量" prop="sales"/>
+      <el-table-column align="center" :label="$t('Sales')" prop="sales"/>
 
-      <el-table-column align="center" label="审核状态" prop="reviewType">
+      <el-table-column align="center" :label="$t('Review_Status')" prop="reviewType">
         <template slot-scope="scope">
           {{ scope.row.reviewType | reviewFilter }}
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+      <el-table-column align="center" :label="$t('Operate')" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-row>
             <el-button v-permission="['POST /admin/goods/approve', 'POST /admin/goods/reject']" type="primary" size="mini" :disabled="isShowReview(scope.row.reviewType)" @click="handleReview(scope.row)">审核</el-button>
-            <el-button v-permission="['GET /admin/goods/queryGoodsLogList']" type="primary" size="mini" @click="handleLog(scope.row)">日志</el-button>
+            <el-button v-permission="['GET /admin/goods/queryGoodsLogList']" type="primary" size="mini" @click="handleLog(scope.row)">{{$t('Journal')}}</el-button>
           </el-row>
           <el-row style="margin-top: 5px;">
-            <el-button v-permission="['POST /admin/goods/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">详情</el-button>
-            <el-button v-permission="['POST /admin/goods/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button v-permission="['POST /admin/goods/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('Details')}}</el-button>
+            <el-button v-permission="['POST /admin/goods/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">{{$t('Delete')}}</el-button>
           </el-row>
           <el-row style="margin-top: 5px;">
-            <el-button v-permission="['GET /admin/goods/allPrice']" type="info" size="mini" @click="getPriceDetail(scope.row)">价格</el-button>
-            <el-button v-permission="['GET /admin/goods/allPrice']" type="info" size="mini" @click="getStoreDetail(scope.row)">库存</el-button>
+            <el-button v-permission="['GET /admin/goods/allPrice']" type="info" size="mini" @click="getPriceDetail(scope.row)">{{$t('Price')}}</el-button>
+            <el-button v-permission="['GET /admin/goods/allPrice']" type="info" size="mini" @click="getStoreDetail(scope.row)">{{$t('Stock')}}</el-button>
           </el-row>
 
         </template>
@@ -107,57 +107,57 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
-    <el-tooltip placement="top" content="返回顶部">
+    <el-tooltip placement="top" :content="$t('Back_to_top')">
       <back-to-top :visibility-height="100" />
     </el-tooltip>
 
-    <el-dialog :visible.sync="reviewDialogVisiable" title="商品审核">
+    <el-dialog :visible.sync="reviewDialogVisiable" :title="$t('Merchandise_Review')">
       <el-form ref="reviewForm" :model="reviewForm" status-icon label-position="left" label-width="100px">
-        <el-form-item label="商品名称" prop="goodsName">
+        <el-form-item :label="$t('Merchandise_name')" prop="goodsName">
           <el-input v-model="reviewForm.goodsName" :disabled="true"></el-input>
         </el-form-item>
-        <el-form-item label="备注信息" prop="content">
+        <el-form-item :label="$t('Notes_info')" prop="content">
           <el-input type="textarea" v-model="reviewForm.content"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="reviewDialogVisiable = false">取消</el-button>
-        <el-button v-permission="['POST /admin/goods/approve']" @click="reviewHandleReject()" type="danger">不通过</el-button>
-        <el-button v-permission="['POST /admin/goods/reject']" @click="reviewHandlePass()" type="primary">通过</el-button>
+        <el-button @click="reviewDialogVisiable = false">{{$t('Cancel')}}</el-button>
+        <el-button v-permission="['POST /admin/goods/approve']" @click="reviewHandleReject()" type="danger">{{$t('Not_passed')}}</el-button>
+        <el-button v-permission="['POST /admin/goods/reject']" @click="reviewHandlePass()" type="primary">{{$t('Passed')}}</el-button>
       </div>
     </el-dialog>
 
 
-    <el-dialog :visible.sync="priceDialogVisiable" title="商品价格">
+    <el-dialog :visible.sync="priceDialogVisiable" :title="$t('Merchandise_Price')">
       <el-form ref="priceForm" :model="priceForm" status-icon label-position="left" label-width="100px">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="商品名称" prop="goodsName">
+            <el-form-item :label="$t('Merchandise_name')" prop="goodsName">
               <el-col>{{priceForm.goodsName}}</el-col>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="商品价格" prop="goodsSellPrice">
+            <el-form-item :label="$t('Merchandise_Price')" prop="goodsSellPrice">
               <el-input v-model="priceForm.goodsSellPrice"/>
             </el-form-item>
           </el-col>
           <el-col :span="8" align="center">
-              <el-button v-permission="['PUT /admin/goods/updatePrice']" type="primary" size="mini" @click="handleUpdatePrice">更新</el-button>
+              <el-button v-permission="['PUT /admin/goods/updatePrice']" type="primary" size="mini" @click="handleUpdatePrice">{{$t('Renew')}}</el-button>
           </el-col>
         </el-row>
         <el-row  v-for="item in priceForm.specifications">
           <el-col :span="8">
-            <el-form-item label="商品规格" prop="value">
+            <el-form-item :label="$t('Goods_specifications')" prop="value">
               <el-col>{{item.value}}</el-col>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="规格额外价格" prop="price">
+            <el-form-item :label="$t('Cost_outside_of_specification')" prop="price">
               <el-input v-model="item.price"/>
             </el-form-item>
           </el-col>
           <el-col :span="8" align="center">
-            <el-button v-permission="['PUT /admin/goods/updateSpecPrice']" type="primary" size="mini" @click="handleUpdateSpecPrice(item)">更新</el-button>
+            <el-button v-permission="['PUT /admin/goods/updateSpecPrice']" type="primary" size="mini" @click="handleUpdateSpecPrice(item)">{{$t('Renew')}}</el-button>
           </el-col>
         </el-row>
       </el-form>
@@ -167,84 +167,84 @@
           <el-button v-permission="['PUT /admin/goods/updateDiscountPrice']" style="float: right;" type="primary" @click="handleUpdateDiscountPrice">更新优惠价格</el-button>
         </div>
         <el-tabs :value="priceForm.priceType" @tab-click="handleTabSwitch" tab-position="top">
-          <el-tab-pane label="会员价格" name="1">
+          <el-tab-pane :label="$t('Member_costs')" name="1">
             <el-form ref="vipPriceForm" :rules="rules" :model="priceForm.vipPriceForm" label-width="150px">
               <el-row>
                 <el-col :span="12">
-                  <el-form-item label="白银会员" prop="silverVipPrice">
+                  <el-form-item :label="$t('Silver_Membership')" prop="silverVipPrice">
                     <el-input v-model="priceForm.vipPriceForm.silverVipPrice">
-                      <template slot="append">元</template>
+                      <template slot="append">{{$t('Dollars')}}</template>
                     </el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="黄金会员" prop="goldVipPrice">
+                  <el-form-item :label="$t('Silver_Membership')" prop="goldVipPrice">
                     <el-input v-model="priceForm.vipPriceForm.goldVipPrice">
-                      <template slot="append">元</template>
+                      <template slot="append">{{$t('Dollars')}}</template>
                     </el-input>
                   </el-form-item>
                 </el-col>
               </el-row>
               <el-row>
                 <el-col :span="12">
-                  <el-form-item label="白金会员" prop="platinumVipPrice">
+                  <el-form-item :label="$t('Platinum_Membership')" prop="platinumVipPrice">
                     <el-input v-model="priceForm.vipPriceForm.platinumVipPrice">
-                      <template slot="append">元</template>
+                      <template slot="append">{{$t('Dollars')}}</template>
                     </el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="钻石会员" prop="diamondVipPrice">
+                  <el-form-item :label="$t('Diamond_Membership')" prop="diamondVipPrice">
                     <el-input v-model="priceForm.vipPriceForm.diamondVipPrice">
-                      <template slot="append">元</template>
+                      <template slot="append">{{$t('Dollars')}}</template>
                     </el-input>
                   </el-form-item>
                 </el-col>
               </el-row>
             </el-form>
           </el-tab-pane>
-          <el-tab-pane label="阶梯价格" name="2">
+          <el-tab-pane :label="$t('Staircase_pricing')" name="2">
             <el-table :data="priceForm.stepPriceForms" border fit highlight-current-row>
-              <el-table-column align="center" label="数量" prop="number">
+              <el-table-column align="center" :label="$t('Number')" prop="number">
                 <template slot-scope="scope">
                   <el-input v-model="priceForm.stepPriceForms[scope.$index].number"/>
                 </template>
               </el-table-column>
-              <el-table-column align="center" label="价格" prop="price">
+              <el-table-column align="center" :label="$t('Price')" prop="price">
                 <template slot-scope="scope">
                   <el-input v-model="priceForm.stepPriceForms[scope.$index].price">
-                    <template slot="append">元</template>
+                    <template slot="append">{{$t('Dollars')}}</template>
                   </el-input>
                 </template>
               </el-table-column>
-              <el-table-column align="center" label="操作">
+              <el-table-column align="center" :label="$t('Operate')">
                 <template slot-scope="scope">
                   <el-button type="primary" size="mini" @click="handleStepAdd(scope.row)">增加</el-button>
-                  <el-button type="danger" size="mini" @click="handleStepDelete(scope)">删除</el-button>
+                  <el-button type="danger" size="mini" @click="handleStepDelete(scope)">{{$t('Delete')}}</el-button>
                 </template>
               </el-table-column>
             </el-table>
           </el-tab-pane>
-          <el-tab-pane label="满减价格"  name="3" >
+          <el-tab-pane :label="$t('Full_Discount')"  name="3" >
             <el-table :data="priceForm.moneyOfPriceForms" border fit highlight-current-row>
-              <el-table-column align="center" label="满" prop="minusPrice">
+              <el-table-column align="center" :label="$t('Full')" prop="minusPrice">
                 <template slot-scope="scope">
                   <el-input v-model="priceForm.moneyOfPriceForms[scope.$index].minusPrice">
-                    <template slot="append">元</template>
+                    <template slot="append">{{$t('Dollars')}}</template>
                   </el-input>
                 </template>
               </el-table-column>
-              <el-table-column align="center" label="立减" prop="maxPrice">
+              <el-table-column align="center" :label="$t('Immediate_Discount')" prop="maxPrice">
                 <template slot-scope="scope">
                   <el-input v-model="priceForm.moneyOfPriceForms[scope.$index].maxPrice">
-                    <template slot="append">元</template>
+                    <template slot="append">{{$t('Dollars')}}</template>
                   </el-input>
                 </template>
               </el-table-column>
-              <el-table-column align="center" label="操作">
+              <el-table-column align="center" :label="$t('Operate')">
                 <template slot-scope="scope">
                   <el-button type="primary" size="mini" @click="handleMoneyOfAdd(scope.row)">增加</el-button>
-                  <el-button type="danger" size="mini" @click="handleMoneyOfDelete(scope)">删除</el-button>
+                  <el-button type="danger" size="mini" @click="handleMoneyOfDelete(scope)">{{$t('Delete')}}</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -252,23 +252,23 @@
         </el-tabs>
       </el-card>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="clearPriceForm">取消</el-button>
+        <el-button @click="clearPriceForm">{{$t('Cancel')}}</el-button>
       </div>
     </el-dialog>
 
-    <el-dialog :visible.sync="storeDialogVisiable" title="商品库存">
+    <el-dialog :visible.sync="storeDialogVisiable" :title="$t('Merchandise_stock')">
       <el-form ref="priceForm" :model="storeForm" :rules="storeRules" status-icon label-position="left" label-width="100px">
-        <el-form-item label="商品名称" prop="goodsName">
+        <el-form-item :label="$t('Merchandise_name')" prop="goodsName">
           <el-col>{{storeForm.goodsName}}</el-col>
         </el-form-item>
 
-        <el-form-item label="商品库存" prop="number">
+        <el-form-item :label="$t('Merchandise_stock')" prop="number">
           <el-input v-model.number="storeForm.number"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="storeDialogVisiable = false">取消</el-button>
-        <el-button @click="handleUpdateStore" type="primary">确定</el-button>
+        <el-button @click="storeDialogVisiable = false">{{$t('Cancel')}}</el-button>
+        <el-button @click="handleUpdateStore" type="primary">{{$t('Confirm')}}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -303,7 +303,7 @@ import ElColorAlphaSlider from "element-ui/packages/color-picker/src/components/
 const reviewMap = {
   1: '待审核',
   2: '已审核',
-  3: '已拒绝'
+  3: this.$t('Denied')
 }
 export default {
   name: 'GoodsList',
@@ -317,9 +317,9 @@ export default {
     return {
       rules: {
         goodsSn: [
-          { required: true, message: '商品编号不能为空', trigger: 'blur' }
+          { required: true, message: this.$t('Merchandise_ID_must_not_be_empty'), trigger: 'blur' }
         ],
-        name: [{ required: true, message: '商品名称不能为空', trigger: 'blur' }]
+        name: [{ required: true, message: this.$t('Merchandise_name_must_not_be_empty'), trigger: 'blur' }]
       },
 
 
@@ -365,8 +365,8 @@ export default {
       },
       storeRules: {
         number: [
-          { required: true, message: '库存数量不能为空', trigger: 'blur' },
-          { type: 'number', message: '库存数量必须为数字' }
+          { required: true, message: this.$t('Stock_amount_cannot_be_empty'), trigger: 'blur' },
+          { type: 'number', message: this.$t('Stock_amount_must_be_a_number') }
         ]
     }
     }
@@ -410,9 +410,9 @@ export default {
       this.detailDialogVisible = true
     },
     handleDelete(row) {
-      this.$confirm('是否删除?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('Confirm_Delete?'), this.$t('Hint'), {
+        confirmButtonText: this.$t('Confirm'),
+        cancelButtonText: this.$t('Cancel'),
         type: 'warning'
       }).then(() => {
         this.doDelete(row)
@@ -421,14 +421,14 @@ export default {
     doDelete(row){
       deleteGoods(row).then(response => {
         this.$notify.success({
-          title: '成功',
-          message: '删除成功'
+          title: this.$t('Success!'),
+          message: this.$t('Deleted')
         })
         const index = this.list.indexOf(row)
         this.list.splice(index, 1)
       }).catch(response => {
         this.$notify.error({
-          title: '失败',
+          title: this.$t('Failed'),
           message: response.data.errmsg
         })
       })
@@ -455,14 +455,14 @@ export default {
       this.reviewForm.type = 2
       approveGoods(this.reviewForm).then(res=>{
         this.$notify.success({
-          title: '成功',
-          message: '审核成功'
+          title: this.$t('Success!'),
+          message: this.$t('Review_successful_')
         })
         this.getList()
         this.reviewDialogVisiable = false
       }).catch(response => {
         this.$notify.error({
-          title: '失败',
+          title: this.$t('Failed'),
           message: response.data.errmsg
         })
       })
@@ -471,14 +471,14 @@ export default {
       this.reviewForm.type = 3
       rejectGoods(this.reviewForm).then(res=>{
         this.$notify.success({
-          title: '成功',
-          message: '审核成功'
+          title: this.$t('Success!'),
+          message: this.$t('Review_successful_')
         })
         this.getList()
         this.reviewDialogVisiable = false
       }).catch(response => {
         this.$notify.error({
-          title: '失败',
+          title: this.$t('Failed'),
           message: response.data.errmsg
         })
       })
@@ -497,7 +497,7 @@ export default {
       }
       pushGoods(goodsDto).then(res=>{
         this.$notify.success({
-          title: '成功',
+          title: this.$t('Success!'),
           message: '修改成功'
         })
         if(row.isOnSale){
@@ -505,7 +505,7 @@ export default {
         }
       }).catch(response => {
         this.$notify.error({
-          title: '失败',
+          title: this.$t('Failed'),
           message: response.data.errmsg
         })
         row.isOnSale = false
@@ -530,12 +530,12 @@ export default {
       }
       newProductGoods(goodsDto).then(res=>{
         this.$notify.success({
-          title: '成功',
+          title: this.$t('Success!'),
           message: '修改成功'
         })
       }).catch(response => {
         this.$notify.error({
-          title: '失败',
+          title: this.$t('Failed'),
           message: response.data.errmsg
         })
       })
@@ -547,12 +547,12 @@ export default {
       }
       recommendGoods(goodsDto).then(res=>{
         this.$notify.success({
-          title: '成功',
+          title: this.$t('Success!'),
           message: '修改成功'
         })
       }).catch(response => {
         this.$notify.error({
-          title: '失败',
+          title: this.$t('Failed'),
           message: response.data.errmsg
         })
       })
@@ -567,13 +567,13 @@ export default {
       }
       updatePriceGoods(data).then(res=>{
         this.$notify.success({
-          title: '成功',
+          title: this.$t('Success!'),
           message: '修改成功'
         })
         this.getList()
       }).catch(response => {
         this.$notify.error({
-          title: '失败',
+          title: this.$t('Failed'),
           message: response.data.errmsg
         })
       })
@@ -585,13 +585,13 @@ export default {
       }
       updateSpecPriceGoods(data).then(res=>{
         this.$notify.success({
-          title: '成功',
+          title: this.$t('Success!'),
           message: '修改成功'
         })
         this.getList()
       }).catch(response => {
         this.$notify.error({
-          title: '失败',
+          title: this.$t('Failed'),
           message: response.data.errmsg
         })
       })
@@ -630,14 +630,14 @@ export default {
     handleUpdateStore(){
       updateStoreGoods(this.storeForm).then(res=>{
         this.$notify.success({
-          title: '成功',
+          title: this.$t('Success!'),
           message: '修改成功'
         })
         this.storeDialogVisiable = false
         this.getList()
       }).catch(response => {
         this.$notify.error({
-          title: '失败',
+          title: this.$t('Failed'),
           message: response.data.errmsg
         })
       })
@@ -714,14 +714,14 @@ export default {
       }
       updateGoodsDiscountPrice(goodsAllinone).then(res=>{
         this.$notify.success({
-          title: '成功',
+          title: this.$t('Success!'),
           message: '修改成功'
         })
         this.storeDialogVisiable = false
         this.getList()
       }).catch(response => {
         this.$notify.error({
-          title: '失败',
+          title: this.$t('Failed'),
           message: response.data.errmsg
         })
       })

@@ -3,36 +3,36 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.nickname" clearable class="filter-item" style="width: 200px;" placeholder="名称"/>
-      <el-button v-permission="['GET /admin/admin/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button v-permission="['POST /admin/admin/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-<!--      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>-->
+      <el-input v-model="listQuery.nickname" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Name')"/>
+      <el-button v-permission="['GET /admin/admin/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('Search')}}</el-button>
+      <el-button v-permission="['POST /admin/admin/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">{{$t('Add')}}</el-button>
+<!--      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{$t('Find')}}</el-button>-->
     </div>
 
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
 
-      <el-table-column align="center" label="员工名称" prop="nickName"/>
+      <el-table-column align="center" :label="$t('Partner_name')" prop="nickName"/>
 
-      <el-table-column align="center" label="登录账号" prop="username"/>
+      <el-table-column align="center" :label="$t('Account_login')" prop="username"/>
 
-      <el-table-column align="center" label="联系地址" prop="location"/>
+      <el-table-column align="center" :label="$t('Address')" prop="location"/>
 
-      <el-table-column align="center" label="成员角色" prop="roleIds">
+      <el-table-column align="center" :label="$t('Partner_role')" prop="roleIds">
         <template slot-scope="scope">
           <el-tag v-for="roleId in scope.row.roleIds" :key="roleId" type="primary" style="margin-right: 20px;"> {{ formatRole(roleId) }} </el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="添加时间" prop="addTime"/>
+      <el-table-column align="center" :label="$t('Time_added')" prop="addTime"/>
 
-      <el-table-column align="center" label="联系电话" prop="mobile"/>
+      <el-table-column align="center" :label="this.$t('Contact_number')" prop="mobile"/>
 
-      <el-table-column align="center" label="操作" width="300" class-name="small-padding fixed-width">
+      <el-table-column align="center" :label="$t('Operate')" width="300" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('Edit')}}</el-button>
+          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">{{$t('Delete')}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -61,7 +61,7 @@
           </el-upload>
         </el-form-item>
         <el-form-item label="管理员角色" prop="roleIds">
-          <el-select v-model="dataForm.roleIds" multiple placeholder="请选择">
+          <el-select v-model="dataForm.roleIds" multiple :placeholder="this.$t('Please_select')">
             <el-option
               v-for="item in roleOptions"
               :key="item.value"
@@ -71,9 +71,9 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">确定</el-button>
-        <el-button v-else type="primary" @click="updateData">确定</el-button>
+        <el-button @click="dialogFormVisible = false">{{$t('Cancel')}}</el-button>
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">{{$t('Confirm')}}</el-button>
+        <el-button v-else type="primary" @click="updateData">{{$t('Confirm')}}</el-button>
       </div>
     </el-dialog>
 
@@ -141,14 +141,14 @@ export default {
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
-        update: '编辑',
-        create: '创建'
+        update: this.$t('Edit'),
+        create: this.$t('Create')
       },
       rules: {
         username: [
-          { required: true, message: '管理员名称不能为空', trigger: 'blur' }
+          { required: true, message: this.$t('Controller_name_cannot_be_empty'), trigger: 'blur' }
         ],
-        password: [{ required: true, message: '密码不能为空', trigger: 'blur' }]
+        password: [{ required: true, message: this.$t('Password_cannot_be_empty'), trigger: 'blur' }]
       },
       downloadLoading: false
     }
@@ -229,13 +229,13 @@ export default {
               this.list.unshift(response.data.data)
               this.dialogFormVisible = false
               this.$notify.success({
-                title: '成功',
-                message: '添加管理员成功'
+                title: this.$t('Success!'),
+                message: this.$t('Controller_added_successfully')
               })
             })
             .catch(response => {
               this.$notify.error({
-                title: '失败',
+                title: this.$t('Failed'),
                 message: response.data.errmsg
               })
             })
@@ -265,13 +265,13 @@ export default {
               }
               this.dialogFormVisible = false
               this.$notify.success({
-                title: '成功',
+                title: this.$t('Success!'),
                 message: '更新管理员成功'
               })
             })
             .catch(response => {
               this.$notify.error({
-                title: '失败',
+                title: this.$t('Failed'),
                 message: response.data.errmsg
               })
             })
@@ -282,15 +282,15 @@ export default {
       deleteAdmin(row)
         .then(response => {
           this.$notify.success({
-            title: '成功',
-            message: '删除管理员成功'
+            title: this.$t('Success!'),
+            message: this.$t('Controller_deleted')
           })
           const index = this.list.indexOf(row)
           this.list.splice(index, 1)
         })
         .catch(response => {
           this.$notify.error({
-            title: '失败',
+            title: this.$t('Failed'),
             message: response.data.errmsg
           })
         })

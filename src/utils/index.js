@@ -191,7 +191,7 @@ export const pickerOptions = [
     }
   },
   {
-    text: '最近一周',
+    text: '最近7天',
     onClick(picker) {
       const end = new Date(new Date().toDateString())
       const start = new Date()

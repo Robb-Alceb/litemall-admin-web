@@ -1,19 +1,19 @@
 <template>
   <div class="app-container">
     <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
-      <el-form-item label="原密码" prop="oldPassword">
+      <el-form-item :label="$t('Old_password')" prop="oldPassword">
         <el-input v-model="dataForm.oldPassword" type="password"/>
       </el-form-item>
-      <el-form-item label="新密码" prop="newPassword">
+      <el-form-item :label="$t('New_password')" prop="newPassword">
         <el-input v-model="dataForm.newPassword" type="password" auto-complete="off"/>
       </el-form-item>
-      <el-form-item label="确认密码" prop="newPassword2">
+      <el-form-item :label="$t('Confirm_password')" prop="newPassword2">
         <el-input v-model="dataForm.newPassword2" type="password" auto-complete="off"/>
       </el-form-item>
     </el-form>
     <div style="margin-left:100px;">
-      <el-button @click="cancel">取消</el-button>
-      <el-button type="primary" @click="change">确定</el-button>
+      <el-button @click="cancel">{{$t('Cancel')}}</el-button>
+      <el-button type="primary" @click="change">{{$t('Confirm')}}</el-button>
     </div>
   </div>
 </template>
@@ -26,16 +26,16 @@ export default {
   data() {
     var validatePass = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请输入密码'))
+        callback(new Error(this.$t('Please_enter_password')))
       } else {
         callback()
       }
     }
     var validatePass2 = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请再次输入密码'))
+        callback(new Error(this.$t('Please_re-enter_password')))
       } else if (value !== this.dataForm.newPassword) {
-        callback(new Error('两次输入密码不一致!'))
+        callback(new Error(this.$t('Passwords_entered_do_not_match')))
       } else {
         callback()
       }
@@ -48,14 +48,14 @@ export default {
       },
       rules: {
         oldPassword: [
-          { required: true, message: '旧密码不能为空', trigger: 'blur' }
+          { required: true, message: this.$t('Old_password_cannot_be_empty'), trigger: 'blur' }
         ],
         newPassword: [
-          { required: true, message: '新密码不能为空', trigger: 'blur' },
+          { required: true, message: this.$t('New_password_cannot_be_empty'), trigger: 'blur' },
           { validator: validatePass, trigger: 'blur' }
         ],
         newPassword2: [
-          { required: true, message: '确认密码不能为空', trigger: 'blur' },
+          { required: true, message: this.$t('Confirm_password_cannot_be_empty'), trigger: 'blur' },
           { validator: validatePass2, trigger: 'blur' }
         ]
       }
@@ -79,12 +79,12 @@ export default {
         }
         changePassword(this.dataForm).then(response => {
           this.$notify.success({
-            title: '成功',
-            message: '修改密码成功'
+            title: this.$t('Success!'),
+            message: this.$t('Password_change_successful')
           })
         }).catch(response => {
           this.$notify.error({
-            title: '失败',
+            title: this.$t('Failed'),
             message: response.data.errmsg
           })
         })

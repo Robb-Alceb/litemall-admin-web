@@ -7,11 +7,11 @@
     <div class="right-menu">
       <template v-if="device!=='mobile'">
 
-        <el-tooltip content="全屏" effect="dark" placement="bottom">
+        <el-tooltip :content="$t('Full_Screen')" effect="dark" placement="bottom">
           <screenfull class="screenfull right-menu-item"/>
         </el-tooltip>
 
-        <el-tooltip content="布局大小" effect="dark" placement="bottom">
+        <el-tooltip :content="$t('Layout_size')" effect="dark" placement="bottom">
           <size-select class="international right-menu-item"/>
         </el-tooltip>
 
@@ -30,7 +30,7 @@
         <el-dropdown-menu slot="dropdown">
           <router-link to="/">
             <el-dropdown-item>
-              首页
+              {{$t('Home')}}
 <!--              {{$t('hello')}}-->
             </el-dropdown-item>
           </router-link>
@@ -46,7 +46,7 @@
           </el-dropdown-item>-->
           <el-dropdown-item divided>
             <router-link to="/profile/password">
-              密码修改
+              {{$t('Change_password')}}
             </router-link>
           </el-dropdown-item>
           <el-dropdown-item divided>

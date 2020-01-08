@@ -2,19 +2,19 @@
     <div class="app-container">
       <el-card class="box-card">
         <div slot="header" class="clearfix">
-          <span>订单打印</span>
-          <el-button style="float: right;" v-print="'#printOrder'">打印</el-button>
+          <span>{{$t('Print_order')}}</span>
+          <el-button style="float: right;" v-print="'#printOrder'">{{$t('Print')}}</el-button>
         </div>
         <div id="printOrder">
         <div class="text-center">
-          <h1>订单信息</h1>
+          <h1>{{$t('Order_info')}}</h1>
         </div>
         <el-table :data="orderDetail.orderGoods" border fit highlight-current-row>
-          <el-table-column align="center" label="货号" prop="number"/>
-          <el-table-column align="center" label="商品名称" prop="goodsName"/>
-          <el-table-column align="center" label="价格" prop="price"/>
-          <el-table-column align="center" label="数量" prop="number"/>
-          <el-table-column align="center" label="小计">
+          <el-table-column align="center" :label="$t('Merchandise_number')" prop="number"/>
+          <el-table-column align="center" :label="$t('Merchandise_name')" prop="goodsName"/>
+          <el-table-column align="center" :label="$t('Price')" prop="price"/>
+          <el-table-column align="center" :label="$t('Number')" prop="number"/>
+          <el-table-column align="center" :label="$t('Subtotal_')">
             <template slot-scope="scope">
               {{scope.row | goodsPriceFilter}}
             </template>
@@ -35,7 +35,7 @@
           </div>
           <div>
             <el-form :inline="true"  label-position="left" style="text-align: right;">
-                <el-form-item label="商品总价:">
+                <el-form-item :label="$t('Merchandise_total_cost')">
                   <el-tag>{{orderDetail.order.goodsPrice}}</el-tag>
                 </el-form-item>
                 <el-form-item label="运费:">
@@ -44,7 +44,7 @@
                 <el-form-item label="订单总金额:">
                   <el-tag>{{orderDetail.order.orderPrice}}</el-tag>
                 </el-form-item>
-                <el-form-item label="支付方式:">
+                <el-form-item :label="$t('Payment_method')">
                   <el-tag>{{payTypeMap[orderDetail.order.payType]}}</el-tag>
                 </el-form-item>
             </el-form>
@@ -59,7 +59,7 @@
               {{orderDetail.order.mobile}}
             </el-col>
             <el-col :span="2">
-              提交时间
+              {{$t('Submission_time')}}
             </el-col>
             <el-col :span="4">
               {{orderDetail.order.addTime}}
@@ -67,13 +67,13 @@
           </el-row>
           <el-row>
             <el-col :span="2">
-              订单编号
+              {{$t('Order_ID')}}
             </el-col>
             <el-col :span="4">
               {{orderDetail.order.orderSn}}
             </el-col>
             <el-col :span="2">
-              收货地址
+              {{$t('Receiving_Address')}}
             </el-col>
             <el-col :span="4">
               {{orderDetail.order.address}}
@@ -87,11 +87,11 @@
 
 <script>
   const payTypeMap = {
-    "1":"未支付",
-    "2":"paypal",
+    "1":this.$('Unpaid'),
+    "2":this.$('Paypal'),
     "3":"globalpay",
     "4":"monerispay",
-    "4":"apple pay"
+    "5":"apple pay"
   }
   import { detailOrder } from '@/api/order'
   export default {

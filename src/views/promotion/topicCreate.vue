@@ -35,17 +35,17 @@
         <!-- 查询结果 -->
         <el-table :data="goodsList" border fit highlight-current-row>
 
-          <el-table-column align="center" label="商品ID" prop="id"/>
-          <el-table-column align="center" property="picUrl" label="图片">
+          <el-table-column align="center" :label="$t('Merchandise_ID')" prop="id"/>
+          <el-table-column align="center" property="picUrl" :label="$t('Picture')">
             <template slot-scope="scope">
               <img :src="scope.row.picUrl" width="60">
             </template>
           </el-table-column>
-          <el-table-column align="center" label="商品名称" prop="name"/>
+          <el-table-column align="center" :label="$t('Merchandise_name')" prop="name"/>
           <el-table-column align="center" label="商品介绍" prop="brief"/>
-          <el-table-column align="center" label="操作" class-name="small-padding fixed-width">
+          <el-table-column align="center" :label="$t('Operate')" class-name="small-padding fixed-width">
             <template slot-scope="scope">
-              <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+              <el-button type="danger" size="mini" @click="handleDelete(scope.row)">{{$t('Delete')}}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -53,31 +53,31 @@
 
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="handleCancel">取消</el-button>
-      <el-button type="primary" @click="handleConfirm">确定</el-button>
+      <el-button @click="handleCancel">{{$t('Cancel')}}</el-button>
+      <el-button type="primary" @click="handleConfirm">{{$t('Confirm')}}</el-button>
     </div>
 
     <el-dialog :visible.sync="addVisiable" title="添加商品">
       <div class="search">
-        <el-input v-model="listQuery.goodsSn" clearable class="filter-item" style="width: 200px;" placeholder="请输入商品编号"/>
-        <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入商品名称"/>
-        <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-        <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row @selection-change="handleSelectionChange">
+        <el-input v-model="listQuery.goodsSn" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Please_enter_merchandise_ID')"/>
+        <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Please_enter_merchandise_name')"/>
+        <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('Search')}}</el-button>
+        <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"/>
-          <el-table-column align="center" label="商品ID" prop="id"/>
-          <el-table-column align="center" property="picUrl" label="图片">
+          <el-table-column align="center" :label="$t('Merchandise_ID')" prop="id"/>
+          <el-table-column align="center" property="picUrl" :label="$t('Picture')">
             <template slot-scope="scope">
               <img :src="scope.row.picUrl" width="40">
             </template>
           </el-table-column>
-          <el-table-column align="center" label="商品名称" prop="name"/>
+          <el-table-column align="center" :label="$t('Merchandise_name')" prop="name"/>
         </el-table>
         <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="addVisiable = false">取消</el-button>
-        <el-button type="primary" @click="confirmAdd">确定</el-button>
+        <el-button @click="addVisiable = false">{{$t('Cancel')}}</el-button>
+        <el-button type="primary" @click="confirmAdd">{{$t('Confirm')}}</el-button>
       </div>
     </el-dialog>
 
@@ -179,7 +179,7 @@ export default {
               success(res.data.data.url)
             })
             .catch(() => {
-              failure('上传失败，请重新上传')
+              failure(this.$t('Upload_failed_please_reupload'))
             })
         }
       }
@@ -277,7 +277,7 @@ export default {
           })
             .catch(response => {
               this.$notify.error({
-                title: '失败',
+                title: this.$t('Failed'),
                 message: response.data.errmsg
               })
             })

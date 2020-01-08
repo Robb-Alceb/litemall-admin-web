@@ -38,13 +38,13 @@
         updatePermission(this.permissionForm)
           .then(response => {
             this.$notify.success({
-              title: '成功',
-              message: '授权成功'
+              title: this.$t('Success!'),
+              message: this.$t('Access_granted')
             })
           })
           .catch(response => {
             this.$notify.error({
-              title: '失败',
+              title: this.$t('Failed'),
               message: response.data.errmsg
             })
           })

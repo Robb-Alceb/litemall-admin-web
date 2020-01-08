@@ -3,10 +3,10 @@
     <el-card class="box-card">
       <h3>添加用户</h3>
       <el-form ref="dataForm" :rules="rules" :model="admin" label-width="150px">
-        <el-form-item label="员工名称" prop="nickName">
+        <el-form-item :label="$t('Partner_name')" prop="nickName">
           <el-input v-model="admin.nickName"/>
         </el-form-item>
-        <el-form-item label="员工头像" prop="avatar">
+        <el-form-item :label="$t('Partner_picture')" prop="avatar">
           <el-upload
             :headers="headers"
             :action="uploadPath"
@@ -18,25 +18,25 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"/>
           </el-upload>
         </el-form-item>
-        <el-form-item label="联系地址" prop="location">
+        <el-form-item :label="$t('Address')" prop="location">
           <el-input v-model="admin.location"/>
         </el-form-item>
-        <el-form-item label="联系电话" prop="mobile">
+        <el-form-item :label="this.$t('Contact_number')" prop="mobile">
           <el-input v-model="admin.mobile"/>
         </el-form-item>
-        <el-form-item label="成员角色" prop="roleIds">
+        <el-form-item :label="$t('Partner_role')" prop="roleIds">
           <el-col>
             <el-select  v-model="admin.roleIds" multiple collapse-tags>
               <el-option v-for="item in roles" :value="item.value" :label="item.label"/>
             </el-select>
           </el-col>
         </el-form-item>
-        <el-form-item label="所属门店" prop="shop">
+        <el-form-item :label="$t('Store_belong')" prop="shop">
           <el-select v-model="admin.shopId" clearable>
             <el-option v-for="item in shops" :value="item.shopId" :label="item.name"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="登录账号" prop="username">
+        <el-form-item :label="$t('Account_login')" prop="username">
           <el-input v-model="admin.username"/>
         </el-form-item>
         <el-form-item label="登录密码" prop="name">
@@ -52,7 +52,7 @@
     </el-card>
 
     <div class="op-container">
-      <el-button @click="handleCancel">取消</el-button>
+      <el-button @click="handleCancel">{{$t('Cancel')}}</el-button>
       <el-button type="primary" @click="handleCreate">新增用户</el-button>
     </div>
   </div>
@@ -100,10 +100,10 @@
         shops: [],
         rules: {
           username: [
-            { required: true, message: '管理员名称不能为空', trigger: 'blur' }
+            { required: true, message: this.$t('Controller_name_cannot_be_empty'), trigger: 'blur' }
           ],
-          password: [{ required: true, message: '密码不能为空', trigger: 'blur' },
-            { min: 6, max: 16, message: '密码长度在 6 到 16 个字符', trigger: 'blur' }]
+          password: [{ required: true, message: this.$t('Password_cannot_be_empty'), trigger: 'blur' },
+            { min: 6, max: 16, message: this.$t('Password_length_from_6_-_16_characters'), trigger: 'blur' }]
         }
       }
     },
@@ -131,14 +131,14 @@
             createAdmin(this.admin)
               .then(() => {
                 this.$notify.success({
-                  title: '成功',
-                  message: '新增管理员成功'
+                  title: this.$t('Success!'),
+                  message: this.$t('New_controller_added_successfully')
                 })
                 this.$router.push({path:'/sys/admin'})
               })
               .catch(response => {
                 this.$notify.error({
-                  title: '失败',
+                  title: this.$t('Failed'),
                   message: response.data.errmsg
                 })
               })

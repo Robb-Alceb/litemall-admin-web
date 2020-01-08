@@ -3,42 +3,42 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.userId" clearable class="filter-item" style="width: 200px;" placeholder="服务编号"/>
-      <el-select v-model="listQuery.orderStatusArray" multiple style="width: 200px" class="filter-item" placeholder="请选择申请状态">
+      <el-input v-model="listQuery.userId" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Servicing_number')"/>
+      <el-select v-model="listQuery.orderStatusArray" multiple style="width: 200px" class="filter-item" :placeholder="$t('Please_select_request_status')">
         <el-option v-for="(key, value) in statusMap" :key="key" :label="key" :value="value"/>
       </el-select>
-      <el-button v-permission="['GET /admin/repository/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
+      <el-button v-permission="['GET /admin/repository/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('Search')}}</el-button>
+<!--      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{$t('Find')}}</el-button>-->
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
 
-      <el-table-column align="center" min-width="100" label="服务编号" prop="repSn"/>
+      <el-table-column align="center" min-width="100" :label="$t('Servicing_number')" prop="repSn"/>
 
-      <el-table-column align="center" min-width="100" label="申请时间" prop="addTime"/>
+      <el-table-column align="center" min-width="100" :label="$t('Request_time')" prop="addTime"/>
 
-      <el-table-column align="center" label="用户账号" prop="userName"/>
+      <el-table-column align="center" :label="$t('Member_account')" prop="userName"/>
 
-      <el-table-column align="center" label="服务类型" prop="type">
+      <el-table-column align="center" :label="$t('Service_types')" prop="type">
         <template slot-scope="scope">
           <el-tag>{{ scope.row.type | typeFilter }}</el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="所在门店" prop="shopName"/>
+      <el-table-column align="center" :label="$t('Store_location')" prop="shopName"/>
 
-      <el-table-column align="center" label="申请状态" prop="status">
+      <el-table-column align="center" :label="$t('Request_status')" prop="status">
         <template slot-scope="scope">
           <el-tag>{{ scope.row.status | orderStatusFilter }}</el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="处理时间" prop="updateTime"/>
+      <el-table-column align="center" :label="$t('Processing_time')" prop="updateTime"/>
 
-      <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+      <el-table-column align="center" :label="$t('Operate')" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-permission="['GET /admin/order/detail']" type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
+          <el-button v-permission="['GET /admin/order/detail']" type="primary" size="mini" @click="handleDetail(scope.row)">{{$t('Details')}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -50,13 +50,13 @@
 
 <script>
   const typeMap = {
-    1: '进货'
+    1: this.$t('Purchase')
   }
   const statusMap = {
-    1: '待处理',
-    2: '已处理',
-    3: '已取消',
-    4: '已拒绝'
+    1: this.$t('Awaiting_process'),
+    2: this.$t('Processed'),
+    3: this.$t('Cancelled'),
+    4: this.$t('Denied')
   }
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   export default {

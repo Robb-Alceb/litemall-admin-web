@@ -2,12 +2,12 @@
     <div class="app-container dashboard-editor-container">
       <el-card>
         <div slot="header" class="clearfix">
-          <span>基本信息</span>
-          <el-button style="float: right; padding: 3px 0" type="text" @click="shopDetail()">查看详情</el-button>
+          <span>{{$t('Basic_Information')}}</span>
+          <el-button style="float: right; padding: 3px 0" type="text" @click="shopDetail()">{{$t('View_details')}}</el-button>
         </div>
         <el-row align="center">
           <el-col :span="4" align="right">
-            门店店长:
+            {{$t('Store_Manager')}}:
           </el-col>
           <el-col :span="4">
             <span v-if="shopkeeper.nickName">{{shopkeeper.nickName}}</span>
@@ -22,7 +22,7 @@
             <span v-else="shop.status == 3">正在装修</span>
           </el-col>
           <el-col :span="4" align="right">
-            门店员工:
+            {{$t('Store_Partner')}}:
           </el-col>
           <el-col :span="4">
             （{{shopMembers.length}}人）
@@ -31,8 +31,8 @@
       </el-card>
       <el-card style="margin-top: 20px">
         <div slot="header" class="clearfix">
-          <span>销售情况</span>
-          <el-button style="float: right; padding: 3px 0" type="text" @click="salesDetail()">统计信息</el-button>
+          <span>{{$t('Sales_status')}}</span>
+          <el-button style="float: right; padding: 3px 0" type="text" @click="salesDetail()">{{$t('Statistics_information')}}</el-button>
         </div>
         <el-row :gutter="40" class="panel-group">
           <el-col :xs="12" :sm="12" :lg="8" class="card-panel-col">
@@ -41,7 +41,7 @@
                 <svg-icon icon-class="money" class-name="card-panel-icon" />
               </div>
               <div class="card-panel-description">
-                <div class="card-panel-text">今日销售额</div>
+                <div class="card-panel-text">{{$t('Today_sales')}}</div>
                 <count-to :start-val="0" :end-val="summary.todayAmount" :duration="2600" class="card-panel-num"/>
               </div>
             </div>
@@ -52,7 +52,7 @@
                 <svg-icon icon-class="message" class-name="card-panel-icon" />
               </div>
               <div class="card-panel-description">
-                <div class="card-panel-text">最近7日销售额</div>
+                <div class="card-panel-text">{{$t('Sales_in_the_last_7_days')}}</div>
                 <count-to :start-val="0" :end-val="summary.sevenAmount" :duration="3000" class="card-panel-num"/>
               </div>
             </div>
@@ -63,7 +63,7 @@
                 <svg-icon icon-class="message" class-name="card-panel-icon" />
               </div>
               <div class="card-panel-description">
-                <div class="card-panel-text">历史销售额</div>
+                <div class="card-panel-text">{{$t('Historical_sales_data')}}</div>
                 <count-to :start-val="0" :end-val="summary.allAmount" :duration="3200" class="card-panel-num"/>
               </div>
             </div>
@@ -73,8 +73,8 @@
 
       <el-card style="margin-top: 20px">
         <div slot="header" class="clearfix">
-          <span>订单情况</span>
-          <el-button style="float: right; padding: 3px 0" type="text" @click="orderDetail()">订单详情</el-button>
+          <span>{{$t('Ticket_status')}}</span>
+          <el-button style="float: right; padding: 3px 0" type="text" @click="orderDetail()">{{$t('Order_details')}}</el-button>
         </div>
         <el-row :gutter="40" class="panel-group">
           <el-col :xs="12" :sm="12" :lg="8" class="card-panel-col">
@@ -83,7 +83,7 @@
                 <svg-icon icon-class="money" class-name="card-panel-icon" />
               </div>
               <div class="card-panel-description">
-                <div class="card-panel-text">今日订单总量</div>
+                <div class="card-panel-text">{{$t('Todays_total_tickets')}}</div>
                 <count-to :start-val="0" :end-val="summary.todayCount" :duration="2600" class="card-panel-num"/>
               </div>
             </div>
@@ -94,7 +94,7 @@
                 <svg-icon icon-class="message" class-name="card-panel-icon" />
               </div>
               <div class="card-panel-description">
-                <div class="card-panel-text">正在进行的订单</div>
+                <div class="card-panel-text">{{$t('Ongoing_tickets')}}</div>
                 <count-to :start-val="0" :end-val="summary.sevenCount" :duration="3000" class="card-panel-num"/>
               </div>
             </div>
@@ -105,7 +105,7 @@
                 <svg-icon icon-class="message" class-name="card-panel-icon" />
               </div>
               <div class="card-panel-description">
-                <div class="card-panel-text">历史总订单</div>
+                <div class="card-panel-text">{{$t('Historical_tickets')}}</div>
                 <count-to :start-val="0" :end-val="summary.allCount" :duration="3200" class="card-panel-num"/>
               </div>
             </div>
@@ -115,18 +115,18 @@
 
     <el-card style="margin-top: 20px">
       <div slot="header" class="clearfix">
-        <span>商品情况</span>
-        <el-button style="float: right; padding: 3px 0" type="text" @click="goodsDetail()">商品详情</el-button>
+        <span>{{$t('Merchandise_status')}}</span>
+        <el-button style="float: right; padding: 3px 0" type="text" @click="goodsDetail()">{{$t('Merchandise_details')}}</el-button>
       </div>
       <el-row align="center">
         <el-col :span="4" align="right">
-          总上架商品:
+          {{$t('Total_merchandise_launched')}}:
         </el-col>
         <el-col :span="4">
           （{{summary.putOnSaleGoods}}）
         </el-col>
         <el-col :span="4" align="right">
-          待处理进货请求:
+          {{$t('Products_receiving_awaitng_process')}}:
         </el-col>
         <el-col :span="4">
           （{{summary.processingCount}}）

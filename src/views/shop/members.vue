@@ -3,37 +3,37 @@
     <!-- 查询和其他操作 -->
     <div class="filter-container">
       <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入门店成员名称"/>
-      <el-select v-model="listQuery.role" clearable class="filter-item" placeholder="请选择">
+      <el-select v-model="listQuery.role" clearable class="filter-item" :placeholder="this.$t('Please_select')">
         <el-option-group v-model="roles">
           <el-option :value="id" property="name"/>
         </el-option-group>
       </el-select>
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('Search')}}</el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">{{$t('Add')}}</el-button>
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
 
-      <el-table-column align="center" label="员工名称" prop="name"/>
+      <el-table-column align="center" :label="$t('Partner_name')" prop="name"/>
 
-      <el-table-column align="center" label="联系地址" prop="address"/>
+      <el-table-column align="center" :label="$t('Address')" prop="address"/>
 
-      <el-table-column align="center" label="成员角色" prop="roleIds">
+      <el-table-column align="center" :label="$t('Partner_role')" prop="roleIds">
         <template slot-scope="scope">
           <el-tag v-for="roleId in scope.row.roleIds" :key="roleId" type="primary" style="margin-right: 20px;"> {{ formatRole(roleId) }} </el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="添加时间" prop="addTime"/>
+      <el-table-column align="center" :label="$t('Time_added')" prop="addTime"/>
 
-      <el-table-column align="center" label="联系电话" prop="mobile"/>
+      <el-table-column align="center" :label="this.$t('Contact_number')" prop="mobile"/>
 
-      <el-table-column align="center" label="操作" width="300" class-name="small-padding fixed-width">
+      <el-table-column align="center" :label="$t('Operate')" width="300" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('Edit')}}</el-button>
           <el-button type="warning" size="mini" @click="permissionUpdate(scope.row)">权限</el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">{{$t('Delete')}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -92,9 +92,9 @@ export default {
       this.$router.push({ path: '/shop/edit', query: { id: row.id }})
     },
     handleDelete(row) {
-      this.$confirm('是否删除?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('Confirm_Delete?'), this.$t('Hint'), {
+        confirmButtonText: this.$t('Confirm'),
+        cancelButtonText: this.$t('Cancel'),
         type: 'warning'
       }).then(() => {
         this.doDelete(row)
@@ -103,14 +103,14 @@ export default {
     doDelete(row) {
       deleteAdmin(row).then(response => {
         this.$notify.success({
-          title: '成功',
-          message: '删除成功'
+          title: this.$t('Success!'),
+          message: this.$t('Deleted')
         })
         const index = this.list.indexOf(row)
         this.list.splice(index, 1)
       }).catch(response => {
         this.$notify.error({
-          title: '失败',
+          title: this.$t('Failed'),
           message: response.data.errmsg
         })
       })

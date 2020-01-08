@@ -2,7 +2,7 @@
     <div class="app-container">
       <el-card>
         <div slot="header" class="clearfix">
-          <span>会员统计</span>
+          <span>{{$t('Membership_data')}}</span>
         </div>
         <el-row style="margin-bottom: 20px;">
           <el-col :span="6" align="center">
@@ -10,7 +10,7 @@
               <span style="font-size: 30px;color: red;">{{overview.userTodayCount}}</span>
             </el-row>
             <el-row>
-              今日新增
+              {{$t('Today_new_memberships')}}
             </el-row>
           </el-col>
           <el-col :span="6" align="center">
@@ -18,7 +18,7 @@
               <span style="font-size: 30px;color: red;">{{overview.userYesterdayCount}}</span>
             </el-row>
             <el-row>
-              昨日新增
+              {{$t('Yesterday_new_memeberships')}}
             </el-row>
           </el-col>
           <el-col :span="6" align="center">
@@ -26,7 +26,7 @@
               <span style="font-size: 30px;color: red;">{{overview.userMonthCount}}</span>
             </el-row>
             <el-row>
-              本月新增
+              {{$t('This_month_new_memberships')}}
             </el-row>
           </el-col>
           <el-col :span="6" align="center">
@@ -34,13 +34,13 @@
               <span style="font-size: 30px;color: red;">{{overview.userTotal}}</span>
             </el-row>
             <el-row>
-              会员总数
+              {{$t('Total_members')}}
             </el-row>
           </el-col>
         </el-row>
         <el-card>
           <div slot="header" class="clearfix">
-            <span>会员增长情况</span>
+            <span>{{$t('Membership_growth')}}</span>
             <div style="display: inline;float: right;">
               <div v-show="countFilterType ==1" style="display: inline;float: right;" class="block">
                 <el-date-picker
@@ -49,7 +49,7 @@
                   @change="handleDateChange"
                   format="yyyy-MM-dd"
                   value-format="yyyy-MM-dd hh:mm"
-                  placeholder="选择日期">
+                  :placeholder="this.$t('Select_dates')">
                 </el-date-picker>
               </div>
               <div v-show="countFilterType ==2" style="display: inline;float: right;" class="block">
@@ -65,8 +65,8 @@
             </div>
             <div style="display: inline;float: right;width: 120px;">
               <el-select v-model="countFilterType" @change="changeType">
-                <el-option label="按日统计" :value="1"></el-option>
-                <el-option label="按月统计" :value="2"></el-option>
+                <el-option :label="$t('By_day')" :value="1"></el-option>
+                <el-option :label="$t('By_month')" :value="2"></el-option>
               </el-select>
             </div>
 <!--            <div style="display: inline;float: right;">
@@ -77,7 +77,7 @@
         </el-card>
         <el-card>
           <div slot="header" class="clearfix">
-            <span>会员消费金额分布</span>
+            <span>{{$t('Member_purchasing_data')}}</span>
             <div style="display: inline;float: right;">
               <div v-show="amountFilterType ==1" style="display: inline;float: right;" class="block">
                 <el-date-picker
@@ -86,7 +86,7 @@
                   @change="handleAmountDateChange"
                   format="yyyy-MM-dd"
                   value-format="yyyy-MM-dd hh:mm"
-                  placeholder="选择日期" style="width:350px;">
+                  :placeholder="this.$t('Select_dates')" style="width:350px;">
                 </el-date-picker>
               </div>
               <div v-show="amountFilterType ==2" style="display: inline;float: right;" class="block">
@@ -102,8 +102,8 @@
             </div>
             <div style="display: inline;float: right;width: 120px;">
               <el-select v-model="amountFilterType" @change="amountChangeType">
-                <el-option label="按日统计" :value="1"></el-option>
-                <el-option label="按月统计" :value="2"></el-option>
+                <el-option :label="$t('By_day')" :value="1"></el-option>
+                <el-option :label="$t('By_month')" :value="2"></el-option>
               </el-select>
             </div>
 <!--            <div style="display: inline;float: right;">

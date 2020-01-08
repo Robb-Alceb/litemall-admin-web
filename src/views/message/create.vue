@@ -27,7 +27,7 @@
     </el-card>
 
     <div class="op-container" style="padding-top:20px;">
-      <el-button @click="handleCancel">取消</el-button>
+      <el-button @click="handleCancel">{{$t('Cancel')}}</el-button>
       <el-button v-permission="['POST /admin/message/create']" type="primary" @click="handleCreate">提交</el-button>
     </div>
 
@@ -44,7 +44,7 @@
         </el-transfer>
       </template>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="userDialogVisible = false">确定</el-button>
+        <el-button @click="userDialogVisible = false">{{$t('Confirm')}}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -115,14 +115,14 @@
             createMessage(data)
               .then(response => {
               this.$notify.success({
-                title: '成功',
-                message: '创建成功'
+                title: this.$t('Success!'),
+                message: this.$t('Creation_successful')
               })
               this.$router.push({ path: '/message/list' })
             })
               .catch(response => {
-                MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
-                  confirmButtonText: '确定',
+                MessageBox.alert(this.$t('Error') + response.data.errmsg, this.$t('Warning'), {
+                  confirmButtonText: this.$t('Confirm'),
                   type: 'error'
                 })
               })

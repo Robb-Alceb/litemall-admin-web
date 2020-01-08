@@ -5,18 +5,18 @@
     <div class="filter-container">
       <el-input v-model="listQuery.username" clearable class="filter-item" style="width: 200px;" placeholder="请输入用户名"/>
       <el-input v-model="listQuery.id" clearable class="filter-item" style="width: 200px;" placeholder="请输入反馈ID"/>
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-<!--      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>-->
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('Search')}}</el-button>
+<!--      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{$t('Find')}}</el-button>-->
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
 
       <el-table-column align="center" label="反馈ID" prop="id"/>
 
       <el-table-column align="center" label="用户名" prop="username"/>
 
-      <el-table-column align="center" label="手机号码" prop="mobile"/>
+      <el-table-column align="center" :label="$t('Cellphone_number')" prop="mobile"/>
 
       <el-table-column align="center" label="反馈类型" prop="feedType"/>
 
@@ -28,7 +28,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="时间" prop="addTime"/>
+      <el-table-column align="center" :label="$t('Time')" prop="addTime"/>
 
     </el-table>
 

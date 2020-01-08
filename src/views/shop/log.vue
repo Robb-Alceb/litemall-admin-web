@@ -4,23 +4,23 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.content" clearable class="filter-item" style="width: 200px;" placeholder="操作内容"/>
-      <el-input v-model="listQuery.createUserName" clearable class="filter-item" style="width: 200px;" placeholder="操作者"/>
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+      <el-input v-model="listQuery.content" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Operator_details')"/>
+      <el-input v-model="listQuery.createUserName" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Operator')"/>
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('Search')}}</el-button>
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
 
-      <el-table-column align="center" label="日志编号" prop="id"/>
+      <el-table-column align="center" :label="$t('Journal_entry_number')" prop="id"/>
 
-      <el-table-column align="center" label="操作内容" prop="content"/>
+      <el-table-column align="center" :label="$t('Operator_details')" prop="content"/>
 
-      <el-table-column align="center" label="操作者" prop="createUserName"/>
+      <el-table-column align="center" :label="$t('Operator')" prop="createUserName"/>
 
-      <el-table-column align="center" label="操作时间" prop="addTime"/>
+      <el-table-column align="center" :label="$t('Operating_time')" prop="addTime"/>
 
-      <el-table-column align="center" label="ip地址" prop="ipAddr"/>
+      <el-table-column align="center" :label="$t('IP_Address')" prop="ipAddr"/>
 
     </el-table>
 

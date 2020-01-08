@@ -2,54 +2,54 @@
   <div class="app-container">
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-select v-model="listQuery.orderStatus" clearable class="filter-item" placeholder="请选择">
-        <el-option :value="1" label="待处理"/>
+      <el-select v-model="listQuery.orderStatus" clearable class="filter-item" :placeholder="this.$t('Please_select')">
+        <el-option :value="1" :label="$t('Awaiting_process')"/>
         <el-option :value="2" label="待付款"/>
         <el-option :value="3" label="待发货"/>
         <el-option :value="4" label="已发货"/>
-        <el-option :value="5" label="确认收货"/>
-        <el-option :value="6" label="已拒绝"/>
+        <el-option :value="5" :label="$t('Receive_confirm')"/>
+        <el-option :value="6" :label="$t('Denied')"/>
       </el-select>
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('Search')}}</el-button>
       <!--      <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleApplying">申请</el-button>-->
-      <!--      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>-->
+      <!--      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{$t('Find')}}</el-button>-->
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
 
-      <el-table-column align="center" label="服务编号" prop="orderSn"/>
+      <el-table-column align="center" :label="$t('Servicing_number')" prop="orderSn"/>
 
-      <el-table-column align="center" label="申请时间" prop="addTime"/>
+      <el-table-column align="center" :label="$t('Request_time')" prop="addTime"/>
 
-      <el-table-column align="center" label="用户账号" prop="username"/>
+      <el-table-column align="center" :label="$t('Member_account')" prop="username"/>
 
-      <el-table-column align="center" label="服务类型" prop="serviceType">
+      <el-table-column align="center" :label="$t('Service_types')" prop="serviceType">
         <template slot-scope="scope">
           <el-tag>{{ scope.row.serviceType | serviceStatusFilter }}</el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="所在门店" prop="shopName"/>
+      <el-table-column align="center" :label="$t('Store_location')" prop="shopName"/>
 
-      <el-table-column align="center" label="申请状态" prop="orderStatus">
+      <el-table-column align="center" :label="$t('Request_status')" prop="orderStatus">
         <template slot-scope="scope">
           <el-tag :type="scope.row.orderStatus != 6 &&  scope.row.orderStatus != 5? 'success' : 'error' ">{{ statusMap[scope.row.orderStatus] }}</el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="处理时间" prop="updateTime"/>
+      <el-table-column align="center" :label="$t('Processing_time')" prop="updateTime"/>
 
-      <el-table-column align="center" label="操作" width="100" class-name="small-padding fixed-width">
+      <el-table-column align="center" :label="$t('Operate')" width="100" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
+          <el-button type="primary" size="mini" @click="handleDetail(scope.row)">{{$t('Details')}}</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
-    <el-tooltip placement="top" content="返回顶部">
+    <el-tooltip placement="top" :content="$t('Back_to_top')">
       <back-to-top :visibility-height="100" />
     </el-tooltip>
 
@@ -58,12 +58,12 @@
 
 <script>
 const statusMap = {
-  1: '待处理',
+  1: this.$t('Awaiting_process'),
   2: '待付款',
   3: '待发货',
-  4: '已发货 ',
-  5: '确认收货',
-  6: '已拒绝'
+  4: this.$t('Sent_for_delivery'),
+  5: this.$t('Receive_confirm'),
+  6: this.$t('Denied')
 }
 const serviceMap = {
   1:'门店进货'

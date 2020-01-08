@@ -7,15 +7,15 @@
       <el-form-item label="商场地址" prop="litemall_mall_address">
         <el-input v-model="dataForm.litemall_mall_address"/>
       </el-form-item>
-      <el-form-item label="联系电话" prop="litemall_mall_phone">
+      <el-form-item :label="this.$t('Contact_number')" prop="litemall_mall_phone">
         <el-input v-model="dataForm.litemall_mall_phone"/>
       </el-form-item>
       <el-form-item label="联系QQ" prop="litemall_mall_qq">
         <el-input v-model="dataForm.litemall_mall_qq"/>
       </el-form-item>
       <el-form-item>
-        <el-button @click="cancel">取消</el-button>
-        <el-button type="primary" @click="update">确定</el-button>
+        <el-button @click="cancel">{{$t('Cancel')}}</el-button>
+        <el-button type="primary" @click="update">{{$t('Confirm')}}</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -52,13 +52,13 @@ export default {
       updateMall(this.dataForm)
         .then(response => {
           this.$notify.success({
-            title: '成功',
+            title: this.$t('Success!'),
             message: '商场配置成功'
           })
         })
         .catch(response => {
           this.$notify.error({
-            title: '失败',
+            title: this.$t('Failed'),
             message: response.data.errmsg
           })
         })

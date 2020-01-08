@@ -8,7 +8,7 @@
           <el-step title="同意调货" />
           <el-step title="支付付款" />
           <el-step title="处理发货" />
-          <el-step title="确认收货" />
+          <el-step :title="$t('Receive_confirm')" />
         </el-steps>
       </div>
       <div v-else>
@@ -17,8 +17,8 @@
           <el-step title="同意调货" />
           <el-step title="支付付款" />
           <el-step title="处理发货" />
-          <el-step title="确认收货" />
-          <el-step title="已拒绝"/>
+          <el-step :title="$t('Receive_confirm')" />
+          <el-step :title="$t('Denied')"/>
         </el-steps>
       </div>
 
@@ -27,19 +27,19 @@
         <span class="font-small">货品信息</span>
       </div>
       <div class="table-layout">
-        <el-table v-loading="listLoading" :data="merchandises" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-          <el-table-column align="center" label="货号" prop="merchandiseSn"/>
-          <el-table-column align="center" label="货品名称" prop="merchandiseName"/>
-          <el-table-column align="center" label="货品图片" prop="addTime">
+        <el-table v-loading="listLoading" :data="merchandises" :element-loading-text="$t('Searching')" border fit highlight-current-row>
+          <el-table-column align="center" :label="$t('Merchandise_number')" prop="merchandiseSn"/>
+          <el-table-column align="center" :label="$t('Product_name')" prop="merchandiseName"/>
+          <el-table-column align="center" :label="$t('Merchandise_picture')" prop="addTime">
             <template slot-scope="scope">
               <img :src="scope.row.picUrl" width="40">
             </template>
           </el-table-column>
           <el-table-column align="center" label="现有库存" prop="store">
           </el-table-column>
-          <el-table-column align="center" label="价格" prop="price"/>
+          <el-table-column align="center" :label="$t('Price')" prop="price"/>
           <el-table-column align="center" label="订货数量" prop="number"/>
-          <el-table-column align="center" label="小计">
+          <el-table-column align="center" :label="$t('Subtotal_')">
             <template slot-scope="scope">
               {{scope.row.price*scope.row.number}}
             </template>
@@ -77,7 +77,7 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="6" class="table-cell-name">申请状态</el-col>
+          <el-col :span="6" class="table-cell-name">$t('Request_status')</el-col>
           <el-col :span="18" align="left" class="table-cell-content">
             {{orderStatusMap[orderDetail.orderStatus]}}
           </el-col>
@@ -89,13 +89,13 @@
           </el-col>
         </el-row>-->
         <el-row>
-          <el-col :span="6" class="table-cell-name">申请时间</el-col>
+          <el-col :span="6" class="table-cell-name">{{$t('Request_time')}}</el-col>
           <el-col :span="18" align="left" class="table-cell-content">
             {{orderDetail.addTime}}
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="6" class="table-cell-name">用户账号</el-col>
+          <el-col :span="6" class="table-cell-name">{{$t('Member_account')}}</el-col>
           <el-col :span="18" align="left" class="table-cell-content">
             {{orderDetail.username}}
           </el-col>
@@ -107,13 +107,13 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="6" class="table-cell-name">联系电话</el-col>
+          <el-col :span="6" class="table-cell-name">{{$t('Contact_number')}}</el-col>
           <el-col :span="18" align="left" class="table-cell-content">
             {{orderDetail.mobile}}
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="6" class="table-cell-name">所在门店</el-col>
+          <el-col :span="6" class="table-cell-name">{{$t('Store_location')}}</el-col>
           <el-col :span="18" align="left" class="table-cell-content">
             {{orderDetail.shopName}}
           </el-col>
@@ -140,7 +140,7 @@
     </el-card>
 
     <div class="op-container" style="margin-top: 20px;">
-      <el-button @click="handleCancel">取消</el-button>
+      <el-button @click="handleCancel">{{$t('Cancel')}}</el-button>
       <el-button v-if="orderDetail.orderStatus == 3" v-permission="['POST /admin/shopOrder/deliverGoods']" type="primary" @click="handleDeliverGoods">同意发货</el-button>
       <el-button v-if="orderDetail.orderStatus == 3" v-permission="['POST /admin/shopOrder/cancelDeliverGoods']" type="danger" @click="handleCancelDeliverGoods">拒绝发货</el-button>
       <el-button v-if="orderDetail.orderStatus == 2" v-permission="['POST /admin/shopOrder/orderPay']" type="primary" @click="handleOrderPay">支付货款</el-button>
@@ -263,14 +263,14 @@ export default {
         if (valid) {
           shopOrderPass(this.passForm).then(response => {
             this.$notify.success({
-              title: '成功',
+              title: this.$t('Success!'),
               message: '处理成功'
             })
             this.$router.push({ path: '/repository/list' })
           })
           .catch(response => {
-            MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
-              confirmButtonText: '确定',
+            MessageBox.alert(this.$t('Error') + response.data.errmsg, this.$t('Warning'), {
+              confirmButtonText: this.$t('Confirm'),
               type: 'error'
             })
           })
@@ -281,14 +281,14 @@ export default {
       this.passForm.adminOrderId = this.orderDetail.id
       shopOrderNoPass(this.passForm).then(response => {
         this.$notify.success({
-          title: '成功',
+          title: this.$t('Success!'),
           message: '处理成功'
         })
         this.$router.push({ path: '/repository/list' })
       })
         .catch(response => {
-          MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
-            confirmButtonText: '确定',
+          MessageBox.alert(this.$t('Error') + response.data.errmsg, this.$t('Warning'), {
+            confirmButtonText: this.$t('Confirm'),
             type: 'error'
           })
         })
@@ -297,14 +297,14 @@ export default {
       this.passForm.adminOrderId = this.orderDetail.id
       shopOrderPay(this.passForm).then(response => {
         this.$notify.success({
-          title: '成功',
+          title: this.$t('Success!'),
           message: '处理成功'
         })
         this.$router.push({ path: '/repository/list' })
       })
         .catch(response => {
-          MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
-            confirmButtonText: '确定',
+          MessageBox.alert(this.$t('Error') + response.data.errmsg, this.$t('Warning'), {
+            confirmButtonText: this.$t('Confirm'),
             type: 'error'
           })
         })
@@ -313,14 +313,14 @@ export default {
       this.passForm.adminOrderId = this.orderDetail.id
       shopDeliverGoods(this.passForm).then(response => {
         this.$notify.success({
-          title: '成功',
+          title: this.$t('Success!'),
           message: '处理成功'
         })
         this.$router.push({ path: '/repository/list' })
       })
         .catch(response => {
-          MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
-            confirmButtonText: '确定',
+          MessageBox.alert(this.$t('Error') + response.data.errmsg, this.$t('Warning'), {
+            confirmButtonText: this.$t('Confirm'),
             type: 'error'
           })
         })
@@ -329,14 +329,14 @@ export default {
       this.passForm.adminOrderId = this.orderDetail.id
       shopCancelDeliverGoods(this.passForm).then(response => {
         this.$notify.success({
-          title: '成功',
+          title: this.$t('Success!'),
           message: '处理成功'
         })
         this.$router.push({ path: '/repository/list' })
       })
         .catch(response => {
-          MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
-            confirmButtonText: '确定',
+          MessageBox.alert(this.$t('Error') + response.data.errmsg, this.$t('Warning'), {
+            confirmButtonText: this.$t('Confirm'),
             type: 'error'
           })
         })
@@ -345,14 +345,14 @@ export default {
       this.passForm.adminOrderId = this.orderDetail.id
       shopTakeDelivery(this.passForm).then(response => {
         this.$notify.success({
-          title: '成功',
+          title: this.$t('Success!'),
           message: '处理成功'
         })
         this.$router.push({ path: '/repository/list' })
       })
         .catch(response => {
-          MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
-            confirmButtonText: '确定',
+          MessageBox.alert(this.$t('Error') + response.data.errmsg, this.$t('Warning'), {
+            confirmButtonText: this.$t('Confirm'),
             type: 'error'
           })
         })

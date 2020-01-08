@@ -3,32 +3,32 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.goodsId" clearable class="filter-item" style="width: 200px;" placeholder="请输入商品编号"/>
-      <el-button v-permission="['GET /admin/groupon/listRecord']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button
+      <el-input v-model="listQuery.goodsId" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Please_enter_merchandise_ID')"/>
+      <el-button v-permission="['GET /admin/groupon/listRecord']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('Search')}}</el-button>
+<!--      <el-button
         :loading="downloadLoading"
         class="filter-item"
         type="primary"
         icon="el-icon-download"
         @click="handleDownload">导出
-      </el-button>
+      </el-button>-->
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
 
       <el-table-column type="expand">
         <template slot-scope="scope">
           <el-table :data="scope.row.subGroupons" border style="width: 100%">
             <el-table-column align="center" label="订单ID" prop="orderId"/>
-            <el-table-column align="center" label="用户ID" prop="userId"/>
+            <el-table-column align="center" :label="$t('Member_ID')" prop="userId"/>
           </el-table>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="订单ID" prop="groupon.orderId"/>
 
-      <el-table-column align="center" label="用户ID" prop="groupon.userId"/>
+      <el-table-column align="center" :label="$t('Member_ID')" prop="groupon.userId"/>
 
       <el-table-column align="center" label="参与人数" prop="subGroupons.length"/>
 
@@ -49,7 +49,7 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
-    <el-tooltip placement="top" content="返回顶部">
+    <el-tooltip placement="top" :content="$t('Back_to_top')">
       <back-to-top :visibility-height="100"/>
     </el-tooltip>
 

@@ -95,14 +95,14 @@
     </el-card>
     <el-card>
       <div slot="header" class="clearfix">
-        <span>收货地址</span>
+        <span>{{$t('Receiving_Address')}}</span>
       </div>
       <!-- 查询结果 -->
       <el-table :data="userInfo.addressList" border fit highlight-current-row>
         <el-table-column align="center" width="100px" label="地址ID" prop="id" sortable/>
-        <el-table-column align="center" min-width="100px" label="用户ID" prop="userId"/>
+        <el-table-column align="center" min-width="100px" :label="$t('Member_ID')" prop="userId"/>
         <el-table-column align="center" min-width="100px" label="收货人名称" prop="name"/>
-        <el-table-column align="center" min-width="100px" label="手机号码" prop="tel"/>
+        <el-table-column align="center" min-width="100px" :label="$t('Cellphone_number')" prop="tel"/>
         <el-table-column align="center" min-width="300px" label="区域地址">
           <template slot-scope="scope">
             {{ scope.row.province + scope.row.city + scope.row.county }}
@@ -123,33 +123,33 @@
         <span>订单记录</span>
       </div>
       <el-table v-loading="listOrderLoading" :data="orderList" border fit highlight-current-row>
-        <el-table-column align="center" min-width="100" label="订单编号" prop="orderSn"/>
-        <el-table-column align="center" min-width="100" label="门店" prop="shopId">
+        <el-table-column align="center" min-width="100" :label="$t('Order_ID')" prop="orderSn"/>
+        <el-table-column align="center" min-width="100" :label="$t('Store')" prop="shopId">
           <template slot-scope="scope">
             {{getShopName(scope.row.shopId)}}
           </template>
         </el-table-column>
         <el-table-column align="center" min-width="100" label="提交时间" prop="addTime"/>
-        <el-table-column align="center" label="用户账号" prop="userName"/>
-        <el-table-column align="center" label="支付方式" prop="payType">
+        <el-table-column align="center" :label="$t('Member_account')" prop="userName"/>
+        <el-table-column align="center" :label="$t('Payment_method')" prop="payType">
           <template slot-scope="scope">
             <el-tag>{{ scope.row.payType | payTypeFilter }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="订单来源" prop="orderSource">
+        <el-table-column align="center" :label="$t('Source_of_order')" prop="orderSource">
           <template slot-scope="scope">
             <el-tag>{{ scope.row.orderSource | orderSourceFilter }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="订单状态" prop="orderStatus">
+        <el-table-column align="center" :label="$t('Order_status')" prop="orderStatus">
           <template slot-scope="scope">
             <el-tag>{{ scope.row.orderStatus | orderStatusFilter }}</el-tag>
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+        <el-table-column align="center" :label="$t('Operate')" width="200" class-name="small-padding fixed-width">
           <template slot-scope="scope">
-            <el-button v-permission="['GET /admin/order/detail']" type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
+            <el-button v-permission="['GET /admin/order/detail']" type="primary" size="mini" @click="handleDetail(scope.row)">{{$t('Details')}}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -161,10 +161,10 @@
         <span>账户明细</span>
       </div>
       <!-- 查询结果 -->
-      <el-table v-loading="listBillLoading" :data="billList" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-        <el-table-column align="center" width="100px" label="用户ID" prop="id" sortable/>
+      <el-table v-loading="listBillLoading" :data="billList" :element-loading-text="$t('Searching')" border fit highlight-current-row>
+        <el-table-column align="center" width="100px" :label="$t('Member_ID')" prop="id" sortable/>
 
-        <el-table-column align="center" label="用户账号" prop="username"/>
+        <el-table-column align="center" :label="$t('Member_account')" prop="username"/>
 
         <el-table-column align="center" label="会员等级" prop="userLevel">
           <template slot-scope="scope">
@@ -188,20 +188,20 @@
 
 <script>
   const statusMap = {
-    101: '未付款',
-    102: '用户取消',
-    103: '系统取消',
-    201: '已付款',
-    202: '申请退款',
-    203: '已退款',
-    301: '已发货',
-    401: '用户收货',
-    402: '系统收货'
+    101: this.$t('Unpaid1'),
+    102: this.$t('Member_cancelled'),
+    103: this.$t('System_cancelled'),
+    201: this.$t('Paid'),
+    202: this.$t('Apply_for_refund'),
+    203: this.$t('Refunded'),
+    301: this.$t('Sent_for_delivery'),
+    401: this.$t('Member_received'),
+    402: this.$t('System_received')
   }
 
   const payTypeMap = {
-    1: '未支付',
-    2: 'paypal支付'
+    1: this.$('Unpaid'),
+    2: this.$('Paypal')
   }
 
   const orderSourceMap = {

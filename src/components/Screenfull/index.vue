@@ -55,7 +55,7 @@ export default {
     click() {
       if (!screenfull.enabled) {
         this.$message({
-          message: '浏览器不支持全屏',
+          message: this.$t('Browser_does_not_support_full_screen'),
           type: 'warning'
         })
         return false

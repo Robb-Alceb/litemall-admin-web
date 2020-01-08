@@ -5,80 +5,80 @@
       <h3>新增门店</h3>
 
       <el-form ref="shop" :rules="rules" :model="shop" label-width="150px">
-        <el-form-item label="门店名称" prop="name">
+        <el-form-item :label="$t('Store_name')" prop="name">
           <el-input v-model="shop.name"/>
         </el-form-item>
-        <el-form-item label="门店地址" prop="address">
+        <el-form-item :label="$t('Store_address')" prop="address">
           <el-input v-model="shop.address"/>
         </el-form-item>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="经度">
+            <el-form-item :label="$t('Longitude')">
               <el-input v-model="shop.longitude"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="纬度">
+            <el-form-item :label="$t('Latitude')">
               <el-input v-model="shop.latitude"/>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="门店经理" prop="shopManager">
-          <el-select v-model="shopManagerId" placeholder="从成员列表中设置账号为门店经理" clearable>
+        <el-form-item :label="$('Store_Supervisor')" prop="shopManager">
+          <el-select v-model="shopManagerId" :placeholder="$('Change_account_to_store_supervisor_account_in_partner_list')" clearable>
             <el-option v-for="item in shopMembers" :value="item.id" :label="item.nickName"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="门店店长" prop="shopkeeper">
-          <el-select v-model="shopkeeperId" placeholder="从成员列表中设置账号为门店店长" clearable>
+        <el-form-item :label="$t('Store_Manager')" prop="shopkeeper">
+          <el-select v-model="shopkeeperId" :placeholder="$t('Change_account_to_store_manager_account_in_partner_list')" clearable>
             <el-option v-for="item in shopMembers" :value="item.id" :label="item.nickName"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="联系电话" prop="mobile">
+        <el-form-item :label="this.$t('Contact_number')" prop="mobile">
           <el-input v-model="shop.mobile" placeholder="13000000000"/>
         </el-form-item>
-        <el-form-item label="服务时间">
+        <el-form-item :label="$t('Service_hours')">
           <el-col :span="6">
             <el-form-item prop="date1">
-              <el-time-picker v-model="shop.openTime" format="HH:mm" value-format="HH:mm" placeholder="早" style="width: 100%;"/>
+              <el-time-picker v-model="shop.openTime" format="HH:mm" value-format="HH:mm" :placeholder="$t('Morning')" style="width: 100%;"/>
             </el-form-item>
           </el-col>
           <el-col :span="1" class="line" align="center">-</el-col>
           <el-col :span="6">
             <el-form-item prop="date1">
-              <el-time-picker v-model="shop.closeTime" format="HH:mm" value-format="HH:mm" placeholder="晚" style="width: 100%;"/>
+              <el-time-picker v-model="shop.closeTime" format="HH:mm" value-format="HH:mm" :placeholder="$t('Night')" style="width: 100%;"/>
             </el-form-item>
           </el-col>
         </el-form-item>
-        <el-form-item label="门店介绍" prop="description">
+        <el-form-item :label="$t('Store_introduction')" prop="description">
           <el-input v-model="shop.description" type="textarea" placeholder="" autosize/>
         </el-form-item>
-        <el-form-item label="服务范围" prop="range">
+        <el-form-item :label="$t('Service_areas')" prop="range">
           <el-radio-group v-model="limited">
-            <el-radio :label="false">不限制</el-radio>
-            <el-radio :label="true" >服务范围设置</el-radio>
+            <el-radio :label="false">{{$t('Not_limited_to_')}}</el-radio>
+            <el-radio :label="true" >{{$t('Service_area_setting')}}</el-radio>
           </el-radio-group>
-          <el-input v-show="limited" v-model="shop.range" placeholder="服务范围设置">
+          <el-input v-show="limited" v-model="shop.range" :placeholder="$t('Service_area_setting')">
             <template slot="append">KM</template>
           </el-input>
         </el-form-item>
-        <el-form-item label="订单类型">
+        <el-form-item :label="$t('Order_type')">
           <el-checkbox-group v-model="shop.types">
-            <el-checkbox :label="1" >客户自取</el-checkbox>
-            <el-checkbox :label="2" >支持配送</el-checkbox>
+            <el-checkbox :label="1" >{{$t('Customer_self-serve')}}</el-checkbox>
+            <el-checkbox :label="2" >{{$t('Supports_delivery')}}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="运营状态" prop="status">
+        <el-form-item :label="$t('Operation_Status')" prop="status">
           <el-select v-model="shop.status">
-            <el-option :value="1" label="运营中"/>
-            <el-option :value="2" label="歇业中"/>
-            <el-option :value="3" label="装修中"/>
+            <el-option :value="1" :label="$t('Open_for_business')"/>
+            <el-option :value="2" :label="$t('Closed')"/>
+            <el-option :value="3" :label="$t('Renovating')"/>
           </el-select>
         </el-form-item>
       </el-form>
     </el-card>
 
     <div class="op-container">
-      <el-button @click="handleCancel">取消</el-button>
+      <el-button @click="handleCancel">{{$t('Cancel')}}</el-button>
       <el-button v-permission="['POST /admin/shop/create']" type="primary" @click="handleCreate">新增门店</el-button>
     </div>
 
@@ -110,9 +110,9 @@ export default {
       shopMembers: [],
       rules: {
         address: [
-          { required: true, message: '门店地址不能为空', trigger: 'blur' }
+          { required: true, message: this.$t('Store_address_cannot_be_empty'), trigger: 'blur' }
         ],
-        name: [{ required: true, message: '门店名称不能为空', trigger: 'blur' }]
+        name: [{ required: true, message: this.$t('Store_name_cannot_be_empty'), trigger: 'blur' }]
       }
     }
   },
@@ -147,14 +147,14 @@ export default {
           createShop(shop)
             .then(response => {
               this.$notify.success({
-                title: '成功',
-                message: '创建成功'
+                title: this.$t('Success!'),
+                message: this.$t('Creation_successful')
               })
               this.$router.push({ path: '/shop/list' })
             })
             .catch(response => {
-              MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
-                confirmButtonText: '确定',
+              MessageBox.alert(this.$t('Error') + response.data.errmsg, this.$t('Warning'), {
+                confirmButtonText: this.$t('Confirm'),
                 type: 'error'
               })
             })

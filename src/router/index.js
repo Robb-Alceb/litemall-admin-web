@@ -65,7 +65,7 @@ export const constantRouterMap = [
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: '系统首页', icon: 'dashboard', noCache: true }
+        meta: { title: 'System_home_page', icon: 'dashboard', noCache: true }
       }
     ]
   }
@@ -86,7 +86,7 @@ export const asyncRouterMap = [
     alwaysShow: true,
     name: 'shopManage',
     meta: {
-      title: '门店管理',
+      title: 'Store_management',
       icon: 'chart'
     },
     children: [
@@ -96,7 +96,7 @@ export const asyncRouterMap = [
         name: 'list',
         meta: {
           perms: ['GET /admin/shop/list'],
-          title: '门店列表',
+          title: 'Store_management',
           noCache: true
         }
       },
@@ -106,7 +106,7 @@ export const asyncRouterMap = [
         name: 'editShop',
         meta: {
           perms: ['PUT /admin/shop/update', 'GET /admin/shop/detail'],
-          title: '编辑门店',
+          title: 'Edit_stores',
           noCache: true
         },
         hidden: true
@@ -117,7 +117,7 @@ export const asyncRouterMap = [
         name: 'overviewShop',
         meta: {
           perms: ['GET /admin/shop/detail'],
-          title: '门店信息',
+          title: 'Store_details',
           noCache: true
         },
         hidden: true
@@ -128,7 +128,7 @@ export const asyncRouterMap = [
         name: 'createShop',
         meta: {
           perms: ['GET /admin/shop/create'],
-          title: '新增门店',
+          title: 'Add_store',
           noCache: true
         },
         hidden: true
@@ -139,7 +139,7 @@ export const asyncRouterMap = [
         name: 'members',
         meta: {
           perms: ['GET /admin/admin/list'],
-          title: '门店成员',
+          title: 'Store_partners',
           noCache: true
         },
         hidden: true
@@ -150,7 +150,7 @@ export const asyncRouterMap = [
         name: 'shopLogs',
         meta: {
           perms: ['GET /admin/shopLog/list'],
-          title: '门店操作日志',
+          title: 'Store_operation_journals',
           noCache: true
         }
       },
@@ -161,7 +161,7 @@ export const asyncRouterMap = [
         name: 'shopOrderDetail',
         meta: {
           perms: ['POST /admin/shopOrder/orderPass', 'POST /admin/shopOrder/orderNoPass', 'POST /admin/shopOrder/orderPay', 'POST /admin/shopOrder/deliverGoods', 'POST /admin/shopOrder/cancelDeliverGoods', 'POST /admin/shopOrder/takeDelivery'],
-          title: '门店订单处理',
+          title: 'Store_ticket_processing',
           noCache: true
         },
         hidden: true
@@ -172,7 +172,7 @@ export const asyncRouterMap = [
         name: 'shopOrderCreate',
         meta: {
           perms: ['POST /admin/shopOrder/orderApplying'],
-          title: '进货申请',
+          title: 'Purchasing_request',
           noCache: true
         },
         hidden: true
@@ -186,7 +186,7 @@ export const asyncRouterMap = [
     alwaysShow: true,
     name: 'goodsManage',
     meta: {
-      title: '商品管理',
+      title: 'Merchandise_management',
       icon: 'chart'
     },
     children: [
@@ -196,7 +196,7 @@ export const asyncRouterMap = [
         name: 'goodsList',
         meta: {
           perms: ['GET /admin/goods/list'],
-          title: '商品列表',
+          title: 'Goods_list',
           noCache: true
         }
       },
@@ -206,7 +206,7 @@ export const asyncRouterMap = [
         name: 'category',
         meta: {
           perms: ['GET /admin/category/list'],
-          title: '商品分类',
+          title: 'Merchandise_category',
           noCache: true
         }
       },
@@ -216,7 +216,7 @@ export const asyncRouterMap = [
         name: 'goodsCreate',
         meta: {
           perms: ['POST /admin/goods/create'],
-          title: '商品添加',
+          title: 'Add_Goods',
           noCache: true
         },
         hidden: true
@@ -227,7 +227,7 @@ export const asyncRouterMap = [
         name: 'goodsEdit',
         meta: {
           perms: ['POST /admin/goods/update'],
-          title: '商品编辑',
+          title: 'Edit_merchandies',
           noCache: true
         },
         hidden: true
@@ -248,7 +248,7 @@ export const asyncRouterMap = [
         name: 'goodsLogs',
         meta: {
           perms: ['GET /admin/goods/queryGoodsLogList'],
-          title: '商品操作日志',
+          title: 'Merchandise_operation_journals',
           noCache: true
         }
       },
@@ -258,7 +258,7 @@ export const asyncRouterMap = [
         name: 'goodsDetail',
         meta: {
           perms: ['GET /admin/goods/detail'],
-          title: '商品详情',
+          title: 'Merchandise_details',
           noCache: true
         },
         hidden: true
@@ -273,7 +273,7 @@ export const asyncRouterMap = [
     alwaysShow: true,
     name: 'order',
     meta: {
-      title: '订单管理',
+      title: 'Tickets_management',
       icon: 'chart'
     },
     children: [
@@ -283,7 +283,7 @@ export const asyncRouterMap = [
         name: 'orderList',
         meta: {
           perms: ['GET /admin/goods/list', 'POST /admin/goods/delete'],
-          title: '订单列表',
+          title: 'Tickets_list',
           noCache: true
         }
       },
@@ -293,7 +293,7 @@ export const asyncRouterMap = [
         name: 'orderDetail',
         meta: {
           perms: ['GET /admin/order/read'],
-          title: '订单详情',
+          title: 'Order_details',
           noCache: true
         },
         hidden: true
@@ -304,7 +304,7 @@ export const asyncRouterMap = [
         name: 'orderPrint',
         meta: {
           perms: ['GET /admin/order/read'],
-          title: '订单打印',
+          title: 'Print_order',
           noCache: true
         },
         hidden: true
@@ -318,7 +318,7 @@ export const asyncRouterMap = [
     alwaysShow: true,
     name: 'repository',
     meta: {
-      title: '库存管理',
+      title: 'Stock_management',
       icon: 'chart'
     },
     children: [
@@ -338,7 +338,7 @@ export const asyncRouterMap = [
         name: 'shopOrderList',
         meta: {
           perms: ['GET /admin/shopOrder/list'],
-          title: '出库入库列表',
+          title: 'Incoming_and_outgoing_list',
           noCache: true
         }
       },
@@ -348,7 +348,7 @@ export const asyncRouterMap = [
         name: 'merchandise',
         meta: {
           perms: ['GET /admin/merchandise/list'],
-          title: '货品列表',
+          title: 'Merchandise_list',
           noCache: true
         }
       },
@@ -358,7 +358,7 @@ export const asyncRouterMap = [
         name: 'merchandiseCreate',
         meta: {
           perms: ['POST /admin/merchandise/create'],
-          title: '新增货品',
+          title: 'Add_Products',
           noCache: true
         },
         hidden: true
@@ -369,7 +369,7 @@ export const asyncRouterMap = [
         name: 'merchandiseCreate',
         meta: {
           perms: ['POST /admin/merchandise/update'],
-          title: '货品详情',
+          title: 'Product_details',
           noCache: true
         },
         hidden: true
@@ -383,7 +383,7 @@ export const asyncRouterMap = [
     alwaysShow: true,
     name: 'userManage',
     meta: {
-      title: '用户管理',
+      title: 'User_management',
       icon: 'chart'
     },
     children: [
@@ -393,7 +393,7 @@ export const asyncRouterMap = [
         name: 'user',
         meta: {
           perms: ['GET /admin/user/list'],
-          title: '会员管理',
+          title: 'Member_management',
           noCache: true
         }
       },
@@ -403,7 +403,7 @@ export const asyncRouterMap = [
         name: 'address',
         meta: {
           perms: ['GET /admin/address/list'],
-          title: '收货地址',
+          title: 'Receiving_Address',
           noCache: true
         }
       },
@@ -423,7 +423,7 @@ export const asyncRouterMap = [
         name: 'collect',
         meta: {
           perms: ['GET /admin/collect/list'],
-          title: '会员收藏',
+          title: 'Members_collection',
           noCache: true
         }
       },
@@ -433,7 +433,7 @@ export const asyncRouterMap = [
         name: 'footprint',
         meta: {
           perms: ['GET /admin/footprint/list'],
-          title: '会员足迹',
+          title: 'Member_tracking',
           noCache: true
         }
       },
@@ -443,7 +443,7 @@ export const asyncRouterMap = [
         name: 'history',
         meta: {
           perms: ['GET /admin/history/list'],
-          title: '搜索历史',
+          title: 'Search_history',
           noCache: true
         }
       },
@@ -468,7 +468,7 @@ export const asyncRouterMap = [
     alwaysShow: true,
     name: 'promotionManage',
     meta: {
-      title: '活动管理',
+      title: 'Activity_management',
       icon: 'chart'
     },
     children: [
@@ -478,7 +478,7 @@ export const asyncRouterMap = [
         name: 'ad',
         meta: {
           perms: ['GET /admin/ad/list', 'POST /admin/ad/create', 'GET /admin/ad/read', 'POST /admin/ad/update', 'POST /admin/ad/delete'],
-          title: '广告管理',
+          title: 'Advertisememtn_management',
           noCache: true
         }
       },
@@ -488,7 +488,7 @@ export const asyncRouterMap = [
         name: 'coupon',
         meta: {
           perms: ['GET /admin/coupon/list', 'POST /admin/coupon/create', 'POST /admin/coupon/update', 'POST /admin/coupon/delete'],
-          title: '优惠券管理',
+          title: 'Coupon_management',
           noCache: true
         },
       },
@@ -565,7 +565,7 @@ export const asyncRouterMap = [
     alwaysShow: true,
     name: 'statistics',
     meta: {
-      title: '统计分析',
+      title: 'Data_analysis',
       icon: 'chart'
     },
     children: [
@@ -585,7 +585,7 @@ export const asyncRouterMap = [
         name: 'goodsStatistics',
         meta: {
           perms: ['GET /admin/admin/list', 'POST /admin/admin/create', 'POST /admin/admin/update', 'POST /admin/admin/delete'],
-          title: '商品统计',
+          title: 'Merchandise_data',
           noCache: true
         }
       },
@@ -595,7 +595,7 @@ export const asyncRouterMap = [
         name: 'userStatistics',
         meta: {
           perms: ['GET /admin/admin/list', 'POST /admin/admin/create', 'POST /admin/admin/update', 'POST /admin/admin/delete'],
-          title: '用户统计',
+          title: 'User_data',
           noCache: true
         }
       },
@@ -605,7 +605,7 @@ export const asyncRouterMap = [
         name: 'salesStatistics',
         meta: {
           perms: [],
-          title: '销售统计',
+          title: 'Sales_data',
           noCache: true
         }
       }
@@ -618,7 +618,7 @@ export const asyncRouterMap = [
     alwaysShow: true,
     name: 'notice',
     meta: {
-      title: '消息通知',
+      title: 'Notifications',
       icon: 'chart'
     },
     children: [
@@ -628,7 +628,7 @@ export const asyncRouterMap = [
         name: 'messageList',
         meta: {
           perms: ['GET /admin/message/list'],
-          title: '消息列表',
+          title: 'Notification_list',
           noCache: true
         }
       },
@@ -638,7 +638,7 @@ export const asyncRouterMap = [
         name: 'messageCreate',
         meta: {
           perms: ['POST /admin/message/create'],
-          title: '发布消息',
+          title: 'Publish_notification',
           noCache: true
         },
         hidden: true
@@ -652,7 +652,7 @@ export const asyncRouterMap = [
     alwaysShow: true,
     name: 'feedback',
     meta: {
-      title: '用户反馈',
+      title: 'User_feedback',
       icon: 'chart'
     },
     children: [
@@ -662,7 +662,7 @@ export const asyncRouterMap = [
         name: 'feedbackList',
         meta: {
           perms: ['GET /admin/admin/list', 'POST /admin/admin/create', 'POST /admin/admin/update', 'POST /admin/admin/delete'],
-          title: '反馈列表',
+          title: 'Feedback_list',
           noCache: true
         }
       }
@@ -675,7 +675,7 @@ export const asyncRouterMap = [
     alwaysShow: true,
     name: 'sysManage',
     meta: {
-      title: '系统设置',
+      title: 'System_settings',
       icon: 'chart'
     },
     children: [
@@ -685,7 +685,7 @@ export const asyncRouterMap = [
         name: 'admin',
         meta: {
           perms: ['GET /admin/admin/list', 'POST /admin/admin/create', 'POST /admin/admin/update', 'POST /admin/admin/delete'],
-          title: '管理员列表',
+          title: 'Controller_list',
           noCache: true
         }
       },
@@ -695,7 +695,7 @@ export const asyncRouterMap = [
         name: 'adminEdit',
         meta: {
           perms: ['POST /admin/admin/update'],
-          title: '编辑管理员',
+          title: 'Edit_controllers',
           noCache: true
         },
         hidden: true
@@ -706,7 +706,7 @@ export const asyncRouterMap = [
         name: 'adminEdit',
         meta: {
           perms: ['POST /admin/admin/create'],
-          title: '新增管理员',
+          title: 'Add_controllers',
           noCache: true
         },
         hidden: true
@@ -718,7 +718,7 @@ export const asyncRouterMap = [
         name: 'log',
         meta: {
           perms: ['GET /admin/log/list'],
-          title: '操作日志',
+          title: 'Operating_Journals',
           noCache: true
         }
       },
@@ -728,7 +728,7 @@ export const asyncRouterMap = [
         name: 'role',
         meta: {
           perms: ['GET /admin/role/list', 'POST /admin/role/create', 'POST /admin/role/update', 'POST /admin/role/delete'],
-          title: '角色列表',
+          title: 'Roles_list',
           noCache: true
         }
       },
@@ -738,7 +738,7 @@ export const asyncRouterMap = [
         name: 'role',
         meta: {
           perms: ['GET /admin/role/permissions', 'POST /admin/role/permissions'],
-          title: '角色权限',
+          title: 'Roles_access',
           noCache: true
         },
         hidden: true
@@ -749,7 +749,7 @@ export const asyncRouterMap = [
         name: 'os',
         meta: {
           perms: ['GET /admin/storage/list', 'POST /admin/storage/create', 'POST /admin/storage/update', 'POST /admin/storage/delete'],
-          title: '对象存储',
+          title: 'Target_save',
           noCache: true
         }
       }
@@ -904,7 +904,7 @@ export const asyncRouterMap = [
         path: 'password',
         component: () => import('@/views/profile/password'),
         name: 'password',
-        meta: { title: '修改密码', noCache: true }
+        meta: { title: 'Change_password', noCache: true }
       }
     ],
     hidden: true

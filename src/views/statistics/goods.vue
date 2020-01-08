@@ -2,16 +2,16 @@
   <div class="app-container">
     <el-card>
       <div slot="header" class="clearfix">
-        <span>商品统计</span>
+        <span>{{$t('Merchandise_data')}}</span>
       </div>
       <el-row style="margin-bottom: 20px;">
-        <el-select v-model="queryParam.shopId" clearable placeholder="请选择门店" @change="getData">
+        <el-select v-model="queryParam.shopId" clearable :placeholder="$t('Please_select_store_')" @change="getData">
           <el-option v-for="item in shops" :value="item.id" :label="item.name"></el-option>
         </el-select>
       </el-row>
       <el-card>
         <div slot="header" class="clearfix">
-          <span>商品类目销售分析</span>
+          <span>{{$t('Merchandise_category_sales_data')}}</span>
           <div style="display: inline;float: right;">
             <div style="display: inline;float: right;" class="block">
               <el-date-picker
@@ -22,7 +22,7 @@
                 @change="handleDateChange"
                 format="yyyy-MM-dd HH:mm"
                 value-format="yyyy-MM-dd HH:mm"
-                placeholder="选择日期"/>
+                :placeholder="this.$t('Select_dates')"/>
             </div>
           </div>
 <!--          <div style="display: inline;float: right;">
@@ -42,7 +42,7 @@
       </el-card>
       <el-card>
         <div slot="header" class="clearfix">
-          <span>商品销售情况</span>
+          <span>{{$t('Merchandise_sales')}}</span>
           <div style="display: inline;float: right;">
             <div style="display: inline;float: right;" class="block">
               <el-date-picker
@@ -53,7 +53,7 @@
                 format="yyyy-MM-dd HH:mm"
                 value-format="yyyy-MM-dd HH:mm"
                 @change="handleSaleDateChange"
-                placeholder="选择日期"/>
+                :placeholder="this.$t('Select_dates')"/>
             </div>
           </div>
 <!--          <div style="display: inline;float: right;">
@@ -61,23 +61,23 @@
           </div>-->
         </div>
         <el-row>
-          <el-table v-if="listQuery.type == '1'" v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-            <el-table-column align="center" label="商品名称" prop="goodsName"/>
-            <el-table-column align="center" label="浏览量" prop="browseNum"/>
-            <el-table-column align="center" label="浏览人数" prop="browseUserNum"/>
-            <el-table-column align="center" label="付款人数" prop="payUserNum"/>
-            <el-table-column align="center" label="单品转化率" prop="goodsConversionRate"/>
-            <el-table-column align="center" label="件数" prop="salesNum"/>
-            <el-table-column align="center" label="金额" prop="actualPrice"/>
+          <el-table v-if="listQuery.type == '1'" v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
+            <el-table-column align="center" :label="$t('Merchandise_name')" prop="goodsName"/>
+            <el-table-column align="center" :label="$t('Viewership')" prop="browseNum"/>
+            <el-table-column align="center" :label="$t('Number_of_views')" prop="browseUserNum"/>
+            <el-table-column align="center" :label="$t('Number_of_paying_customers')" prop="payUserNum"/>
+            <el-table-column align="center" :label="$t('Item_turnover_rate')" prop="goodsConversionRate"/>
+            <el-table-column align="center" :label="$t('Units')" prop="salesNum"/>
+            <el-table-column align="center" :label="$t('Amount')" prop="actualPrice"/>
           </el-table>
-          <el-table v-else v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-            <el-table-column align="center" label="类目名称" prop="categoryName"/>
-            <el-table-column align="center" label="浏览量" prop="browseNum"/>
-            <el-table-column align="center" label="浏览人数" prop="browseUserNum"/>
-            <el-table-column align="center" label="付款人数" prop="payUserNum"/>
-            <el-table-column align="center" label="单品转化率" prop="goodsConversionRate"/>
-            <el-table-column align="center" label="件数" prop="salesNum"/>
-            <el-table-column align="center" label="金额" prop="actualPrice"/>
+          <el-table v-else v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
+            <el-table-column align="center" :label="$t('Category_Name')" prop="categoryName"/>
+            <el-table-column align="center" :label="$t('Viewership')" prop="browseNum"/>
+            <el-table-column align="center" :label="$t('Number_of_views')" prop="browseUserNum"/>
+            <el-table-column align="center" :label="$t('Number_of_paying_customers')" prop="payUserNum"/>
+            <el-table-column align="center" :label="$t('Item_turnover_rate')" prop="goodsConversionRate"/>
+            <el-table-column align="center" :label="$t('Units')" prop="salesNum"/>
+            <el-table-column align="center" :label="$t('Amount')" prop="actualPrice"/>
           </el-table>
 
         </el-row>
@@ -126,7 +126,7 @@ export default {
       activeTable: '1',
       pickerOptions: {
         shortcuts: [{
-          text: '昨天',
+          text: this.$t('Yesterday'),
           onClick(picker) {
             const end = new Date();
             const start = new Date();
@@ -134,7 +134,7 @@ export default {
             picker.$emit('pick', [start, end]);
           }
         },{
-          text: '最近一周',
+          text: this.$t('Last_7_days'),
           onClick(picker) {
             const end = new Date();
             const start = new Date();
@@ -142,7 +142,7 @@ export default {
             picker.$emit('pick', [start, end]);
           }
         }, {
-          text: '最近一个月',
+          text: this.$t('Last_month'),
           onClick(picker) {
             const end = new Date();
             const start = new Date();

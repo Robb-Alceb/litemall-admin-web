@@ -3,21 +3,21 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.userId" clearable class="filter-item" style="width: 200px;" placeholder="请输入用户ID"/>
+      <el-input v-model="listQuery.userId" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Please_enter_member_ID')"/>
       <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入收货人名称"/>
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('Search')}}</el-button>
+<!--      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{$t('Find')}}</el-button>-->
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
       <el-table-column align="center" width="100px" label="地址ID" prop="id" sortable/>
 
-      <el-table-column align="center" min-width="100px" label="用户ID" prop="userId"/>
+      <el-table-column align="center" min-width="100px" :label="$t('Member_ID')" prop="userId"/>
 
       <el-table-column align="center" min-width="100px" label="收货人名称" prop="name"/>
 
-      <el-table-column align="center" min-width="100px" label="手机号码" prop="tel"/>
+      <el-table-column align="center" min-width="100px" :label="$t('Cellphone_number')" prop="tel"/>
 
       <el-table-column align="center" min-width="300px" label="区域地址">
         <template slot-scope="scope">

@@ -4,14 +4,14 @@
     <!-- 查询和其他操作 -->
     <div class="filter-container">
       <el-input v-model="listQuery.username" clearable class="filter-item" style="width: 200px;" placeholder="请输入用户账号"/>
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('Search')}}</el-button>
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-      <el-table-column align="center" width="100px" label="用户ID" prop="id" sortable/>
+    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
+      <el-table-column align="center" width="100px" :label="$t('Member_ID')" prop="id" sortable/>
 
-      <el-table-column align="center" label="用户账号" prop="username"/>
+      <el-table-column align="center" :label="$t('Member_account')" prop="username"/>
 
       <el-table-column align="center" label="会员等级" prop="userLevel">
         <template slot-scope="scope">

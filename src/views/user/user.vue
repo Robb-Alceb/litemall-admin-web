@@ -5,13 +5,13 @@
     <div class="filter-container">
       <el-input v-model="listQuery.username" clearable class="filter-item" style="width: 200px;" placeholder="请输入用户名"/>
 <!--      <el-input v-model="listQuery.mobile" clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号"/>-->
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-<!--      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>-->
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('Search')}}</el-button>
+<!--      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{$t('Find')}}</el-button>-->
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-      <el-table-column align="center" width="100px" label="用户ID" prop="id" sortable/>
+    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
+      <el-table-column align="center" width="100px" :label="$t('Member_ID')" prop="id" sortable/>
 
       <el-table-column align="center" label="用户名" prop="username"/>
 
@@ -31,9 +31,9 @@
 
       <el-table-column align="center" label="可用积分" prop="status"/>
 
-      <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+      <el-table-column align="center" :label="$t('Operate')" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-permission="['GET /admin/user/detail']" type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
+          <el-button v-permission="['GET /admin/user/detail']" type="primary" size="mini" @click="handleDetail(scope.row)">{{$t('Details')}}</el-button>
         </template>
       </el-table-column>
 <!--
@@ -83,7 +83,7 @@ export default {
       downloadLoading: false,
       genderDic: ['未知', '男', '女'],
       levelDic: ['普通会员', '白银会员', '黄金会员', '铂金会员', '钻石会员'],
-      statusDic: ['可用', '禁用', '注销']
+      statusDic: [this.$t('Usable'), '禁用', '注销']
     }
   },
   created() {

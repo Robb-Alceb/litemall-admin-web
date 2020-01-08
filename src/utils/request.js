@@ -33,7 +33,7 @@ service.interceptors.response.use(
 
     if (res.errno === 501) {
       MessageBox.alert('系统未登录，请重新登录', '错误', {
-        confirmButtonText: '确定',
+        confirmButtonText: this.$t('Confirm'),
         type: 'error'
       }).then(() => {
         store.dispatch('FedLogOut').then(() => {
@@ -43,31 +43,31 @@ service.interceptors.response.use(
       return Promise.reject('error')
     } else if (res.errno === 502) {
       MessageBox.alert('系统内部错误，请联系管理员维护', '错误', {
-        confirmButtonText: '确定',
+        confirmButtonText: this.$t('Confirm'),
         type: 'error'
       })
       return Promise.reject('error')
     } else if (res.errno === 503) {
-      MessageBox.alert('请求业务目前未支持', '警告', {
-        confirmButtonText: '确定',
+      MessageBox.alert('请求业务目前未支持', this.$t('Warning'), {
+        confirmButtonText: this.$t('Confirm'),
         type: 'error'
       })
       return Promise.reject('error')
     } else if (res.errno === 504) {
-      MessageBox.alert('更新数据已经失效，请刷新页面重新操作', '警告', {
-        confirmButtonText: '确定',
+      MessageBox.alert('更新数据已经失效，请刷新页面重新操作', this.$t('Warning'), {
+        confirmButtonText: this.$t('Confirm'),
         type: 'error'
       })
       return Promise.reject('error')
     } else if (res.errno === 505) {
-      MessageBox.alert('更新失败，请再尝试一次', '警告', {
-        confirmButtonText: '确定',
+      MessageBox.alert('更新失败，请再尝试一次', this.$t('Warning'), {
+        confirmButtonText: this.$t('Confirm'),
         type: 'error'
       })
       return Promise.reject('error')
     } else if (res.errno === 506) {
       MessageBox.alert('没有操作权限，请联系管理员授权', '错误', {
-        confirmButtonText: '确定',
+        confirmButtonText: this.$t('Confirm'),
         type: 'error'
       })
       return Promise.reject('error')

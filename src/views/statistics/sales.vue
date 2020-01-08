@@ -2,16 +2,16 @@
   <div class="app-container">
     <el-card>
       <div slot="header" class="clearfix">
-        <span>销售统计</span>
+        <span>{{$t('Sales_data')}}</span>
       </div>
       <el-row style="margin-bottom: 20px;">
-        <el-select v-model="queryParam.shopId" clearable placeholder="请选择门店" @change="handleShopChange">
+        <el-select v-model="queryParam.shopId" clearable :placeholder="$t('Please_select_store_')" @change="handleShopChange">
           <el-option v-for="item in shops" :value="item.id" :label="item.name"></el-option>
         </el-select>
       </el-row>
       <el-card>
         <div slot="header" class="clearfix">
-          <span>交易数据</span>
+          <span>{{$t('Transaction_data')}}</span>
           <div style="display: inline;float: right;">
             <div style="display: inline;float: right;" class="block">
               <el-date-picker
@@ -22,7 +22,7 @@
                 @change="handleDateChange"
                 format="yyyy-MM-dd HH:mm"
                 value-format="yyyy-MM-dd HH:mm"
-                placeholder="选择日期"/>
+                :placeholder="this.$t('Select_dates')"/>
             </div>
           </div>
 <!--          <div style="display: inline;float: right;">
@@ -33,12 +33,12 @@
           <el-col :span="16">
             <div class="table-layout">
               <el-row>
-                <el-col :span="4" class="table-cell-title">浏览人数</el-col>
-                <el-col :span="4" class="table-cell-title">下单人数</el-col>
-                <el-col :span="4" class="table-cell-title">订单数</el-col>
-                <el-col :span="4" class="table-cell-title">下单件数</el-col>
-                <el-col :span="4" class="table-cell-title">有效订单数</el-col>
-                <el-col :span="4" class="table-cell-title">下单金额</el-col>
+                <el-col :span="4" class="table-cell-title">{{$t('Number_of_views')}}</el-col>
+                <el-col :span="4" class="table-cell-title">{{$t('Number_of_people_order')}}</el-col>
+                <el-col :span="4" class="table-cell-title">{{$t('Number_of_orders')}}</el-col>
+                <el-col :span="4" class="table-cell-title">{{$t('Number_of_items_ordered')}}</el-col>
+                <el-col :span="4" class="table-cell-title">{{$t('Valid_orders')}}</el-col>
+                <el-col :span="4" class="table-cell-title">{{$t('Order_value')}}</el-col>
               </el-row>
               <el-row>
                 <el-col :span="4" class="table-cell">{{statistics.browseUserNum}}</el-col>
@@ -49,12 +49,12 @@
                 <el-col :span="4" class="table-cell">{{statistics.orderPrice}}</el-col>
               </el-row>
               <el-row>
-                <el-col :span="4" class="table-cell-title">退款金额</el-col>
-                <el-col :span="4" class="table-cell-title">付款人数</el-col>
-                <el-col :span="4" class="table-cell-title">付款订单数</el-col>
-                <el-col :span="4" class="table-cell-title">付款件数</el-col>
-                <el-col :span="4" class="table-cell-title">付款金额</el-col>
-                <el-col :span="4" class="table-cell-title">客单价</el-col>
+                <el-col :span="4" class="table-cell-title">{{$t('Refunded_amount')}}</el-col>
+                <el-col :span="4" class="table-cell-title">{{$t('Number_of_paying_customers')}}</el-col>
+                <el-col :span="4" class="table-cell-title">{{$t('Orders_paid')}}</el-col>
+                <el-col :span="4" class="table-cell-title">{{$t('Items_paid')}}</el-col>
+                <el-col :span="4" class="table-cell-title">{{$t('Items_value')}}</el-col>
+                <el-col :span="4" class="table-cell-title">{{$t('Customer_to_tickets_ratio')}}</el-col>
               </el-row>
               <el-row>
                 <el-col :span="4" class="table-cell">{{statistics.refundPrice}}</el-col>
@@ -74,7 +74,7 @@
       <el-card>
 
             <div slot="header" class="clearfix">
-              <span>交易数据</span>
+              <span>{{$t('Transaction_data')}}</span>
               <div style="display: inline;float: right;">
                 <div style="display: inline;float: right;" class="block">
                   <el-date-picker
@@ -85,7 +85,7 @@
                     @change="handleSaleDateChange"
                     format="yyyy-MM-dd HH:mm"
                     value-format="yyyy-MM-dd HH:mm"
-                    placeholder="选择日期"/>
+                    :placeholder="this.$t('Select_dates')"/>
                 </div>
               </div>
 <!--              <div style="display: inline;float: right;">
@@ -138,7 +138,7 @@
         },
         pickerOptions: {
           shortcuts: [{
-            text: '昨天',
+            text: this.$t('Yesterday'),
             onClick(picker) {
               const end = new Date();
               const start = new Date();
@@ -146,7 +146,7 @@
               picker.$emit('pick', [start, end]);
             }
           },{
-            text: '最近一周',
+            text: this.$t('Last_7_days'),
             onClick(picker) {
               const end = new Date();
               const start = new Date();
@@ -154,7 +154,7 @@
               picker.$emit('pick', [start, end]);
             }
           }, {
-            text: '最近一个月',
+            text: this.$t('Last_month'),
             onClick(picker) {
               const end = new Date();
               const start = new Date();

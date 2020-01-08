@@ -3,38 +3,38 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.merchandiseSn" clearable class="filter-item" style="width: 200px;" placeholder="货号"/>
-      <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="货品名称"/>
-      <el-button v-permission="['GET /admin/merchandise/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button v-permission="['POST /admin/merchandise/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-      <el-button v-permission="['POST /admin/shopOrder/orderApplying']" v-shop="true" class="filter-item" type="primary" icon="el-icon-edit" @click="handleGetAllmerchandise">货品申请</el-button>
-<!--      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>-->
+      <el-input v-model="listQuery.merchandiseSn" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Merchandise_number')"/>
+      <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Product_name')"/>
+      <el-button v-permission="['GET /admin/merchandise/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('Search')}}</el-button>
+      <el-button v-permission="['POST /admin/merchandise/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">{{$t('Add')}}</el-button>
+      <el-button v-permission="['POST /admin/shopOrder/orderApplying']" v-shop="true" class="filter-item" type="primary" icon="el-icon-edit" @click="handleGetAllmerchandise">{{$t('Restock_request')}}</el-button>
+<!--      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{$t('Find')}}</el-button>-->
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
 
-      <el-table-column align="center" min-width="100" label="货号" prop="merchandiseSn"/>
+      <el-table-column align="center" min-width="100" :label="$t('Merchandise_number')" prop="merchandiseSn"/>
 
-      <el-table-column align="center" min-width="100" label="货品名称" prop="name"/>
+      <el-table-column align="center" min-width="100" :label="$t('Product_name')" prop="name"/>
 
-      <el-table-column align="center" min-width="100" label="货品图片" prop="picUrl">
+      <el-table-column align="center" min-width="100" :label="$t('Merchandise_picture')" prop="picUrl">
         <template slot-scope="scope">
           <img :src="scope.row.picUrl" width="40">
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="价格" prop="sellingPrice"/>
+      <el-table-column align="center" :label="$t('Price')" prop="sellingPrice"/>
 
-      <el-table-column align="center" label="数量" prop="number"/>
+      <el-table-column align="center" :label="$t('Number')" prop="number"/>
 
       <el-table-column align="center" label="单位" prop="unit"/>
 
-      <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+      <el-table-column align="center" :label="$t('Operate')" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-shop="false" v-permission="['GET /admin/merchandise/list']" type="primary" size="mini" @click="handleAdd(scope.row)">补充</el-button>
-          <el-button v-shop="true" v-permission="['GET /admin/merchandise/list']" type="primary" size="mini" @click="handleApplying(scope.row)">补充</el-button>
-          <el-button v-permission="['GET /admin/merchandise/update']" type="primary" size="mini" @click="handleEdit(scope.row)">详情</el-button>
+          <el-button v-shop="false" v-permission="['GET /admin/merchandise/list']" type="primary" size="mini" @click="handleAdd(scope.row)">{{$t('Additional_comments')}}</el-button>
+          <el-button v-shop="true" v-permission="['GET /admin/merchandise/list']" type="primary" size="mini" @click="handleApplying(scope.row)">{{$t('Additional_comments')}}</el-button>
+          <el-button v-permission="['GET /admin/merchandise/update']" type="primary" size="mini" @click="handleEdit(scope.row)">{{$t('Details')}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -49,38 +49,38 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="shipDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="confirmAdd">确定</el-button>
+        <el-button @click="shipDialogVisible = false">{{$t('Cancel')}}</el-button>
+        <el-button type="primary" @click="confirmAdd">{{$t('Confirm')}}</el-button>
       </div>
     </el-dialog>
 
     <el-dialog :visible.sync="merchandiseHQDialogVisible" title="总部货品列表">
-      <el-table :data="merchandiseHQlist" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+      <el-table :data="merchandiseHQlist" :element-loading-text="$t('Searching')" border fit highlight-current-row>
 
-        <el-table-column align="center" min-width="100" label="货号" prop="merchandiseSn"/>
+        <el-table-column align="center" min-width="100" :label="$t('Merchandise_number')" prop="merchandiseSn"/>
 
-        <el-table-column align="center" min-width="100" label="货品名称" prop="name"/>
+        <el-table-column align="center" min-width="100" :label="$t('Product_name')" prop="name"/>
 
-        <el-table-column align="center" min-width="100" label="货品图片" prop="picUrl">
+        <el-table-column align="center" min-width="100" :label="$t('Merchandise_picture')" prop="picUrl">
           <template slot-scope="scope">
             <img :src="scope.row.picUrl" width="40">
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="价格" prop="sellingPrice"/>
+        <el-table-column align="center" :label="$t('Price')" prop="sellingPrice"/>
 
-        <el-table-column align="center" label="数量" prop="number"/>
+        <el-table-column align="center" :label="$t('Number')" prop="number"/>
 
         <el-table-column align="center" label="单位" prop="unit"/>
 
-        <el-table-column align="center" label="操作" width="100" class-name="small-padding fixed-width">
+        <el-table-column align="center" :label="$t('Operate')" width="100" class-name="small-padding fixed-width">
           <template slot-scope="scope">
-            <el-button v-permission="['GET /admin/merchandise/all']" type="primary" @click="handleApplying(scope.row)">货品申请</el-button>
+            <el-button v-permission="['GET /admin/merchandise/all']" type="primary" @click="handleApplying(scope.row)">{{$t('Restock_request')}}</el-button>
           </template>
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="merchandiseHQDialogVisible = false">取消</el-button>
+        <el-button @click="merchandiseHQDialogVisible = false">{{$t('Cancel')}}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -115,8 +115,8 @@ export default {
       },
       rules: {
         number: [
-          { required: true, message: '数量不能为空', trigger: 'change' },
-          { type: 'number', message: '数量必须为数字', trigger: 'change' }
+          { required: true, message: this.$t('Amount_cannot_be_empty'), trigger: 'change' },
+          { type: 'number', message: this.$t('Amount_must_be_a_number'), trigger: 'change' }
         ]
       },
       list: [],
@@ -156,15 +156,15 @@ export default {
         if (valid) {
           merchandiseAddNumber(this.merchandiseForm).then(response => {
             this.$notify.success({
-              title: '成功',
+              title: this.$t('Success!'),
               message: '修改成功'
             })
             this.shipDialogVisible = false
             this.getList()
           })
             .catch(response => {
-              MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
-                confirmButtonText: '确定',
+              MessageBox.alert(this.$t('Error') + response.data.errmsg, this.$t('Warning'), {
+                confirmButtonText: this.$t('Confirm'),
                 type: 'error'
               })
             })

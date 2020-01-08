@@ -3,29 +3,29 @@
 
 
     <el-card class="box-card">
-      <h4>基本信息</h4>
+      <h4>{{$t('Basic_Information')}}</h4>
       <el-form ref="goods" :rules="rules" :model="goods" label-width="150px">
-        <el-form-item label="所属分类">
+        <el-form-item :label="$t('Category')">
           <el-cascader :options="categoryList" v-model="categoryIds" expand-trigger="hover" @change="handleCategoryChange"/>
         </el-form-item>
-        <el-form-item label="所属门店">
+        <el-form-item :label="$t('Store_belong')">
           <el-select v-model="goods.shopId">
             <el-option v-for="item in shops" :value="item.id" :label="item.name"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="商品编号" prop="goodsSn">
+        <el-form-item :label="$t('Merchandise_code')" prop="goodsSn">
           <el-input v-model="goods.goodsSn"/>
         </el-form-item>
-        <el-form-item label="商品名称" prop="name">
+        <el-form-item :label="$t('Merchandise_name')" prop="name">
           <el-input v-model="goods.name"/>
         </el-form-item>
-        <el-form-item label="副标题" prop="subhead">
+        <el-form-item :label="$t('Subtitle')" prop="subhead">
           <el-input v-model="goods.subhead"/>
         </el-form-item>
-        <el-form-item label="商品简介">
+        <el-form-item :label="$t('About_the_merchandise')">
           <el-input v-model="goods.brief"/>
         </el-form-item>
-        <el-form-item label="商品图片">
+        <el-form-item :label="$t('Goods_picture')">
           <el-upload
             :headers="headers"
             :action="uploadPath"
@@ -38,7 +38,7 @@
           </el-upload>
         </el-form-item>
 
-        <el-form-item label="宣传画廊">
+        <el-form-item :label="$t('Gallery')">
           <el-upload
             :action="uploadPath"
             :headers="headers"
@@ -53,85 +53,85 @@
             <i class="el-icon-plus"/>
           </el-upload>
         </el-form-item>
-        <el-form-item label="商品详细介绍">
+        <el-form-item :label="$t('Goods_details')">
           <editor :init="editorInit" v-model="goods.detail"/>
         </el-form-item>
-        <el-form-item label="商品类型" prop="goodsType">
+        <el-form-item :label="$t('Goods_category')" prop="goodsType">
           <el-radio-group v-model="goods.goodsType">
-            <el-radio :label="1">普通商品</el-radio>
-            <el-radio :label="2">商品原料</el-radio>
-            <el-radio :label="3">特殊商品</el-radio>
+            <el-radio :label="1">{{$t('Normal_merchandise')}}</el-radio>
+            <el-radio :label="2">{{$t('Merchandise_material')}}</el-radio>
+            <el-radio :label="3">{{$t('Speical_merchandise')}}</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
     </el-card>
     <el-card class="box-card">
-      <h4>库存规格</h4>
+      <h4>{{$t('Storage_specifications')}}</h4>
       <el-form ref="productForm" :rules="productRules" :model="productForm" label-width="150px">
-        <el-form-item label="商品库存" prop="number">
+        <el-form-item :label="$t('Merchandise_stock')" prop="number">
           <el-input v-model.number="productForm.number"/>
         </el-form-item>
-        <el-form-item label="商品售价" prop="sellPrice">
+        <el-form-item :label="$t('Merchandise_sale_price')" prop="sellPrice">
           <el-input v-model="productForm.sellPrice">
-            <template slot="append">元</template>
+            <template slot="append">{{$t('Dollars')}}</template>
           </el-input>
         </el-form-item>
-        <el-form-item label="商品税率" prop="tax">
+        <el-form-item :label="$t('Merchandise_Tax')" prop="tax">
           <el-input v-model="productForm.tax">
             <template slot="append">%</template>
           </el-input>
         </el-form-item>
-        <el-form-item label="商品进货价" prop="costPrice">
+        <el-form-item :label="$t('Cost_of_merchandise')" prop="costPrice">
           <el-input v-model="productForm.costPrice">
-            <template slot="append">元</template>
+            <template slot="append">{{$t('Dollars')}}</template>
           </el-input>
         </el-form-item>
-        <el-form-item label="商品预警值" prop="earlyWarningValue">
+        <el-form-item :label="$t('Merchandise_warning')" prop="earlyWarningValue">
           <el-input v-model.number="productForm.earlyWarningValue"/>
         </el-form-item>
       </el-form>
     </el-card>
     <el-card class="box-card">
-      <h4>商品规格</h4>
-      <el-button :plain="true" type="primary" @click="handleSpecificationShow">添加</el-button>
+      <h4>{{$t('Goods_specifications')}}</h4>
+      <el-button :plain="true" type="primary" @click="handleSpecificationShow">{{$t('Add')}}</el-button>
 
       <el-table :data="specifications">
-        <el-table-column property="specification" label="规格名" />
-        <el-table-column property="value" label="规格值" >
+        <el-table-column property="specification" :label="$t('Specification_name')" />
+        <el-table-column property="value" :label="$t('Specification_value')" >
           <template slot-scope="scope">
             <el-tag type="primary">
               {{ scope.row.value }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column property="price" label="规格额外价格" >
+        <el-table-column property="price" :label="$t('Cost_outside_of_specification')" >
         </el-table-column>
-        <el-table-column property="picUrl" label="规格图片">
+        <el-table-column property="picUrl" :label="$t('Specification_images')">
           <template slot-scope="scope">
             <img v-if="scope.row.picUrl" :src="scope.row.picUrl" width="40">
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作" width="250" class-name="small-padding fixed-width">
+        <el-table-column align="center" :label="$t('Operate')" width="250" class-name="small-padding fixed-width">
           <template slot-scope="scope">
-            <el-button type="danger" size="mini" @click="handleSpecificationDelete(scope.row)">删除</el-button>
+            <el-button type="danger" size="mini" @click="handleSpecificationDelete(scope.row)">{{$t('Delete')}}</el-button>
           </template>
         </el-table-column>
       </el-table>
 
-      <el-dialog :visible.sync="specVisiable" title="设置规格">
+      <el-dialog :visible.sync="specVisiable" :title="$t('Specification_settings')">
         <el-form ref="specForm" :rules="rules" :model="specForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
-          <el-form-item label="规格名" prop="specification">
+          <el-form-item :label="$t('Specification_name')" prop="specification">
             <el-input v-model="specForm.specification"/>
           </el-form-item>
-          <el-form-item label="规格值" prop="value">
+          <el-form-item :label="$t('Specification_value')" prop="value">
             <el-input v-model="specForm.value"/>
           </el-form-item>
-          <el-form-item label="规格额外价格" prop="price">
+          <el-form-item :label="$t('Cost_outside_of_specification')" prop="price">
             <el-input v-model="specForm.price">
-              <template slot="append">元</template>
+              <template slot="append">{{$t('Dollars')}}</template>
             </el-input>
           </el-form-item>
-          <el-form-item label="规格图片" prop="picUrl">
+          <el-form-item :label="$t('Specification_images')" prop="picUrl">
             <el-upload
               :headers="headers"
               :action="uploadPath"
@@ -145,34 +145,34 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="specVisiable = false">取消</el-button>
-          <el-button type="primary" @click="handleSpecificationAdd">确定</el-button>
+          <el-button @click="specVisiable = false">{{$t('Cancel')}}</el-button>
+          <el-button type="primary" @click="handleSpecificationAdd">{{$t('Confirm')}}</el-button>
         </div>
       </el-dialog>
     </el-card>
     <el-card class="box-card">
-      <h4>其他信息</h4>
+      <h4>{{$t('Other_information')}}</h4>
       <el-form ref="goods" :rules="rules" :model="goods" label-width="150px">
-        <el-form-item label="购买时赠送积分" prop="giveAwayPoints">
+        <el-form-item :label="$t('Points_earned_after_purchase')" prop="giveAwayPoints">
           <el-input v-model.number="goods.giveAwayPoints"/>
         </el-form-item>
-<!--        <el-form-item label="商品上架" prop="isOnSale">
+<!--        <el-form-item :label="$t('Merchandise_launch')" prop="isOnSale">
           <el-switch v-model="goods.isOnSale" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
         </el-form-item>-->
-        <el-form-item label="商品标签">
-          <el-checkbox :value="true" v-model="goods.isNew">新品</el-checkbox>
-          <el-checkbox :value="true" v-model="goods.isHot">推荐</el-checkbox>
+        <el-form-item :label="$t('Merchandise_label')">
+          <el-checkbox :value="true" v-model="goods.isNew">{{$t('New_product')}}</el-checkbox>
+          <el-checkbox :value="true" v-model="goods.isHot">{{$t('Recommendation')}}</el-checkbox>
         </el-form-item>
-        <el-form-item label="商品服务" prop="isReturn">
+        <el-form-item :label="$t('Services')" prop="isReturn">
           <el-radio-group v-model="goods.isReturn">
-            <el-radio :label="true">支持退换</el-radio>
-            <el-radio :label="false">不支持退换</el-radio>
+            <el-radio :label="true">{{$t('Refundable')}}</el-radio>
+            <el-radio :label="false">{{$t('Non-refundable')}}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="配送服务" prop="distributionFee">
+        <el-form-item :label="$t('Delivery_Services')" prop="distributionFee">
           <el-radio-group v-model="goods.isDistribution">
-            <el-radio :label="false">免配送费</el-radio>
-            <el-radio :label="true" >配送费</el-radio>
+            <el-radio :label="false">{{$t('Delivery_Free')}}</el-radio>
+            <el-radio :label="true" >{{$t('Delivery_Fee')}}</el-radio>
           </el-radio-group>
           <el-input v-show="goods.isDistribution" v-model="goods.distributionFee" placeholder="配送费"></el-input>
         </el-form-item>
@@ -180,114 +180,114 @@
     </el-card>
 
     <el-card class="box-card">
-      <h4>商品参数</h4>
-      <el-button :plain="true" type="primary" @click="handleAttributeShow">添加</el-button>
+      <h4>{{$t('Merchandise_Parameters')}}</h4>
+      <el-button :plain="true" type="primary" @click="handleAttributeShow">{{$t('Add')}}</el-button>
       <el-table :data="attributes">
-        <el-table-column property="attribute" label="商品参数名称"/>
-        <el-table-column property="value" label="商品参数值"/>
-        <el-table-column align="center" label="操作" width="100" class-name="small-padding fixed-width">
+        <el-table-column property="attribute" :label="$t('Merchandise_parameter_names')"/>
+        <el-table-column property="value" :label="$t('Merchandise_parameter_values')"/>
+        <el-table-column align="center" :label="$t('Operate')" width="100" class-name="small-padding fixed-width">
           <template slot-scope="scope">
-            <el-button type="danger" size="mini" @click="handleAttributeDelete(scope.row)">删除</el-button>
+            <el-button type="danger" size="mini" @click="handleAttributeDelete(scope.row)">{{$t('Delete')}}</el-button>
           </template>
         </el-table-column>
       </el-table>
 
-      <el-dialog :visible.sync="attributeVisiable" title="设置商品参数">
+      <el-dialog :visible.sync="attributeVisiable" :title="$t('Set_merchandise_parameter_values')">
         <el-form ref="attributeForm" :model="attributeForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
-          <el-form-item label="商品参数名称" prop="attribute">
+          <el-form-item :label="$t('Merchandise_parameter_names')" prop="attribute">
             <el-input v-model="attributeForm.attribute"/>
           </el-form-item>
-          <el-form-item label="商品参数值" prop="value">
+          <el-form-item :label="$t('Merchandise_parameter_values')" prop="value">
             <el-input v-model="attributeForm.value"/>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="attributeVisiable = false">取消</el-button>
-          <el-button type="primary" @click="handleAttributeAdd">确定</el-button>
+          <el-button @click="attributeVisiable = false">{{$t('Cancel')}}</el-button>
+          <el-button type="primary" @click="handleAttributeAdd">{{$t('Confirm')}}</el-button>
         </div>
       </el-dialog>
     </el-card>
     <el-card class="el-card">
-      <h4>特殊信息</h4>
+      <h4>{{$t('Special_messages')}}</h4>
       <el-tabs :value="goods.priceType" @tab-click="handleTabSwitch" tab-position="left">
-        <el-tab-pane label="会员价格" name="1">
+        <el-tab-pane :label="$t('Member_costs')" name="1">
           <el-form ref="vipPriceForm" :rules="rules" :model="vipPriceForm" label-width="150px">
             <el-row>
               <el-col :span="12">
-                <el-form-item label="白银会员" prop="silverVipPrice">
+                <el-form-item :label="$t('Silver_Membership')" prop="silverVipPrice">
                   <el-input v-model="vipPriceForm.silverVipPrice">
-                    <template slot="append">元</template>
+                    <template slot="append">{{$t('Dollars')}}</template>
                   </el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="黄金会员" prop="goldVipPrice">
+                <el-form-item :label="$t('Silver_Membership')" prop="goldVipPrice">
                   <el-input v-model="vipPriceForm.goldVipPrice">
-                    <template slot="append">元</template>
+                    <template slot="append">{{$t('Dollars')}}</template>
                   </el-input>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="12">
-                <el-form-item label="白金会员" prop="platinumVipPrice">
+                <el-form-item :label="$t('Platinum_Membership')" prop="platinumVipPrice">
                   <el-input v-model="vipPriceForm.platinumVipPrice">
-                    <template slot="append">元</template>
+                    <template slot="append">{{$t('Dollars')}}</template>
                   </el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="钻石会员" prop="diamondVipPrice">
+                <el-form-item :label="$t('Diamond_Membership')" prop="diamondVipPrice">
                   <el-input v-model="vipPriceForm.diamondVipPrice">
-                    <template slot="append">元</template>
+                    <template slot="append">{{$t('Dollars')}}</template>
                   </el-input>
                 </el-form-item>
               </el-col>
             </el-row>
           </el-form>
         </el-tab-pane>
-        <el-tab-pane label="阶梯价格" name="2">
+        <el-tab-pane :label="$t('Staircase_pricing')" name="2">
           <el-table :data="stepPriceForms" border fit highlight-current-row>
-            <el-table-column align="center" label="数量" prop="number">
+            <el-table-column align="center" :label="$t('Number')" prop="number">
               <template slot-scope="scope">
                 <el-input v-model="stepPriceForms[scope.$index].number"/>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="价格" prop="price">
+            <el-table-column align="center" :label="$t('Price')" prop="price">
               <template slot-scope="scope">
                 <el-input v-model="stepPriceForms[scope.$index].price">
-                  <template slot="append">元</template>
+                  <template slot="append">{{$t('Dollars')}}</template>
                 </el-input>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="操作">
+            <el-table-column align="center" :label="$t('Operate')">
               <template slot-scope="scope">
                 <el-button type="primary" size="mini" @click="handleStepAdd(scope.row)">增加</el-button>
-                <el-button type="danger" size="mini" @click="handleStepDelete(scope)">删除</el-button>
+                <el-button type="danger" size="mini" @click="handleStepDelete(scope)">{{$t('Delete')}}</el-button>
               </template>
             </el-table-column>
           </el-table>
         </el-tab-pane>
-        <el-tab-pane label="满减价格"  name="3" >
+        <el-tab-pane :label="$t('Full_Discount')"  name="3" >
           <el-table :data="moneyOfPriceForms" border fit highlight-current-row>
-            <el-table-column align="center" label="满" prop="minusPrice">
+            <el-table-column align="center" :label="$t('Full')" prop="minusPrice">
               <template slot-scope="scope">
                 <el-input v-model="moneyOfPriceForms[scope.$index].minusPrice">
-                  <template slot="append">元</template>
+                  <template slot="append">{{$t('Dollars')}}</template>
                 </el-input>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="立减" prop="maxPrice">
+            <el-table-column align="center" :label="$t('Immediate_Discount')" prop="maxPrice">
               <template slot-scope="scope">
                 <el-input v-model="moneyOfPriceForms[scope.$index].maxPrice">
-                  <template slot="append">元</template>
+                  <template slot="append">{{$t('Dollars')}}</template>
                 </el-input>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="操作">
+            <el-table-column align="center" :label="$t('Operate')">
               <template slot-scope="scope">
                 <el-button type="primary" size="mini" @click="handleMoneyOfAdd(scope.row)">增加</el-button>
-                <el-button type="danger" size="mini" @click="handleMoneyOfDelete(scope)">删除</el-button>
+                <el-button type="danger" size="mini" @click="handleMoneyOfDelete(scope)">{{$t('Delete')}}</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -296,8 +296,8 @@
     </el-card>
 
     <div class="op-container">
-      <el-button @click="handleCancel">取消</el-button>
-      <el-button v-permission="['POST /admin/goods/update']"  type="primary" @click="handleEdit">更新商品</el-button>
+      <el-button @click="handleCancel">{{$t('Cancel')}}</el-button>
+      <el-button v-permission="['POST /admin/goods/update']"  type="primary" @click="handleEdit">{{$t('Renew_Merchandise')}}</el-button>
     </div>
   </div>
 </template>
@@ -396,18 +396,18 @@
         attributes: [],
         rules: {
           goodsSn: [
-            { required: true, message: '商品编号不能为空', trigger: 'blur' }
+            { required: true, message: this.$t('Merchandise_ID_must_not_be_empty'), trigger: 'blur' }
           ],
-          name: [{ required: true, message: '商品名称不能为空', trigger: 'blur' }]
+          name: [{ required: true, message: this.$t('Merchandise_name_must_not_be_empty'), trigger: 'blur' }]
         },
         productRules:{
           number: [
-            { required: true, message: '库存数量不能为空', trigger: 'blur' },
-            { type: 'number', message: '库存数量必须为数字', trigger: 'blur' }
+            { required: true, message: this.$t('Stock_amount_cannot_be_empty'), trigger: 'blur' },
+            { type: 'number', message: this.$t('Stock_amount_must_be_a_number'), trigger: 'blur' }
           ],
-          sellPrice: [{ required: true, message: '销售价格不能为空', trigger: 'change' },
+          sellPrice: [{ required: true, message: this.$t('Sale_price_cannot_be_empty'), trigger: 'change' },
             { validator: validateDouble, trigger: 'change' }],
-          costPrice: [{ required: true, message: '进货价格不能为空', trigger: 'change' },
+          costPrice: [{ required: true, message: this.$t('Buy-in_cost_cannot_be_empty'), trigger: 'change' },
             { validator: validateDouble, trigger: 'change' }],
 /*          tax: [{ required: true, message: '税率不能为空', trigger: 'change' },
             { validator: validateDouble, trigger: 'change' }],*/
@@ -430,7 +430,7 @@
                 success(res.data.data.url)
               })
               .catch(() => {
-                failure('上传失败，请重新上传')
+                failure(this.$t('Upload_failed_please_reupload'))
               })
           }
         }
@@ -522,7 +522,7 @@
       uploadOverrun: function() {
         this.$message({
           type: 'error',
-          message: '上传文件个数超出限制!最多上传5张图片!'
+          message: this.$t('File_upload_exceeded_maximum_value!_Max._5_photos')
         })
       },
       handleGalleryUrl(response, file, fileList) {
@@ -758,14 +758,14 @@
         editGoods(finalGoods)
           .then(response => {
             this.$notify.success({
-              title: '成功',
+              title: this.$t('Success!'),
               message: '修改成功'
             })
             this.$router.push({ path: '/goods/list' })
           })
           .catch(response => {
-            MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
-              confirmButtonText: '确定',
+            MessageBox.alert(this.$t('Error') + response.data.errmsg, this.$t('Warning'), {
+              confirmButtonText: this.$t('Confirm'),
               type: 'error'
             })
           })

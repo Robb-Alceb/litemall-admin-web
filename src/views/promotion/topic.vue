@@ -5,18 +5,18 @@
     <div class="filter-container">
       <el-input v-model="listQuery.title" clearable class="filter-item" style="width: 200px;" placeholder="请输入专题标题"/>
       <el-input v-model="listQuery.subtitle" clearable class="filter-item" style="width: 200px;" placeholder="请输入专题子标题"/>
-      <el-button v-permission="['GET /admin/topic/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button v-permission="['POST /admin/topic/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
+      <el-button v-permission="['GET /admin/topic/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('Search')}}</el-button>
+      <el-button v-permission="['POST /admin/topic/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">{{$t('Add')}}</el-button>
+<!--      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{$t('Find')}}</el-button>-->
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
       <el-table-column align="center" label="专题标题" prop="title"/>
 
       <el-table-column align="center" label="专题子标题" min-width="200" prop="subtitle"/>
 
-      <el-table-column align="center" property="picUrl" label="图片">
+      <el-table-column align="center" property="picUrl" :label="$t('Picture')">
         <template slot-scope="scope">
           <img :src="scope.row.picUrl" width="80">
         </template>
@@ -35,17 +35,17 @@
 
       <el-table-column align="center" label="阅读数量" prop="readCount"/>
 
-      <el-table-column align="center" label="操作" min-width="100" class-name="small-padding fixed-width">
+      <el-table-column align="center" :label="$t('Operate')" min-width="100" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-permission="['POST /admin/topic/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button v-permission="['POST /admin/topic/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button v-permission="['POST /admin/topic/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('Edit')}}</el-button>
+          <el-button v-permission="['POST /admin/topic/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">{{$t('Delete')}}</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
-    <el-tooltip placement="top" content="返回顶部">
+    <el-tooltip placement="top" :content="$t('Back_to_top')">
       <back-to-top :visibility-height="100" />
     </el-tooltip>
 
@@ -139,7 +139,7 @@ export default {
       deleteTopic(row)
         .then(response => {
           this.$notify.success({
-            title: '成功',
+            title: this.$t('Success!'),
             message: '删除专题成功'
           })
           const index = this.list.indexOf(row)
@@ -147,7 +147,7 @@ export default {
         })
         .catch(response => {
           this.$notify.error({
-            title: '失败',
+            title: this.$t('Failed'),
             message: response.data.errmsg
           })
         })

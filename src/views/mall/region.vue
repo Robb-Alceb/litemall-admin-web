@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
 
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" row-key="id" style="width: 100%;margin-bottom: 20px;" border="">
+    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" row-key="id" style="width: 100%;margin-bottom: 20px;" border="">
 
       <el-table-column label="区域名称" prop="name"/>
 

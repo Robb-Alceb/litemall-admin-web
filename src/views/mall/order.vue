@@ -3,29 +3,29 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.userId" clearable class="filter-item" style="width: 200px;" placeholder="请输入用户ID"/>
-      <el-input v-model="listQuery.orderSn" clearable class="filter-item" style="width: 200px;" placeholder="请输入订单编号"/>
-      <el-select v-model="listQuery.orderStatusArray" multiple style="width: 200px" class="filter-item" placeholder="请选择订单状态">
+      <el-input v-model="listQuery.userId" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Please_enter_member_ID')"/>
+      <el-input v-model="listQuery.orderSn" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Please_enter_order_number')"/>
+      <el-select v-model="listQuery.orderStatusArray" multiple style="width: 200px" class="filter-item" :placeholder="$t('Please_select_order_status')">
         <el-option v-for="(key, value) in statusMap" :key="key" :label="key" :value="value"/>
       </el-select>
-      <el-button v-permission="['GET /admin/order/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
+      <el-button v-permission="['GET /admin/order/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('Search')}}</el-button>
+<!--      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{$t('Find')}}</el-button>-->
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
 
-      <el-table-column align="center" min-width="100" label="订单编号" prop="orderSn"/>
+      <el-table-column align="center" min-width="100" :label="$t('Order_ID')" prop="orderSn"/>
 
-      <el-table-column align="center" label="用户ID" prop="userId"/>
+      <el-table-column align="center" :label="$t('Member_ID')" prop="userId"/>
 
-      <el-table-column align="center" label="订单状态" prop="orderStatus">
+      <el-table-column align="center" :label="$t('Order_status')" prop="orderStatus">
         <template slot-scope="scope">
           <el-tag>{{ scope.row.orderStatus | orderStatusFilter }}</el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="订单金额" prop="orderPrice"/>
+      <el-table-column align="center" :label="$t('Order_cost')" prop="orderPrice"/>
 
       <el-table-column align="center" label="支付金额" prop="actualPrice"/>
 
@@ -35,10 +35,10 @@
 
       <el-table-column align="center" label="物流渠道" prop="shipChannel"/>
 
-      <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+      <el-table-column align="center" :label="$t('Operate')" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-permission="['GET /admin/order/detail']" type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
-          <el-button v-permission="['POST /admin/order/ship']" v-if="scope.row.orderStatus==201" type="primary" size="mini" @click="handleShip(scope.row)">发货</el-button>
+          <el-button v-permission="['GET /admin/order/detail']" type="primary" size="mini" @click="handleDetail(scope.row)">{{$t('Details')}}</el-button>
+          <el-button v-permission="['POST /admin/order/ship']" v-if="scope.row.orderStatus==201" type="primary" size="mini" @click="handleShip(scope.row)">{{$t('Delivery_')}}</el-button>
           <el-button v-permission="['POST /admin/order/refund']" v-if="scope.row.orderStatus==202" type="primary" size="mini" @click="handleRefund(scope.row)">退款</el-button>
         </template>
       </el-table-column>
@@ -47,13 +47,13 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
     <!-- 订单详情对话框 -->
-    <el-dialog :visible.sync="orderDialogVisible" title="订单详情" width="800">
+    <el-dialog :visible.sync="orderDialogVisible" :title="$t('Order_details')" width="800">
 
       <el-form :data="orderDetail" label-position="left">
-        <el-form-item label="订单编号">
+        <el-form-item :label="$t('Order_ID')">
           <span>{{ orderDetail.order.orderSn }}</span>
         </el-form-item>
-        <el-form-item label="订单状态">
+        <el-form-item :label="$t('Order_status')">
           <el-tag>{{ orderDetail.order.orderStatus | orderStatusFilter }}</el-tag>
         </el-form-item>
         <el-form-item label="订单用户">
@@ -62,32 +62,32 @@
         <el-form-item label="用户留言">
           <span>{{ orderDetail.order.message }}</span>
         </el-form-item>
-        <el-form-item label="收货信息">
-          <span>（收货人）{{ orderDetail.order.consignee }}</span>
-          <span>（手机号）{{ orderDetail.order.mobile }}</span>
-          <span>（地址）{{ orderDetail.order.address }}</span>
+        <el-form-item :label="$t('Receiving_details')">
+          <span>（{{$t('Receiver_')}}）{{ orderDetail.order.consignee }}</span>
+          <span>（{{$t('Receiving_Address')}}）{{ orderDetail.order.mobile }}</span>
+          <span>（{{$t('Goods_details_info')}}）{{ orderDetail.order.address }}</span>
         </el-form-item>
-        <el-form-item label="商品信息">
+        <el-form-item :label="$t('Goods_details_info')">
           <el-table :data="orderDetail.orderGoods" border fit highlight-current-row>
-            <el-table-column align="center" label="商品名称" prop="goodsName" />
-            <el-table-column align="center" label="商品编号" prop="goodsSn" />
-            <el-table-column align="center" label="货品规格" prop="specifications" />
-            <el-table-column align="center" label="货品价格" prop="price" />
-            <el-table-column align="center" label="货品数量" prop="number" />
-            <el-table-column align="center" label="货品图片" prop="picUrl">
+            <el-table-column align="center" :label="$t('Merchandise_name')" prop="goodsName" />
+            <el-table-column align="center" :label="$t('Merchandise_code')" prop="goodsSn" />
+            <el-table-column align="center" :label="$t('Merchandise_specifications')" prop="specifications" />
+            <el-table-column align="center" :label="$t('Merchandise_price')" prop="price" />
+            <el-table-column align="center" :label="$t('Number_of_merchandise')" prop="number" />
+            <el-table-column align="center" :label="$t('Merchandise_picture')" prop="picUrl">
               <template slot-scope="scope">
                 <img :src="scope.row.picUrl" width="40">
               </template>
             </el-table-column>
           </el-table>
         </el-form-item>
-        <el-form-item label="费用信息">
+        <el-form-item :label="$t('Cost_details')">
           <span>
-            (实际费用){{ orderDetail.order.actualPrice }}元 =
-            (商品总价){{ orderDetail.order.goodsPrice }}元 +
-            (快递费用){{ orderDetail.order.freightPrice }}元 -
-            (优惠减免){{ orderDetail.order.couponPrice }}元 -
-            (积分减免){{ orderDetail.order.integralPrice }}元
+            (实际费用){{ orderDetail.order.actualPrice }}{{$t('Dollars')}}=
+            ($t('Merchandise_total_cost')){{ orderDetail.order.goodsPrice }}{{$t('Dollars')}}+
+            (快递费用){{ orderDetail.order.freightPrice }}{{$t('Dollars')}}-
+            (优惠减免){{ orderDetail.order.couponPrice }}{{$t('Dollars')}}-
+            (积分减免){{ orderDetail.order.integralPrice }}{{$t('Dollars')}}
           </span>
         </el-form-item>
         <el-form-item label="支付信息">
@@ -95,42 +95,42 @@
           <span>（支付时间）{{ orderDetail.order.payTime }}</span>
         </el-form-item>
         <el-form-item label="快递信息">
-          <span>（快递公司）{{ orderDetail.order.shipChannel }}</span>
+          <span>（{{$t('Express_Delivery_Company')}}）{{ orderDetail.order.shipChannel }}</span>
           <span>（快递单号）{{ orderDetail.order.shipSn }}</span>
           <span>（发货时间）{{ orderDetail.order.shipTime }}</span>
         </el-form-item>
-        <el-form-item label="收货信息">
+        <el-form-item :label="$t('Receiving_details')">
           <span>（确认收货时间）{{ orderDetail.order.confirmTime }}</span>
         </el-form-item>
       </el-form>
     </el-dialog>
 
     <!-- 发货对话框 -->
-    <el-dialog :visible.sync="shipDialogVisible" title="发货">
+    <el-dialog :visible.sync="shipDialogVisible" :title="$t('Delivery_')">
       <el-form ref="shipForm" :model="shipForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="快递公司" prop="shipChannel">
+        <el-form-item :label="$t('Express_Delivery_Company')" prop="shipChannel">
           <el-input v-model="shipForm.shipChannel"/>
         </el-form-item>
-        <el-form-item label="快递编号" prop="shipSn">
+        <el-form-item :label="$t('Express_Delivery_number')" prop="shipSn">
           <el-input v-model="shipForm.shipSn"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="shipDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="confirmShip">确定</el-button>
+        <el-button @click="shipDialogVisible = false">{{$t('Cancel')}}</el-button>
+        <el-button type="primary" @click="confirmShip">{{$t('Confirm')}}</el-button>
       </div>
     </el-dialog>
 
     <!-- 退款对话框 -->
     <el-dialog :visible.sync="refundDialogVisible" title="退款">
       <el-form ref="refundForm" :model="refundForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="退款金额" prop="refundMoney">
+        <el-form-item :label="$t('Refunded_amount')" prop="refundMoney">
           <el-input v-model="refundForm.refundMoney" :disabled="true"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="refundDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="confirmRefund">确定</el-button>
+        <el-button @click="refundDialogVisible = false">{{$t('Cancel')}}</el-button>
+        <el-button type="primary" @click="confirmRefund">{{$t('Confirm')}}</el-button>
       </div>
     </el-dialog>
 
@@ -143,15 +143,15 @@ import Pagination from '@/components/Pagination' // Secondary package based on e
 import checkPermission from '@/utils/permission' // 权限判断函数
 
 const statusMap = {
-  101: '未付款',
-  102: '用户取消',
-  103: '系统取消',
-  201: '已付款',
-  202: '申请退款',
-  203: '已退款',
-  301: '已发货',
-  401: '用户收货',
-  402: '系统收货'
+  101: this.$t('Unpaid1'),
+  102: this.$t('Member_cancelled'),
+  103: this.$t('System_cancelled'),
+  201: this.$t('Paid'),
+  202: this.$t('Apply_for_refund'),
+  203: this.$t('Refunded'),
+  301: this.$t('Sent_for_delivery'),
+  401: this.$t('Member_received'),
+  402: this.$t('System_received')
 }
 
 export default {
@@ -240,13 +240,13 @@ export default {
           shipOrder(this.shipForm).then(response => {
             this.shipDialogVisible = false
             this.$notify.success({
-              title: '成功',
-              message: '确认发货成功'
+              title: this.$t('Success!'),
+              message: this.$t('Confirm_delivery_successful')
             })
             this.getList()
           }).catch(response => {
             this.$notify.error({
-              title: '失败',
+              title: this.$t('Failed'),
               message: response.data.errmsg
             })
           })
@@ -268,13 +268,13 @@ export default {
           refundOrder(this.refundForm).then(response => {
             this.refundDialogVisible = false
             this.$notify.success({
-              title: '成功',
+              title: this.$t('Success!'),
               message: '确认退款成功'
             })
             this.getList()
           }).catch(response => {
             this.$notify.error({
-              title: '失败',
+              title: this.$t('Failed'),
               message: response.data.errmsg
             })
           })

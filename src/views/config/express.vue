@@ -8,8 +8,8 @@
         <el-input v-model="dataForm.litemall_express_freight_value"/>
       </el-form-item>
       <el-form-item>
-        <el-button @click="cancel">取消</el-button>
-        <el-button type="primary" @click="update">确定</el-button>
+        <el-button @click="cancel">{{$t('Cancel')}}</el-button>
+        <el-button type="primary" @click="update">{{$t('Confirm')}}</el-button>
       </el-form-item>
   </el-form></div>
 </template>
@@ -54,12 +54,12 @@ export default {
         }
         updateExpress(this.dataForm).then(response => {
           this.$notify.success({
-            title: '成功',
+            title: this.$t('Success!'),
             message: '运费配置修改成功'
           })
         }).catch(response => {
           this.$notify.error({
-            title: '失败',
+            title: this.$t('Failed'),
             message: response.data.errmsg
           })
         })

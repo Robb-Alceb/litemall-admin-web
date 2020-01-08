@@ -24,7 +24,7 @@ export default {
       this.$store.dispatch('setSize', size)
       this.refreshView()
       this.$message({
-        message: '布局尺寸切换成功',
+        message: this.$t('Layout_format_changed_successfully'),
         type: 'success'
       })
     },

@@ -3,25 +3,25 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.goodsId" clearable class="filter-item" style="width: 200px;" placeholder="请输入商品编号"/>
-      <el-button v-permission="['GET /admin/groupon/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button v-permission="['POST /admin/groupon/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-      <el-button
+      <el-input v-model="listQuery.goodsId" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Please_enter_merchandise_ID')"/>
+      <el-button v-permission="['GET /admin/groupon/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('Search')}}</el-button>
+      <el-button v-permission="['POST /admin/groupon/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">{{$t('Add')}}</el-button>
+<!--      <el-button
         :loading="downloadLoading"
         class="filter-item"
         type="primary"
         icon="el-icon-download"
         @click="handleDownload">导出
-      </el-button>
+      </el-button>-->
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-      <el-table-column align="center" label="商品ID" prop="goodsId"/>
+    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
+      <el-table-column align="center" :label="$t('Merchandise_ID')" prop="goodsId"/>
 
-      <el-table-column align="center" min-width="100" label="名称" prop="goodsName"/>
+      <el-table-column align="center" min-width="100" :label="$t('Name')" prop="goodsName"/>
 
-      <el-table-column align="center" property="picUrl" label="图片">
+      <el-table-column align="center" property="picUrl" :label="$t('Picture')">
         <template slot-scope="scope">
           <img :src="scope.row.picUrl" width="40">
         </template>
@@ -35,10 +35,10 @@
 
       <el-table-column align="center" label="结束时间" prop="expireTime"/>
 
-      <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+      <el-table-column align="center" :label="$t('Operate')" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-permission="['POST /admin/groupon/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button v-permission="['POST /admin/groupon/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button v-permission="['POST /admin/groupon/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('Edit')}}</el-button>
+          <el-button v-permission="['POST /admin/groupon/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">{{$t('Delete')}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -53,7 +53,7 @@
         label-position="left"
         label-width="100px"
         style="width: 400px; margin-left:50px;">
-        <el-form-item label="商品ID" prop="goodsId">
+        <el-form-item :label="$t('Merchandise_ID')" prop="goodsId">
           <el-input v-model="dataForm.goodsId"/>
         </el-form-item>
         <el-form-item label="团购折扣" prop="discount">
@@ -66,20 +66,20 @@
           <el-date-picker
             v-model="dataForm.expireTime"
             type="datetime"
-            placeholder="选择日期"
+            :placeholder="this.$t('Select_dates')"
             value-format="yyyy-MM-dd HH:mm:ss"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">确定</el-button>
-        <el-button v-else type="primary" @click="updateData">确定</el-button>
+        <el-button @click="dialogFormVisible = false">{{$t('Cancel')}}</el-button>
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">{{$t('Confirm')}}</el-button>
+        <el-button v-else type="primary" @click="updateData">{{$t('Confirm')}}</el-button>
       </div>
     </el-dialog>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
-    <el-tooltip placement="top" content="返回顶部">
+    <el-tooltip placement="top" :content="$t('Back_to_top')">
       <back-to-top :visibility-height="100"/>
     </el-tooltip>
 
@@ -117,8 +117,8 @@ export default {
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
-        update: '编辑',
-        create: '创建'
+        update: this.$t('Edit'),
+        create: this.$t('Create')
       },
       rules: {
         goodsId: [{ required: true, message: '商品不能为空', trigger: 'blur' }]
@@ -169,12 +169,12 @@ export default {
             this.list.unshift(response.data.data)
             this.dialogFormVisible = false
             this.$notify.success({
-              title: '成功',
+              title: this.$t('Success!'),
               message: '创建团购规则成功'
             })
           }).catch(response => {
             this.$notify.error({
-              title: '失败',
+              title: this.$t('Failed'),
               message: response.data.errmsg
             })
           })
@@ -202,12 +202,12 @@ export default {
             }
             this.dialogFormVisible = false
             this.$notify.success({
-              title: '成功',
+              title: this.$t('Success!'),
               message: '更新团购规则成功'
             })
           }).catch(response => {
             this.$notify.error({
-              title: '失败',
+              title: this.$t('Failed'),
               message: response.data.errmsg
             })
           })
@@ -217,14 +217,14 @@ export default {
     handleDelete(row) {
       deleteGroupon(row).then(response => {
         this.$notify.success({
-          title: '成功',
+          title: this.$t('Success!'),
           message: '删除团购规则成功'
         })
         const index = this.list.indexOf(row)
         this.list.splice(index, 1)
       }).catch(response => {
         this.$notify.error({
-          title: '失败',
+          title: this.$t('Failed'),
           message: response.data.errmsg
         })
       })

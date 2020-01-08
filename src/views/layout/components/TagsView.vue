@@ -16,10 +16,10 @@
       </router-link>
     </scroll-pane>
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
-      <li @click="refreshSelectedTag(selectedTag)">刷新</li>
-      <li @click="closeSelectedTag(selectedTag)">关闭</li>
-      <li @click="closeOthersTags">关闭其它</li>
-      <li @click="closeAllTags">关闭所有</li>
+      <li @click="refreshSelectedTag(selectedTag)">{{$t('Reload')}}</li>
+      <li @click="closeSelectedTag(selectedTag)">{{$t('Close')}}</li>
+      <li @click="closeOthersTags">{{$t('Close_others')}}</li>
+      <li @click="closeAllTags">{{$t('Close_all')}}</li>
     </ul>
   </div>
 </template>

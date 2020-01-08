@@ -3,10 +3,10 @@
     <el-card class="box-card">
       <h3>用户详情</h3>
       <el-form ref="dataForm" :rules="rules" :model="admin" label-width="150px">
-        <el-form-item label="员工名称" prop="nickName">
+        <el-form-item :label="$t('Partner_name')" prop="nickName">
           <el-input v-model="admin.nickName"/>
         </el-form-item>
-        <el-form-item label="员工头像" prop="avatar">
+        <el-form-item :label="$t('Partner_picture')" prop="avatar">
           <el-upload
             :headers="headers"
             :action="uploadPath"
@@ -18,26 +18,26 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"/>
           </el-upload>
         </el-form-item>
-        <el-form-item label="联系地址" prop="location">
+        <el-form-item :label="$t('Address')" prop="location">
           <el-input v-model="admin.location"/>
         </el-form-item>
-        <el-form-item label="联系电话" prop="mobile">
+        <el-form-item :label="this.$t('Contact_number')" prop="mobile">
           <el-input v-model="admin.mobile"/>
         </el-form-item>
-        <el-form-item label="成员角色" prop="roleIds">
+        <el-form-item :label="$t('Partner_role')" prop="roleIds">
           <el-col>
             <el-select  v-model="admin.roleIds" multiple collapse-tags>
               <el-option v-for="item in roles" :value="item.value" :label="item.label"/>
             </el-select>
           </el-col>
         </el-form-item>
-        <el-form-item label="所属门店" prop="shop">
+        <el-form-item :label="$t('Store_belong')" prop="shop">
           <el-select v-model="admin.shopId">
             <el-option v-for="item in shops" :value="item.shopId" :label="item.name"/>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="登录账号" prop="username">
+        <el-form-item :label="$t('Account_login')" prop="username">
           <el-col :span="6">
             <el-input v-model="admin.username" :disabled="true"/>
           </el-col>
@@ -48,7 +48,7 @@
         <el-form-item label="登录密码" prop="password" v-show="updatePasswordVisible">
           <el-input v-model="admin.password" show-password/>
         </el-form-item>
-        <el-form-item label="确认密码" prop="validatePassword" v-show="updatePasswordVisible">
+        <el-form-item :label="$t('Confirm_password')" prop="validatePassword" v-show="updatePasswordVisible">
           <el-input v-model="validatePassword" show-password/>
         </el-form-item>
 <!--        <el-form-item>
@@ -58,7 +58,7 @@
     </el-card>
 
     <div class="op-container">
-      <el-button @click="handleCancel">取消</el-button>
+      <el-button @click="handleCancel">{{$t('Cancel')}}</el-button>
       <el-button type="primary" @click="handleEdit">更新用户</el-button>
     </div>
   </div>
@@ -98,9 +98,9 @@ import { getToken } from '@/utils/auth'
 import { listShop } from '@/api/shop'
 let validatePass = (rule, value, callback) => {
   if (value === '') {
-    callback(new Error('请确认密码'));
+    callback(new Error(this.$t('Please_re-enter_password')));
   } else if (value !== this.admin.password) {
-    callback(new Error('两次输入密码不一致!'));
+    callback(new Error(this.$t('Passwords_entered_do_not_match')));
   } else {
     callback();
   }
@@ -151,8 +151,8 @@ export default {
       if(this.updatePasswordVisible){
         this.rules = {
           password: [
-            { required: true, message: '管理员名称不能为空', trigger: 'blur' },
-            { min: 6, max: 16, message: '密码长度在 6 到 16 个字符', trigger: 'blur' }
+            { required: true, message: this.$t('Controller_name_cannot_be_empty'), trigger: 'blur' },
+            { min: 6, max: 16, message: this.$t('Password_length_from_6_-_16_characters'), trigger: 'blur' }
           ],
           validatePass: [
             { validator: validatePass, trigger: 'blur' }
@@ -164,14 +164,14 @@ export default {
           updateAdmin(this.admin)
             .then(() => {
               this.$notify.success({
-                title: '成功',
+                title: this.$t('Success!'),
                 message: '更新管理员成功'
               })
               this.$router.push({ path: '/sys/admin'})
             })
             .catch(response => {
               this.$notify.error({
-                title: '失败',
+                title: this.$t('Failed'),
                 message: response.data.errmsg
               })
             })

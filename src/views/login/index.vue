@@ -2,7 +2,7 @@
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
       <div class="title-container">
-        <h3 class="title">管理员登录</h3>
+        <h3 class="title">{{$t('Controller_Login')}}</h3>
       </div>
       <el-form-item prop="username">
         <span class="svg-container svg-container_login">
@@ -62,9 +62,9 @@ export default {
         password: 'admin123'
       },
       loginRules: {
-        username: [{ required: true, message: '管理员账户不允许为空', trigger: 'blur' }],
+        username: [{ required: true, message: this.$t('Controller_ID_cannot_be_empty'), trigger: 'blur' }],
         password: [
-          { required: true, message: '管理员密码不允许为空', trigger: 'blur' },
+          { required: true, message: this.$t('Controller_password_cannot_be_empty'), trigger: 'blur' },
           { validator: validatePassword, trigger: 'blur' }
         ]
       },
@@ -104,7 +104,7 @@ export default {
             this.$router.push({ path: this.redirect || '/' })
           }).catch(response => {
             this.$notify.error({
-              title: '失败',
+              title: this.$t('Failed'),
               message: response.data.errmsg
             })
             this.loading = false

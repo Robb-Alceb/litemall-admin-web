@@ -3,28 +3,28 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入操作管理员"/>
-      <el-button v-permission="['GET /admin/log/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+      <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Please_enter_operating_controller')"/>
+      <el-button v-permission="['GET /admin/log/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('Search')}}</el-button>
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-      <el-table-column align="center" label="操作管理员" prop="admin"/>
+    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
+      <el-table-column align="center" :label="$t('Operating_Controller')" prop="admin"/>
       <el-table-column align="center" label="IP地址" prop="ip"/>
-      <el-table-column align="center" label="操作时间" prop="addTime"/>
-      <el-table-column align="center" label="操作类别" prop="type">
+      <el-table-column align="center" :label="$t('Operating_time')" prop="addTime"/>
+      <el-table-column align="center" label="$t('Operating_Category')" prop="type">
         <template slot-scope="scope">
           <el-tag>{{ scope.row.type | typeFilter }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="操作动作" prop="action"/>
-      <el-table-column align="center" label="操作状态" prop="status">
+      <el-table-column align="center" :label="$t('Operating_action')" prop="action"/>
+      <el-table-column align="center" :label="$t('Operating_status')" prop="status">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status ? 'success' : 'error' ">{{ scope.row.status ? '成功' : '失败' }}</el-tag>
+          <el-tag :type="scope.row.status ? 'success' : 'error' ">{{ scope.row.status ? $t('Success!') : $t('Failed') }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="操作结果" prop="result"/>
-      <el-table-column align="center" label="备注信息" prop="comment"/>
+      <el-table-column align="center" :label="$t('Operating_results')" prop="result"/>
+      <el-table-column align="center" :label="$t('Notes_info')" prop="comment"/>
 
     </el-table>
 
@@ -38,10 +38,10 @@ import { listLog } from '@/api/log'
 import Pagination from '@/components/Pagination'
 
 const typeMap = {
-  0: '一般操作',
-  1: '安全操作',
-  2: '订单操作',
-  3: '其他操作'
+  0: this.$t('Normal_operations'),
+  1: this.$t('Safety_operations'),
+  2: this.$t('Tickets_operations'),
+  3: this.$t('Other_operations')
 }
 
 export default {
@@ -66,7 +66,7 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '角色名称不能为空', trigger: 'blur' }
+          { required: true, message: this.$t('Role_name_cannot_be_empty'), trigger: 'blur' }
         ]
       }
     }

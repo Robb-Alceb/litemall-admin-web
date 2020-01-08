@@ -3,29 +3,29 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.goodsSn" clearable class="filter-item" style="width: 200px;" placeholder="请输入商品编号"/>
-      <el-input v-model="listQuery.userName" clearable class="filter-item" style="width: 200px;" placeholder="请输入操作者"/>
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+      <el-input v-model="listQuery.goodsSn" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Please_enter_merchandise_ID')"/>
+      <el-input v-model="listQuery.userName" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Please_enter_operator')"/>
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('Search')}}</el-button>
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
 
-      <el-table-column align="center" label="商品编号" prop="goodsSn"/>
+      <el-table-column align="center" :label="$t('Merchandise_code')" prop="goodsSn"/>
 
       <el-table-column align="center" label="商品名" prop="goodsName"/>
 
-      <el-table-column align="center" label="操作内容" prop="content"/>
+      <el-table-column align="center" :label="$t('Operator_details')" prop="content"/>
 
-      <el-table-column align="center" label="操作者" prop="userName"/>
+      <el-table-column align="center" :label="$t('Operator')" prop="userName"/>
 
-      <el-table-column align="center" label="操作时间" prop="addTime"/>
+      <el-table-column align="center" :label="$t('Operating_time')" prop="addTime"/>
 
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
-    <el-tooltip placement="top" content="返回顶部">
+    <el-tooltip placement="top" :content="$t('Back_to_top')">
       <back-to-top :visibility-height="100" />
     </el-tooltip>
 

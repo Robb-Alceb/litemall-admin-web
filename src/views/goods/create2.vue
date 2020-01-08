@@ -4,25 +4,25 @@
     <el-card class="box-card">
       <h3>商品介绍</h3>
       <el-form ref="goods" :rules="rules" :model="goods" label-width="150px">
-        <el-form-item label="商品编号" prop="goodsSn">
+        <el-form-item :label="$t('Merchandise_code')" prop="goodsSn">
           <el-input v-model="goods.goodsSn"/>
         </el-form-item>
-        <el-form-item label="商品名称" prop="name">
+        <el-form-item :label="$t('Merchandise_name')" prop="name">
           <el-input v-model="goods.name"/>
         </el-form-item>
         <el-form-item label="专柜价格" prop="counterPrice">
           <el-input v-model="goods.counterPrice" placeholder="0.00">
-            <template slot="append">元</template>
+            <template slot="append">{{$t('Dollars')}}</template>
           </el-input>
         </el-form-item>
         <el-form-item label="当前价格" prop="retailPrice">
           <el-input v-model="goods.retailPrice" placeholder="0.00">
-            <template slot="append">元</template>
+            <template slot="append">{{$t('Dollars')}}</template>
           </el-input>
         </el-form-item>
         <el-form-item label="是否新品" prop="isNew">
           <el-radio-group v-model="goods.isNew">
-            <el-radio :label="true">新品</el-radio>
+            <el-radio :label="true">{{$t('New_product')}}</el-radio>
             <el-radio :label="false">非新品</el-radio>
           </el-radio-group>
         </el-form-item>
@@ -39,7 +39,7 @@
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item label="商品图片">
+        <el-form-item :label="$t('Goods_picture')">
           <el-upload
             :action="uploadPath"
             :show-file-list="false"
@@ -52,7 +52,7 @@
           </el-upload>
         </el-form-item>
 
-        <el-form-item label="宣传画廊">
+        <el-form-item :label="$t('Gallery')">
           <el-upload
             :action="uploadPath"
             :limit="5"
@@ -86,7 +86,7 @@
           <el-button v-else class="button-new-keyword" type="primary" @click="showInput">+ 增加</el-button>
         </el-form-item>
 
-        <el-form-item label="所属分类">
+        <el-form-item :label="$t('Category')">
           <el-cascader :options="categoryList" expand-trigger="hover" @change="handleCategoryChange"/>
         </el-form-item>
 
@@ -96,18 +96,18 @@
           </el-select>
         </el-form-item>-->
 
-        <el-form-item label="商品简介">
+        <el-form-item :label="$t('About_the_merchandise')">
           <el-input v-model="goods.brief"/>
         </el-form-item>
 
-        <el-form-item label="商品详细介绍">
+        <el-form-item :label="$t('Goods_details')">
           <editor :init="editorInit" v-model="goods.detail"/>
         </el-form-item>
       </el-form>
     </el-card>
 
     <el-card class="box-card">
-      <h3>商品规格</h3>
+      <h3>{{$t('Goods_specifications')}}</h3>
       <el-row :gutter="20" type="flex" align="middle" style="padding:20px 0;">
         <el-col :span="10">
           <el-radio-group v-model="multipleSpec" @change="specChanged">
@@ -116,20 +116,20 @@
           </el-radio-group>
         </el-col>
         <el-col v-if="multipleSpec" :span="10">
-          <el-button :plain="true" type="primary" @click="handleSpecificationShow">添加</el-button>
+          <el-button :plain="true" type="primary" @click="handleSpecificationShow">{{$t('Add')}}</el-button>
         </el-col>
       </el-row>
 
       <el-table :data="specifications">
-        <el-table-column property="specification" label="规格名"/>
-        <el-table-column property="value" label="规格值">
+        <el-table-column property="specification" :label="$t('Specification_name')"/>
+        <el-table-column property="value" :label="$t('Specification_value')">
           <template slot-scope="scope">
             <el-tag type="primary">
               {{ scope.row.value }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column property="picUrl" label="规格图片">
+        <el-table-column property="picUrl" :label="$t('Specification_images')">
           <template slot-scope="scope">
             <img v-if="scope.row.picUrl" :src="scope.row.picUrl" width="40">
           </template>
@@ -137,16 +137,16 @@
         <el-table-column
           v-if="multipleSpec"
           align="center"
-          label="操作"
+          :label="$t('Operate')"
           width="250"
           class-name="small-padding fixed-width">
           <template slot-scope="scope">
-            <el-button type="danger" size="mini" @click="handleSpecificationDelete(scope.row)">删除</el-button>
+            <el-button type="danger" size="mini" @click="handleSpecificationDelete(scope.row)">{{$t('Delete')}}</el-button>
           </template>
         </el-table-column>
       </el-table>
 
-      <el-dialog :visible.sync="specVisiable" title="设置规格">
+      <el-dialog :visible.sync="specVisiable" :title="$t('Specification_settings')">
         <el-form
           ref="specForm"
           :rules="rules"
@@ -155,13 +155,13 @@
           label-position="left"
           label-width="100px"
           style="width: 400px; margin-left:50px;">
-          <el-form-item label="规格名" prop="specification">
+          <el-form-item :label="$t('Specification_name')" prop="specification">
             <el-input v-model="specForm.specification"/>
           </el-form-item>
-          <el-form-item label="规格值" prop="value">
+          <el-form-item :label="$t('Specification_value')" prop="value">
             <el-input v-model="specForm.value"/>
           </el-form-item>
-          <el-form-item label="规格图片" prop="picUrl">
+          <el-form-item :label="$t('Specification_images')" prop="picUrl">
             <el-upload
               :action="uploadPath"
               :show-file-list="false"
@@ -175,16 +175,16 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="specVisiable = false">取消</el-button>
-          <el-button type="primary" @click="handleSpecificationAdd">确定</el-button>
+          <el-button @click="specVisiable = false">{{$t('Cancel')}}</el-button>
+          <el-button type="primary" @click="handleSpecificationAdd">{{$t('Confirm')}}</el-button>
         </div>
       </el-dialog>
     </el-card>
 
     <el-card class="box-card">
-      <h3>商品库存</h3>
+      <h3>{{$t('Merchandise_stock')}}</h3>
       <el-table :data="products">
-        <el-table-column property="value" label="货品规格">
+        <el-table-column property="value" :label="$t('Merchandise_specifications')">
           <template slot-scope="scope">
             <el-tag v-for="tag in scope.row.specifications" :key="tag">
               {{ tag }}
@@ -192,13 +192,13 @@
           </template>
         </el-table-column>
         <el-table-column property="price" width="100" label="货品售价"/>
-        <el-table-column property="number" width="100" label="货品数量"/>
-        <el-table-column property="url" width="100" label="货品图片">
+        <el-table-column property="number" width="100" :label="$t('Number_of_merchandise')"/>
+        <el-table-column property="url" width="100" :label="$t('Merchandise_picture')">
           <template slot-scope="scope">
             <img v-if="scope.row.url" :src="scope.row.url" width="40">
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作" width="100" class-name="small-padding fixed-width">
+        <el-table-column align="center" :label="$t('Operate')" width="100" class-name="small-padding fixed-width">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="handleProductShow(scope.row)">设置</el-button>
           </template>
@@ -221,10 +221,10 @@
           <el-form-item label="货品售价" prop="price">
             <el-input v-model="productForm.price"/>
           </el-form-item>
-          <el-form-item label="货品数量" prop="number">
+          <el-form-item :label="$t('Number_of_merchandise')" prop="number">
             <el-input v-model="productForm.number"/>
           </el-form-item>
-          <el-form-item label="货品图片" prop="url">
+          <el-form-item :label="$t('Merchandise_picture')" prop="url">
             <el-upload
               :action="uploadPath"
               :show-file-list="false"
@@ -238,26 +238,26 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="productVisiable = false">取消</el-button>
-          <el-button type="primary" @click="handleProductEdit">确定</el-button>
+          <el-button @click="productVisiable = false">{{$t('Cancel')}}</el-button>
+          <el-button type="primary" @click="handleProductEdit">{{$t('Confirm')}}</el-button>
         </div>
       </el-dialog>
     </el-card>
 
     <el-card class="box-card">
-      <h3>商品参数</h3>
-      <el-button :plain="true" type="primary" @click="handleAttributeShow">添加</el-button>
+      <h3>{{$t('Merchandise_Parameters')}}</h3>
+      <el-button :plain="true" type="primary" @click="handleAttributeShow">{{$t('Add')}}</el-button>
       <el-table :data="attributes">
-        <el-table-column property="attribute" label="商品参数名称"/>
-        <el-table-column property="value" label="商品参数值"/>
-        <el-table-column align="center" label="操作" width="100" class-name="small-padding fixed-width">
+        <el-table-column property="attribute" :label="$t('Merchandise_parameter_names')"/>
+        <el-table-column property="value" :label="$t('Merchandise_parameter_values')"/>
+        <el-table-column align="center" :label="$t('Operate')" width="100" class-name="small-padding fixed-width">
           <template slot-scope="scope">
-            <el-button type="danger" size="mini" @click="handleAttributeDelete(scope.row)">删除</el-button>
+            <el-button type="danger" size="mini" @click="handleAttributeDelete(scope.row)">{{$t('Delete')}}</el-button>
           </template>
         </el-table-column>
       </el-table>
 
-      <el-dialog :visible.sync="attributeVisiable" title="设置商品参数">
+      <el-dialog :visible.sync="attributeVisiable" :title="$t('Set_merchandise_parameter_values')">
         <el-form
           ref="attributeForm"
           :model="attributeForm"
@@ -265,22 +265,22 @@
           label-position="left"
           label-width="100px"
           style="width: 400px; margin-left:50px;">
-          <el-form-item label="商品参数名称" prop="attribute">
+          <el-form-item :label="$t('Merchandise_parameter_names')" prop="attribute">
             <el-input v-model="attributeForm.attribute"/>
           </el-form-item>
-          <el-form-item label="商品参数值" prop="value">
+          <el-form-item :label="$t('Merchandise_parameter_values')" prop="value">
             <el-input v-model="attributeForm.value"/>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="attributeVisiable = false">取消</el-button>
-          <el-button type="primary" @click="handleAttributeAdd">确定</el-button>
+          <el-button @click="attributeVisiable = false">{{$t('Cancel')}}</el-button>
+          <el-button type="primary" @click="handleAttributeAdd">{{$t('Confirm')}}</el-button>
         </div>
       </el-dialog>
     </el-card>
 
     <div class="op-container">
-      <el-button @click="handleCancel">取消</el-button>
+      <el-button @click="handleCancel">{{$t('Cancel')}}</el-button>
       <el-button type="primary" @click="handlePublish">上架</el-button>
     </div>
 
@@ -363,8 +363,8 @@ export default {
       attributeForm: { attribute: '', value: '' },
       attributes: [],
       rules: {
-        goodsSn: [{ required: true, message: '商品编号不能为空', trigger: 'blur' }],
-        name: [{ required: true, message: '商品名称不能为空', trigger: 'blur' }]
+        goodsSn: [{ required: true, message: this.$t('Merchandise_ID_must_not_be_empty'), trigger: 'blur' }],
+        name: [{ required: true, message: this.$t('Merchandise_name_must_not_be_empty'), trigger: 'blur' }]
       },
       editorInit: {
         language: 'zh_CN',
@@ -377,7 +377,7 @@ export default {
           createStorage(formData).then(res => {
             success(res.data.data.url)
           }).catch(() => {
-            failure('上传失败，请重新上传')
+            failure(this.$t('Upload_failed_please_reupload'))
           })
         }
       }
@@ -416,13 +416,13 @@ export default {
       }
       publishGoods(finalGoods).then(response => {
         this.$notify.success({
-          title: '成功',
-          message: '创建成功'
+          title: this.$t('Success!'),
+          message: this.$t('Creation_successful')
         })
         this.$router.push({ path: '/goods/list' })
       }).catch(response => {
-        MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
-          confirmButtonText: '确定',
+        MessageBox.alert(this.$t('Error') + response.data.errmsg, this.$t('Warning'), {
+          confirmButtonText: this.$t('Confirm'),
           type: 'error'
         })
       })
@@ -452,7 +452,7 @@ export default {
     uploadOverrun: function() {
       this.$message({
         type: 'error',
-        message: '上传文件个数超出限制!最多上传5张图片!'
+        message: this.$t('File_upload_exceeded_maximum_value!_Max._5_photos')
       })
     },
     handleGalleryUrl(response, file, fileList) {

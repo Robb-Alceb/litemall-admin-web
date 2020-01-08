@@ -1,15 +1,15 @@
 <template>
   <div class="app-container">
     <el-card class="box-card">
-      <h3>新增货品</h3>
+      <h3>{{$t('Add_Products')}}</h3>
       <el-form ref="merchandise" :rules="rules" :model="merchandise" label-width="150px">
-        <el-form-item label="货品编号" prop="merchandiseSn">
+        <el-form-item :label="$t('Product_code')" prop="merchandiseSn">
           <el-input v-model="merchandise.merchandiseSn"/>
         </el-form-item>
-        <el-form-item label="货品名称" prop="name">
+        <el-form-item :label="$t('Product_name')" prop="name">
           <el-input v-model="merchandise.name"/>
         </el-form-item>
-        <el-form-item label="货品图片">
+        <el-form-item :label="$t('Merchandise_picture')">
           <el-upload
             :action="uploadPath"
             :show-file-list="false"
@@ -21,24 +21,24 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"/>
           </el-upload>
         </el-form-item>
-        <el-form-item label="销售价格" prop="sellingPrice">
+        <el-form-item :label="$t('Sale_price')" prop="sellingPrice">
           <el-input v-model="merchandise.sellingPrice"/>
         </el-form-item>
-        <el-form-item label="进货价格" prop="purchasePrice">
+        <el-form-item :label="$t('Purchase_price')" prop="purchasePrice">
           <el-input v-model="merchandise.purchasePrice"/>
         </el-form-item>
-        <el-form-item label="货品数量" prop="number">
+        <el-form-item :label="$t('Number_of_merchandise')" prop="number">
           <el-input v-model.number="merchandise.number"/>
         </el-form-item>
-        <el-form-item label="货品单位" prop="unit">
+        <el-form-item :label="$t('Product_unit')" prop="unit">
           <el-input v-model="merchandise.unit" placeholder=""/>
         </el-form-item>
       </el-form>
     </el-card>
 
     <div class="op-container">
-      <el-button @click="handleCancel">取消</el-button>
-      <el-button type="primary" @click="handleCreate">新增货品</el-button>
+      <el-button @click="handleCancel">{{$t('Cancel')}}</el-button>
+      <el-button type="primary" @click="handleCreate">{{$t('Add_Products')}}</el-button>
     </div>
 
   </div>
@@ -55,7 +55,7 @@ export default {
     const validateDouble = (rule, value, callback) => {
       console.log('value' + value)
       if (!/^[0-9,.]*$/.test(value)) {
-        callback(new Error('销售价格必须为数字'))
+        callback(new Error(this.$t('Sale_price_must_be_a_number')))
       } else {
         callback()
       }
@@ -72,15 +72,15 @@ export default {
         unit: undefined
       },
       rules: {
-        merchandiseSn: [{ required: true, message: '货品编号不能为空', trigger: 'blur' }],
-        name: [{ required: true, message: '货品名称不能为空', trigger: 'blur' }],
-        sellingPrice: [{ required: true, message: '销售价格不能为空', trigger: 'change' },
+        merchandiseSn: [{ required: true, message: this.$t('Product_code_cannot_be_empty'), trigger: 'blur' }],
+        name: [{ required: true, message: this.$t('Product_name_cannot_be_empty'), trigger: 'blur' }],
+        sellingPrice: [{ required: true, message: this.$t('Sale_price_cannot_be_empty'), trigger: 'change' },
           { validator: validateDouble, trigger: 'change' }],
-        purchasePrice: [{ required: true, message: '进货价格不能为空', trigger: 'change' },
+        purchasePrice: [{ required: true, message: this.$t('Buy-in_cost_cannot_be_empty'), trigger: 'change' },
           { validator: validateDouble, trigger: 'change' }],
-        number: [{ required: true, message: '货品数量不能为空', trigger: 'change' },
-          { type: 'number', message: '货品数量必须为数字' }],
-        unit: [{ required: true, message: '单位不能为空', trigger: 'blur' }]
+        number: [{ required: true, message: this.$t('Product_amount_cannot_be_empty'), trigger: 'change' },
+          { type: 'number', message: this.$t('Product_amount_must_be_a_number') }],
+        unit: [{ required: true, message: this.$t('Unit_cannot_be_empty'), trigger: 'blur' }]
       }
 
     }
@@ -97,14 +97,14 @@ export default {
       createMerchandise(this.merchandise)
         .then(response => {
           this.$notify.success({
-            title: '成功',
-            message: '创建成功'
+            title: this.$t('Success!'),
+            message: this.$t('Creation_successful')
           })
           this.$router.push({ path: '/repository/merchandise' })
         })
         .catch(response => {
-          MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
-            confirmButtonText: '确定',
+          MessageBox.alert(this.$t('Error') + response.data.errmsg, this.$t('Warning'), {
+            confirmButtonText: this.$t('Confirm'),
             type: 'error'
           })
         })

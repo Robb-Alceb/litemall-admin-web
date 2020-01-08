@@ -24,7 +24,7 @@ export default {
           'orders': '订单量',
           'customers': '下单用户',
           'amount': '订单总额',
-          'pcr': '客单价'
+          'pcr': this.$t('Customer_to_tickets_ratio')
         }
       }
       this.chartExtend = {

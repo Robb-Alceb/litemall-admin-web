@@ -3,11 +3,11 @@
 
     <div class="table-layout">
       <el-row>
-        <el-col :span="4" class="table-cell-title">名称</el-col>
+        <el-col :span="4" class="table-cell-title">{{$t('Name')}}</el-col>
         <el-col :span="4" class="table-cell-title">介绍名称</el-col>
         <el-col :span="4" class="table-cell-title">标签</el-col>
-        <el-col :span="4" class="table-cell-title">优惠券类型</el-col>
-        <el-col :span="4" class="table-cell-title">最低消费</el-col>
+        <el-col :span="4" class="table-cell-title">{{$t('Coupon_type')}}</el-col>
+        <el-col :span="4" class="table-cell-title">{{$t('Lowest_spending_value')}}</el-col>
         <el-col :span="4" class="table-cell-title">优惠面值</el-col>
       </el-row>
       <el-row>
@@ -15,12 +15,12 @@
         <el-col :span="4" class="table-cell">{{ coupon.desc }}</el-col>
         <el-col :span="4" class="table-cell">{{ coupon.tag }}</el-col>
         <el-col :span="4" class="table-cell">{{ coupon.type | formatType }}</el-col>
-        <el-col :span="4" class="table-cell">满{{ coupon.min }}元可用</el-col>
-        <el-col :span="4" class="table-cell">减免{{ coupon.discount }}元</el-col>
+        <el-col :span="4" class="table-cell">{{$t('Full')}}{{ coupon.min }}元可用</el-col>
+        <el-col :span="4" class="table-cell">{{$t('Discount')}}{{ coupon.discount }}{{$t('Dollars')}}</el-col>
       </el-row>
       <el-row>
         <el-col :span="4" class="table-cell-title">每人限额</el-col>
-        <el-col :span="4" class="table-cell-title">当前状态</el-col>
+        <el-col :span="4" class="table-cell-title">{{$t('Current_status')}}</el-col>
         <el-col :span="4" class="table-cell-title">商品范围</el-col>
         <el-col :span="4" class="table-cell-title">有效期</el-col>
         <el-col :span="4" class="table-cell-title">优惠兑换码</el-col>
@@ -49,11 +49,11 @@
         <span>指定商品列表</span>
       </div>
       <!-- 查询结果 -->
-      <el-table v-loading="listGoodsLoading" :data="goodsList" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-        <el-table-column align="center" label="所属门店" prop="shopName">
+      <el-table v-loading="listGoodsLoading" :data="goodsList" :element-loading-text="$t('Searching')" border fit highlight-current-row>
+        <el-table-column align="center" :label="$t('Store_belong')" prop="shopName">
         </el-table-column>
-        <el-table-column align="center" label="商品名称" prop="name"/>
-        <el-table-column align="center" label="商品编号" prop="goodsSn"/>
+        <el-table-column align="center" :label="$t('Merchandise_name')" prop="name"/>
+        <el-table-column align="center" :label="$t('Merchandise_code')" prop="goodsSn"/>
 
       </el-table>
 
@@ -62,19 +62,19 @@
 
     <!-- 查询操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.userId" clearable class="filter-item" style="width: 200px;" placeholder="请输入用户ID"/>
+      <el-input v-model="listQuery.userId" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Please_enter_member_ID')"/>
       <el-select v-model="listQuery.status" clearable style="width: 200px" class="filter-item" placeholder="请选择使用状态">
         <el-option v-for="type in useStatusOptions" :key="type.value" :label="type.label" :value="type.value"/>
       </el-select>
-      <el-button v-permission="['GET /admin/coupon/listuser']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+      <el-button v-permission="['GET /admin/coupon/listuser']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('Search')}}</el-button>
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
 
       <el-table-column align="center" label="用户优惠券ID" prop="id" sortable/>
 
-      <el-table-column align="center" label="用户ID" prop="userId"/>
+      <el-table-column align="center" :label="$t('Member_ID')" prop="userId"/>
 
       <el-table-column align="center" label="领取时间" prop="addTime"/>
 
@@ -100,15 +100,15 @@ import { allForPerm } from '@/api/shop'
 
 const defaultTypeOptions = [
   {
-    label: '通用领券',
+    label: this.$t('All_purpose_coupons'),
     value: 0
   },
   {
-    label: '注册赠券',
+    label: this.$t('Free_coupons_upon_registration'),
     value: 1
   },
   {
-    label: '兑换码',
+    label: this.$t('Coupon_validation_code'),
     value: 2
   }
 ]
@@ -123,11 +123,11 @@ const defaultUseStatusOptions = [
     value: 1
   },
   {
-    label: '已过期',
+    label: this.$t('Expired'),
     value: 2
   },
   {
-    label: '已下架',
+    label: this.$t('Merchandise_removed'),
     value: 3
   }
 ]
@@ -146,20 +146,20 @@ export default {
     },
     formatGoodsType(goodsType) {
       if (goodsType === 0) {
-        return '全场通用'
+        return this.$t('Usable_in_any_situation')
       } else if (goodsType === 1) {
-        return '指定分类'
+        return this.$t('Select_category')
       } else {
-        return '指定商品'
+        return this.$t('Select_merchandise')
       }
     },
     formatStatus(status) {
       if (status === 0) {
-        return '正常'
+        return this.$t('Normal')
       } else if (status === 1) {
-        return '已过期'
+        return this.$t('Expired')
       } else {
-        return '已下架'
+        return this.$t('Merchandise_removed')
       }
     },
     formatUseStatus(status) {
@@ -168,9 +168,9 @@ export default {
       } else if (status === 1) {
         return '已使用'
       } else if (status === 3) {
-        return '已过期'
+        return this.$t('Expired')
       } else {
-        return '已下架'
+        return this.$t('Merchandise_removed')
       }
     },
     userLeverFilter(level){

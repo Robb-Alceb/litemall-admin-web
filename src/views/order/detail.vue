@@ -1,27 +1,27 @@
 <template>
   <div class="app-container">
     <el-card class="box-card">
-      <h3>订单详情</h3>
+      <h3>{{$t('Order_details')}}</h3>
       <div>
         <el-steps :active="formatStepStatus(orderDetail.order.orderStatus)" finish-status="success" align-center>
           <el-step>
-            <span slot="title">提交订单</span>
+            <span slot="title">{{$t('Submit_order')}}</span>
             <span v-if="orderDetail.order.orderStatus == 101" slot="description">{{orderDetail.order.updateTime}}</span>
           </el-step>
           <el-step>
-            <span slot="title">支付订单</span>
+            <span slot="title">{{$t('Pay_for_order')}}</span>
             <span v-if="orderDetail.order.orderStatus == 201" slot="description">{{orderDetail.order.updateTime}}</span>
           </el-step>
           <el-step title="">
-            <span slot="title">平台发货</span>
+            <span slot="title">{{$t('Send_via_platform')}}</span>
             <span v-if="orderDetail.order.orderStatus == 301" slot="description">{{orderDetail.order.updateTime}}</span>
           </el-step>
           <el-step title="">
-            <span slot="title">确认收货</span>
+            <span slot="title">{{$t('Receive_confirm')}}</span>
             <span v-if="orderDetail.order.orderStatus == 401" slot="description">{{orderDetail.order.updateTime}}</span>
           </el-step>
           <el-step title="">
-            <span slot="title">完成评价</span>
+            <span slot="title">{{$t('Finish_Rating_')}}</span>
             <span v-if="orderDetail.order.orderStatus == 501" slot="description">{{orderDetail.order.updateTime}}</span>
           </el-step>
         </el-steps>
@@ -29,14 +29,14 @@
 
       <el-form :inline="true">
         <el-col :span="18">
-          <el-form-item label="当前状态">
+          <el-form-item :label="$t('Current_status')">
             {{ orderDetail.order.orderStatus | orderStatusFilter }}
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="">
-            <el-button v-if="orderDetail.order.orderStatus == 201" @click="consignment(orderDetail.order)">发货处理</el-button>
-            <el-button @click="addMark(orderDetail.order)">添加备注</el-button>
+            <el-button v-if="orderDetail.order.orderStatus == 201" @click="consignment(orderDetail.order)">{{$t('Processing_delivery')}}</el-button>
+            <el-button @click="addMark(orderDetail.order)">{{$t('Add_Notes')}}</el-button>
             <el-button @click="print(orderDetail.order)">打印订单</el-button>
           </el-form-item>
         </el-col>
@@ -44,16 +44,16 @@
 
       <div style="margin-top: 20px">
         <svg-icon icon-class="marker" style="color: #606266"/>
-        <span class="font-small">基本信息</span>
+        <span class="font-small">{{$t('Basic_Information')}}</span>
       </div>
       <div class="table-layout">
         <el-row>
-          <el-col :span="4" class="table-cell-title">订单编号</el-col>
-          <el-col :span="4" class="table-cell-title">发货单号</el-col>
-          <el-col :span="4" class="table-cell-title">用户账号</el-col>
-          <el-col :span="4" class="table-cell-title">支付方式</el-col>
-          <el-col :span="4" class="table-cell-title">订单来源</el-col>
-          <el-col :span="4" class="table-cell-title">订单类型</el-col>
+          <el-col :span="4" class="table-cell-title">{{$t('Order_ID')}}</el-col>
+          <el-col :span="4" class="table-cell-title">{{$t('Delivery_number')}}</el-col>
+          <el-col :span="4" class="table-cell-title">{{$t('Member_account')}}</el-col>
+          <el-col :span="4" class="table-cell-title">{{$t('Payment_method')}}</el-col>
+          <el-col :span="4" class="table-cell-title">{{$t('Source_of_order')}}</el-col>
+          <el-col :span="4" class="table-cell-title">{{$t('Order_type')}}</el-col>
         </el-row>
         <el-row>
           <el-col :span="4" class="table-cell">{{ orderDetail.order.orderSn }}</el-col>
@@ -72,9 +72,9 @@
       </div>
       <div class="table-layout">
         <el-row>
-          <el-col :span="8" class="table-cell-title">收货人</el-col>
-          <el-col :span="8" class="table-cell-title">手机号码</el-col>
-          <el-col :span="8" class="table-cell-title">收货地址</el-col>
+          <el-col :span="8" class="table-cell-title">{{$t('Receiver_')}}</el-col>
+          <el-col :span="8" class="table-cell-title">{{$t('Cellphone_number')}}</el-col>
+          <el-col :span="8" class="table-cell-title">{{$t('Receiving_Address')}}</el-col>
         </el-row>
         <el-row>
           <el-col :span="8" class="table-cell">{{ orderDetail.order.consignee }}</el-col>
@@ -84,16 +84,16 @@
       </div>
       <div style="margin-top: 20px">
         <svg-icon icon-class="marker" style="color: #606266"/>
-        <span class="font-small">商品信息</span>
+        <span class="font-small">{{$t('Goods_details_info')}}</span>
       </div>
       <div class="table-layout">
         <el-table :data="orderDetail.orderGoods" border fit highlight-current-row>
-          <el-table-column align="center" label="商品名称" prop="goodsName" />
-          <el-table-column align="center" label="商品编号" prop="goodsSn" />
-          <el-table-column align="center" label="货品规格" prop="specifications" />
-          <el-table-column align="center" label="货品价格" prop="price" />
-          <el-table-column align="center" label="货品数量" prop="number" />
-          <el-table-column align="center" label="货品图片" prop="picUrl">
+          <el-table-column align="center" :label="$t('Merchandise_name')" prop="goodsName" />
+          <el-table-column align="center" :label="$t('Merchandise_code')" prop="goodsSn" />
+          <el-table-column align="center" :label="$t('Merchandise_specifications')" prop="specifications" />
+          <el-table-column align="center" :label="$t('Merchandise_price')" prop="price" />
+          <el-table-column align="center" :label="$t('Number_of_merchandise')" prop="number" />
+          <el-table-column align="center" :label="$t('Merchandise_picture')" prop="picUrl">
             <template slot-scope="scope">
               <img :src="scope.row.picUrl" width="40">
             </template>
@@ -102,14 +102,14 @@
       </div>
       <div style="margin-top: 20px">
         <svg-icon icon-class="marker" style="color: #606266"/>
-        <span class="font-small">费用信息</span>
+        <span class="font-small">{{$t('Cost_details')}}</span>
       </div>
       <div class="table-layout">
         <el-row>
-          <el-col :span="6" class="table-cell-title">商品合计</el-col>
-          <el-col :span="6" class="table-cell-title">运费</el-col>
-          <el-col :span="6" class="table-cell-title">优惠券</el-col>
-          <el-col :span="6" class="table-cell-title">积分抵扣</el-col>
+          <el-col :span="6" class="table-cell-title">{{$t('Total')}}</el-col>
+          <el-col :span="6" class="table-cell-title">{{$t('Delivery_fee')}}</el-col>
+          <el-col :span="6" class="table-cell-title">{{$t('Coupons')}}</el-col>
+          <el-col :span="6" class="table-cell-title">{{$t('Points_discount')}}</el-col>
         </el-row>
         <el-row>
           <el-col :span="6" class="table-cell">{{ orderDetail.order.goodsPrice }}</el-col>
@@ -119,8 +119,8 @@
         </el-row>
         <el-row>
           <el-col :span="6" class="table-cell-title">税费</el-col>
-          <el-col :span="6" class="table-cell-title">订单总金额</el-col>
-          <el-col :span="6" class="table-cell-title">应付款金额</el-col>
+          <el-col :span="6" class="table-cell-title">{{$t('Order_total')}}</el-col>
+          <el-col :span="6" class="table-cell-title">{{$t('Total_to_be_paid')}}</el-col>
         </el-row>
         <el-row>
           <el-col :span="6" class="table-cell">{{ orderDetail.order.taxPrice }}</el-col>
@@ -132,31 +132,31 @@
     </el-card>
 
     <!-- 发货对话框 -->
-    <el-dialog :visible.sync="shipDialogVisible" title="发货">
+    <el-dialog :visible.sync="shipDialogVisible" :title="$t('Delivery_')">
       <el-form ref="shipForm" :model="shipForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="快递公司" prop="shipChannel">
+        <el-form-item :label="$t('Express_Delivery_Company')" prop="shipChannel">
           <el-input v-model="shipForm.shipChannel"/>
         </el-form-item>
-        <el-form-item label="快递编号" prop="shipSn">
+        <el-form-item :label="$t('Express_Delivery_number')" prop="shipSn">
           <el-input v-model="shipForm.shipSn"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="shipDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="confirmShip">确定</el-button>
+        <el-button @click="shipDialogVisible = false">{{$t('Cancel')}}</el-button>
+        <el-button type="primary" @click="confirmShip">{{$t('Confirm')}}</el-button>
       </div>
     </el-dialog>
 
     <!-- 添加备注对话框 -->
-    <el-dialog :visible.sync="markDialogVisible" title="备注">
+    <el-dialog :visible.sync="markDialogVisible" :title="$t('Notes')">
       <el-form ref="markForm" :model="markForm" :rules="markRules" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="备注" prop="remark">
+        <el-form-item :label="$t('Notes')" prop="remark">
           <el-input v-model="markForm.remark" type="textarea"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="markDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="confirmMark">确定</el-button>
+        <el-button @click="markDialogVisible = false">{{$t('Cancel')}}</el-button>
+        <el-button type="primary" @click="confirmMark">{{$t('Confirm')}}</el-button>
       </div>
     </el-dialog>
 
@@ -167,15 +167,15 @@
 import { shipOrder, detailOrder, remarkOrder } from '@/api/order'
 
 const statusMap = {
-  101: '未付款',
-  102: '用户取消',
-  103: '系统取消',
-  201: '已付款',
-  202: '申请退款',
-  203: '已退款',
-  301: '已发货',
-  401: '用户收货',
-  402: '系统收货'
+  101: this.$t('Unpaid1'),
+  102: this.$t('Member_cancelled'),
+  103: this.$t('System_cancelled'),
+  201: this.$t('Paid'),
+  202: this.$t('Apply_for_refund'),
+  203: this.$t('Refunded'),
+  301: this.$t('Sent_for_delivery'),
+  401: this.$t('Member_received'),
+  402: this.$t('System_received')
 }
 
 export default {
@@ -193,16 +193,16 @@ export default {
     },
     orderSourceFilter(type){
       if(type == 1){
-        return '手机APP'
+        return this.$t('Phone_App')
       }else{
-        return '其他'
+        return this.$t('Others')
       }
     },
     orderTypeFilter(type){
       if(type == 1){
-        return '普通订单'
+        return this.$t('Normal_Order')
       }else if(type == 2){
-        return '外送订单'
+        return this.$t('Delivery_order')
       }
     }
   },
@@ -226,7 +226,7 @@ export default {
       },
       markRules: {
         remark: [
-          { required: true, message: '备注不能为空', trigger: 'blur' }
+          { required: true, message: this.$t('Notes_cannot_be_empty'), trigger: 'blur' }
         ],
       },
     }
@@ -279,12 +279,12 @@ export default {
           shipOrder(this.shipForm).then(response => {
             this.shipDialogVisible = false
             this.$notify.success({
-              title: '成功',
-              message: '确认发货成功'
+              title: this.$t('Success!'),
+              message: this.$t('Confirm_delivery_successful')
             })
           }).catch(response => {
             this.$notify.error({
-              title: '失败',
+              title: this.$t('Failed'),
               message: response.data.errmsg
             })
           })
@@ -297,12 +297,12 @@ export default {
           remarkOrder(this.markForm).then(response => {
             this.markDialogVisible = false
             this.$notify.success({
-              title: '成功',
-              message: '备注成功'
+              title: this.$t('Success!'),
+              message: this.$t('Noted!')
             })
           }).catch(response => {
             this.$notify.error({
-              title: '失败',
+              title: this.$t('Failed'),
               message: response.data.errmsg
             })
           })

@@ -10,10 +10,10 @@
       </div>
       <div class="table-layout">
         <el-row>
-          <el-col :span="6" class="table-cell-title">货品名称</el-col>
+          <el-col :span="6" class="table-cell-title">{{$t('Product_name')}}</el-col>
           <el-col :span="6" class="table-cell-title">货品图片</el-col>
           <el-col :span="6" class="table-cell-title">现有库存</el-col>
-          <el-col :span="6" class="table-cell-title">价格/货号</el-col>
+          <el-col :span="6" class="table-cell-title">{{$t('Price')}}/{{$t('Merchandise_number')}}</el-col>
         </el-row>
         <el-row>
           <el-col :span="6" class="table-cell">{{ merchandise.name }}</el-col>
@@ -38,7 +38,7 @@
           <el-form-item label="进货金额" prop="orderPrice">
             <el-input v-model="orderDetail.orderPrice" :disabled="true"/>
           </el-form-item>
-          <el-form-item label="用户账号" prop="userId">
+          <el-form-item :label="$t('Member_account')" prop="userId">
             <el-select v-model="orderDetail.userId" placeholder="从门店成员列表中选择" @change="changeAdmin">
               <el-option v-for="item in shopMembers" :value="item.id" :label="item.username"/>
             </el-select>
@@ -46,10 +46,10 @@
           <el-form-item label="联系人" prop="mobile">
             <el-input v-model="orderDetail.consignee" :disabled="true"/>
           </el-form-item>
-          <el-form-item label="联系电话" prop="mobile">
+          <el-form-item :label="this.$t('Contact_number')" prop="mobile">
             <el-input v-model="orderDetail.mobile" :disabled="true"/>
           </el-form-item>
-          <el-form-item label="所在门店" prop="mobile">
+          <el-form-item :label="$t('Store_location')" prop="mobile">
             <el-col>{{ shop.name }}</el-col>
           </el-form-item>
           <el-form-item label="订货描述" prop="mobile">
@@ -60,7 +60,7 @@
     </el-card>
 
     <div class="op-container" style="margin-top: 30px;">
-      <el-button @click="handleCancel">取消</el-button>
+      <el-button @click="handleCancel">{{$t('Cancel')}}</el-button>
       <el-button v-permission="['POST /admin/shopOrder/orderApplying']" type="primary" @click="handleApplying">申请</el-button>
     </div>
 
@@ -121,14 +121,14 @@ export default {
         if (valid) {
           shopOrderApplying(this.orderDetail).then(response => {
             this.$notify.success({
-              title: '成功',
+              title: this.$t('Success!'),
               message: '申请成功'
             })
             this.$router.push({ path: '/repository/list' })
           })
             .catch(response => {
-              MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
-                confirmButtonText: '确定',
+              MessageBox.alert(this.$t('Error') + response.data.errmsg, this.$t('Warning'), {
+                confirmButtonText: this.$t('Confirm'),
                 type: 'error'
               })
             })
