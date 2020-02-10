@@ -56,6 +56,9 @@
         <el-form-item :label="$t('Goods_details')">
           <editor :init="editorInit" v-model="goods.detail"/>
         </el-form-item>
+        <el-form-item :label="$t('操作说明')">
+          <el-input type="textarea" v-model="goods.operationDesc"></el-input>
+        </el-form-item>
         <el-form-item :label="$t('Goods_category')" prop="goodsType">
           <el-radio-group v-model="goods.goodsType">
             <el-radio :label="1">{{$t('Normal_merchandise')}}</el-radio>
@@ -72,7 +75,7 @@
           <el-input v-model.number="productForm.number"/>
         </el-form-item>
         <el-form-item :label="$t('Merchandise_sale_price')" prop="sellPrice">
-          <el-input v-model="productForm.sellPrice">
+          <el-input v-model="productForm.sellPrice" @blur="changeVipPrice">
             <template slot="append">{{$t('Dollars')}}</template>
           </el-input>
         </el-form-item>
@@ -626,6 +629,14 @@
         })
 
       },
+      changeVipPrice(){
+        this.vipPriceForm = {
+          silverVipPrice: (this.productForm.sellPrice * 0.01).toFixed(2),
+          goldVipPrice: (this.productForm.sellPrice * 0.02).toFixed(2),
+          platinumVipPrice: (this.productForm.sellPrice * 0.04).toFixed(2),
+          diamondVipPrice: (this.productForm.sellPrice * 0.1).toFixed(2)
+        }
+      }
     }
   }
 </script>

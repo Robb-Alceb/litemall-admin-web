@@ -14,7 +14,7 @@
       <el-table-column align="center" :label="$t('Operating_time')" prop="addTime"/>
       <el-table-column align="center" label="$t('Operating_Category')" prop="type">
         <template slot-scope="scope">
-          <el-tag>{{ scope.row.type | typeFilter }}</el-tag>
+          <el-tag>{{ typeFilter(scope.row.type)  }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" :label="$t('Operating_action')" prop="action"/>
@@ -37,23 +37,23 @@
 import { listLog } from '@/api/log'
 import Pagination from '@/components/Pagination'
 
-const typeMap = {
-  0: this.$t('Normal_operations'),
-  1: this.$t('Safety_operations'),
-  2: this.$t('Tickets_operations'),
-  3: this.$t('Other_operations')
-}
+
 
 export default {
   name: 'Log',
   components: { Pagination },
   filters: {
-    typeFilter(type) {
-      return typeMap[type]
-    }
+
   },
   data() {
+    const typeMap = {
+      0: this.$t('Normal_operations'),
+      1: this.$t('Safety_operations'),
+      2: this.$t('Tickets_operations'),
+      3: this.$t('Other_operations')
+    }
     return {
+      typeMap,
       list: null,
       total: 0,
       listLoading: true,
@@ -75,6 +75,9 @@ export default {
     this.getList()
   },
   methods: {
+    typeFilter(type) {
+      return typeMap[type]
+    },
     getList() {
       this.listLoading = true
       listLog(this.listQuery)

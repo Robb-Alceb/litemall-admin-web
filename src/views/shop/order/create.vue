@@ -46,7 +46,7 @@
           <el-form-item label="联系人" prop="mobile">
             <el-input v-model="orderDetail.consignee" :disabled="true"/>
           </el-form-item>
-          <el-form-item :label="this.$t('Contact_number')" prop="mobile">
+          <el-form-item :label="$t('Contact_number')" prop="mobile">
             <el-input v-model="orderDetail.mobile" :disabled="true"/>
           </el-form-item>
           <el-form-item :label="$t('Store_location')" prop="mobile">

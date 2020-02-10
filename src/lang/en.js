@@ -566,5 +566,7 @@ export default {
   "Coupon_can_only_obtained_not_exchanged":"Coupon can only obtained, not exchanged",
   "Coupon_type_not_supported":"Coupon type not supported ",
   "Coupon_already_exchanged":"Coupon already exchanged",
-  "Coupon_invalid":"Coupon invalid"
+  "Coupon_invalid":"Coupon invalid",
+
+  "User_name":"User name",
 }

@@ -97,10 +97,10 @@
         });
       },
       handleLogs(row){
-        this.$router.push({path:'repository/logs',query:{id:row.id}})
+        this.$router.push({path:'/repository/logs',query:{id:row.id}})
       },
       handleCancel(){
-        this.$router.push({path:'repository/list'})
+        this.$router.push({path:'/repository/merchandise'})
       },
       handleEdit(){
         editMerchandise({litemallMerchandise:this.merchandise}).then(response => {

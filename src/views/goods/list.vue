@@ -82,7 +82,7 @@
 
       <el-table-column align="center" :label="$t('Review_Status')" prop="reviewType">
         <template slot-scope="scope">
-          {{ scope.row.reviewType | reviewFilter }}
+          {{ reviewFilter(scope.row.reviewType)  }}
         </template>
       </el-table-column>
 
@@ -300,21 +300,22 @@ import { allForPerm } from '@/api/shop'
 import checkPermission from '@/utils/permission'
 import ElColorAlphaSlider from "element-ui/packages/color-picker/src/components/alpha-slider";
 
-const reviewMap = {
-  1: '待审核',
-  2: '已审核',
-  3: this.$t('Denied')
-}
+
+
 export default {
   name: 'GoodsList',
   components: {ElColorAlphaSlider, BackToTop, Pagination },
   filters: {
-    reviewFilter(review) {
-      return reviewMap[review]
-    }
+
   },
   data() {
+    const reviewMap = {
+      1: '待审核',
+      2: '已审核',
+      3: this.$t('Denied')
+    }
     return {
+      reviewMap,
       rules: {
         goodsSn: [
           { required: true, message: this.$t('Merchandise_ID_must_not_be_empty'), trigger: 'blur' }
@@ -381,6 +382,9 @@ export default {
     })
   },
   methods: {
+    reviewFilter(review) {
+      return this.reviewMap[review]
+    },
     getList() {
       this.listLoading = true
       listGoods(this.listQuery).then(response => {

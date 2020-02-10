@@ -92,7 +92,8 @@
                 <el-button style="display: inline;" @click="exportSales()">导出数据</el-button>
               </div>-->
             </div>
-            <ve-histogram :data="chartData"></ve-histogram>
+            <ve-histogram :data="chartData" :settings="histogramSettings"></ve-histogram>
+            <div align="center">金额($)</div>
       </el-card>
     </el-card>
   </div>
@@ -120,9 +121,13 @@
     name: "salesStatistics",
     components: { VeHistogram, VeFunnel },
     data(){
-      const startDate = formatDate(new Date(new Date().getTime() - 3600 * 1000 * 24 * 7), 'yyyy-MM-dd hh:mm')
+      const startDate = formatDate(new Date(new Date().getTime() - 3600 * 1000 * 24 * 60), 'yyyy-MM-dd hh:mm')
       const endDate = formatDate(new Date(), 'yyyy-MM-dd hh:mm')
       return {
+        histogramSettings:{
+          yAxisName: ['会员数'],
+          // xAxisType: 'time'
+        },
         queryParam:{
           shopId:undefined
         },

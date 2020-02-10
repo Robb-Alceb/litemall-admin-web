@@ -6,7 +6,7 @@
         <span>门店编辑</span>
 
         <el-button v-permission="['GET /admin/admin/list']" style="float: right; padding: 3px 0" type="text" @click="members()">{{$t('View_partners_list')}}</el-button>
-        <el-button v-permission="['GET /admin/shopLog/list']" style="float: right; padding: 3px 0;margin-right: 10px;" type="text" @click="handleLogs()">{{this.$t('View_Journals')}}</el-button>
+        <el-button v-permission="['GET /admin/shopLog/list']" style="float: right; padding: 3px 0;margin-right: 10px;" type="text" @click="handleLogs()">{{$t('View_Journals')}}</el-button>
       </div>
       <el-form ref="shop" :rules="rules" :model="shop" label-width="150px">
         <el-form-item :label="$t('Store_name')" prop="name">
@@ -27,7 +27,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item :label="$('Store_Supervisor')" prop="shopManager">
+        <el-form-item :label="$t('Store_Supervisor')" prop="shopManager">
           <el-select  v-model="shopManager.id"  :placeholder="$t('Change_account_to_store_manager_account_in_partner_list')" clearable>
             <el-option v-for="item in shopMembers" :value="item.id" :label="item.nickName"/>
           </el-select>
@@ -37,7 +37,7 @@
             <el-option v-for="item in shopMembers" :value="item.id" :label="item.nickName" />
           </el-select>
         </el-form-item>
-        <el-form-item :label="this.$t('Contact_number')" prop="mobile">
+        <el-form-item :label="$t('Contact_number')" prop="mobile">
           <el-input v-model="shop.mobile" placeholder="13000000000"/>
         </el-form-item>
         <el-form-item :label="$t('Service_hours')">

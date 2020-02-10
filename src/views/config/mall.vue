@@ -7,7 +7,7 @@
       <el-form-item label="商场地址" prop="litemall_mall_address">
         <el-input v-model="dataForm.litemall_mall_address"/>
       </el-form-item>
-      <el-form-item :label="this.$t('Contact_number')" prop="litemall_mall_phone">
+      <el-form-item :label="$t('Contact_number')" prop="litemall_mall_phone">
         <el-input v-model="dataForm.litemall_mall_phone"/>
       </el-form-item>
       <el-form-item label="联系QQ" prop="litemall_mall_qq">

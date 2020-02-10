@@ -23,8 +23,8 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item :label="$('Store_Supervisor')" prop="shopManager">
-          <el-select v-model="shopManagerId" :placeholder="$('Change_account_to_store_supervisor_account_in_partner_list')" clearable>
+        <el-form-item :label="$t('Store_Supervisor')" prop="shopManager">
+          <el-select v-model="shopManagerId" :placeholder="$t('Change_account_to_store_supervisor_account_in_partner_list')" clearable>
             <el-option v-for="item in shopMembers" :value="item.id" :label="item.nickName"/>
           </el-select>
         </el-form-item>
@@ -33,7 +33,7 @@
             <el-option v-for="item in shopMembers" :value="item.id" :label="item.nickName"/>
           </el-select>
         </el-form-item>
-        <el-form-item :label="this.$t('Contact_number')" prop="mobile">
+        <el-form-item :label="$t('Contact_number')" prop="mobile">
           <el-input v-model="shop.mobile" placeholder="13000000000"/>
         </el-form-item>
         <el-form-item :label="$t('Service_hours')">

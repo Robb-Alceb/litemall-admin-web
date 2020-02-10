@@ -15,7 +15,11 @@
 
       <el-table-column align="center" min-width="100px" :label="$t('Member_ID')" prop="userId"/>
 
+      <el-table-column align="center" min-width="100px" :label="$t('User_name')" prop="userName"/>
+
       <el-table-column align="center" min-width="100px" :label="$t('Merchandise_ID')" prop="valueId"/>
+
+      <el-table-column align="center" min-width="100px" :label="$t('Merchandise_name')" prop="valueName"/>
 
       <el-table-column align="center" min-width="100px" :label="$t('Time_added')" prop="addTime"/>
 

@@ -34,13 +34,13 @@
 
       <el-table-column align="center" :label="$t('Payment_method')" prop="payType">
         <template slot-scope="scope">
-          <el-tag>{{ scope.row.payType | payTypeFilter }}</el-tag>
+          <el-tag>{{ payTypeFilter(scope.row.payType)  }}</el-tag>
         </template>
       </el-table-column>
 
       <el-table-column align="center" :label="$t('Source_of_order')" prop="orderSource">
         <template slot-scope="scope">
-          <el-tag>{{ scope.row.orderSource | orderSourceFilter }}</el-tag>
+          <el-tag>{{ orderSourceFilter(scope.row.orderSource) }}</el-tag>
         </template>
       </el-table-column>
 
@@ -48,7 +48,7 @@
 
       <el-table-column align="center" :label="$t('Order_status')" prop="orderStatus">
         <template slot-scope="scope">
-          <el-tag>{{ scope.row.orderStatus | orderStatusFilter }}</el-tag>
+          <el-tag>{{ orderStatusFilter(scope.row.orderStatus) }}</el-tag>
         </template>
       </el-table-column>
 
@@ -81,7 +81,7 @@
           <span>{{ orderDetail.order.orderSn }}</span>
         </el-form-item>
         <el-form-item :label="$t('Order_status')">
-          <el-tag>{{ orderDetail.order.orderStatus | orderStatusFilter }}</el-tag>
+          <el-tag>{{ orderStatusFilter(orderDetail.order.orderStatus)  }}</el-tag>
         </el-form-item>
         <el-form-item label="订单用户">
           <span>{{ orderDetail.user.nickname }}</span>
@@ -170,43 +170,39 @@ import Pagination from '@/components/Pagination' // Secondary package based on e
 import checkPermission from '@/utils/permission' // 权限判断函数
 import { allForPerm } from '@/api/shop'
 
-const statusMap = {
-  101: this.$t('Unpaid1'),
-  102: this.$t('Member_cancelled'),
-  103: this.$t('System_cancelled'),
-  201: this.$t('Paid'),
-  202: this.$t('Apply_for_refund'),
-  203: this.$t('Refunded'),
-  301: this.$t('Sent_for_delivery'),
-  401: this.$t('Member_received'),
-  402: this.$t('System_received')
-}
 
-const payTypeMap = {
-  1: this.$('Unpaid'),
-  2: this.$('Paypal')
-}
-
-const orderSourceMap = {
-  1: '手机app'
-}
 
 export default {
   name: 'Order',
   components: { Pagination },
   filters: {
-    orderStatusFilter(status) {
-      return statusMap[status]
-    },
-    payTypeFilter(type){
-      return payTypeMap[type]
-    },
-    orderSourceFilter(source){
-      return orderSourceMap[source]
-    }
+
   },
   data() {
+    const statusMap = {
+      101: this.$t('Unpaid1'),
+      102: this.$t('Member_cancelled'),
+      103: this.$t('System_cancelled'),
+      201: this.$t('Paid'),
+      202: this.$t('Apply_for_refund'),
+      203: this.$t('Refunded'),
+      301: this.$t('Sent_for_delivery'),
+      401: this.$t('Member_received'),
+      402: this.$t('System_received')
+    }
+
+    const payTypeMap = {
+      1: this.$t('Unpaid'),
+      2: this.$t('Paypal')
+    }
+
+    const orderSourceMap = {
+      1: '手机app'
+    }
     return {
+      statusMap,
+      payTypeMap,
+      orderSourceMap,
       list: [],
       total: 0,
       listLoading: true,
@@ -255,6 +251,15 @@ export default {
     })
   },
   methods: {
+    orderStatusFilter(status) {
+      return this.statusMap[status]
+    },
+    payTypeFilter(type){
+      return this.payTypeMap[type]
+    },
+    orderSourceFilter(source){
+      return this.orderSourceMap[source]
+    },
     checkPermission,
     getList() {
       this.listLoading = true

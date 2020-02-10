@@ -21,7 +21,7 @@
         <el-form-item :label="$t('Address')" prop="location">
           <el-input v-model="admin.location"/>
         </el-form-item>
-        <el-form-item :label="this.$t('Contact_number')" prop="mobile">
+        <el-form-item :label="$t('Contact_number')" prop="mobile">
           <el-input v-model="admin.mobile"/>
         </el-form-item>
         <el-form-item :label="$t('Partner_role')" prop="roleIds">
@@ -96,20 +96,21 @@ import { updateAdmin, readAdmin } from '@/api/admin'
 import { roleOptions } from '@/api/role'
 import { getToken } from '@/utils/auth'
 import { listShop } from '@/api/shop'
-let validatePass = (rule, value, callback) => {
-  if (value === '') {
-    callback(new Error(this.$t('Please_re-enter_password')));
-  } else if (value !== this.admin.password) {
-    callback(new Error(this.$t('Passwords_entered_do_not_match')));
-  } else {
-    callback();
-  }
-};
+
 export default {
   name: 'Edit',
   data() {
-
+    let validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error(this.$t('Please_re-enter_password')));
+      } else if (value !== this.admin.password) {
+        callback(new Error(this.$t('Passwords_entered_do_not_match')));
+      } else {
+        callback();
+      }
+    };
     return {
+      validatePass,
       uploadPath,
       admin: {},
       roles: [],
@@ -155,7 +156,7 @@ export default {
             { min: 6, max: 16, message: this.$t('Password_length_from_6_-_16_characters'), trigger: 'blur' }
           ],
           validatePass: [
-            { validator: validatePass, trigger: 'blur' }
+            { validator: this.validatePass, trigger: 'blur' }
           ]
         }
       }

@@ -27,7 +27,7 @@
 
       <el-table-column align="center" :label="$t('Time_added')" prop="addTime"/>
 
-      <el-table-column align="center" :label="this.$t('Contact_number')" prop="mobile"/>
+      <el-table-column align="center" :label="$t('Contact_number')" prop="mobile"/>
 
       <el-table-column align="center" :label="$t('Operate')" width="300" class-name="small-padding fixed-width">
         <template slot-scope="scope">

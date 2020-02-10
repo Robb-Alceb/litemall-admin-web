@@ -54,7 +54,7 @@
           <span>{{ orderDetail.order.orderSn }}</span>
         </el-form-item>
         <el-form-item :label="$t('Order_status')">
-          <el-tag>{{ orderDetail.order.orderStatus | orderStatusFilter }}</el-tag>
+          <el-tag>{{ orderStatusFilter(orderDetail.order.orderStatus)  }}</el-tag>
         </el-form-item>
         <el-form-item label="订单用户">
           <span>{{ orderDetail.user.nickname }}</span>
@@ -142,28 +142,28 @@ import { listOrder, shipOrder, refundOrder, detailOrder } from '@/api/order'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import checkPermission from '@/utils/permission' // 权限判断函数
 
-const statusMap = {
-  101: this.$t('Unpaid1'),
-  102: this.$t('Member_cancelled'),
-  103: this.$t('System_cancelled'),
-  201: this.$t('Paid'),
-  202: this.$t('Apply_for_refund'),
-  203: this.$t('Refunded'),
-  301: this.$t('Sent_for_delivery'),
-  401: this.$t('Member_received'),
-  402: this.$t('System_received')
-}
+
 
 export default {
   name: 'Order',
   components: { Pagination },
   filters: {
-    orderStatusFilter(status) {
-      return statusMap[status]
-    }
+
   },
   data() {
+    const statusMap = {
+      101: this.$t('Unpaid1'),
+      102: this.$t('Member_cancelled'),
+      103: this.$t('System_cancelled'),
+      201: this.$t('Paid'),
+      202: this.$t('Apply_for_refund'),
+      203: this.$t('Refunded'),
+      301: this.$t('Sent_for_delivery'),
+      401: this.$t('Member_received'),
+      402: this.$t('System_received')
+    }
     return {
+      statusMap,
       list: [],
       total: 0,
       listLoading: true,
@@ -201,6 +201,9 @@ export default {
     this.getList()
   },
   methods: {
+    orderStatusFilter(status) {
+      return this.statusMap[status]
+    },
     checkPermission,
     getList() {
       this.listLoading = true

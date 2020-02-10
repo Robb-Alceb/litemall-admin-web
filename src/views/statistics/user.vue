@@ -73,7 +73,8 @@
               <el-button style="display: inline;" @click="exportSales()">导出数据</el-button>
             </div>-->
           </div>
-          <ve-line :data="lineData"></ve-line>
+          <ve-line :data="lineData" :settings="lineSettings"></ve-line>
+          <div align="center">日期</div>
         </el-card>
         <el-card>
           <div slot="header" class="clearfix">
@@ -117,7 +118,8 @@
               <el-button style="display: inline;" @click="exportSales()">导出数据</el-button>
             </div>-->
           </div>
-          <ve-histogram :data="chartData"></ve-histogram>
+          <ve-histogram :data="chartData" :settings="histogramSettings"></ve-histogram>
+          <div align="center">金额($)</div>
         </el-card>
       </el-card>
     </div>
@@ -144,9 +146,17 @@
     name: "userStatistics",
     components: { VeHistogram, VeLine },
     data() {
-      const startDate = formatDate(new Date(new Date().getTime() - 3600 * 1000 * 24 * 10), 'yyyy-MM-dd hh:mm')
+      const startDate = formatDate(new Date(new Date().getTime() - 3600 * 1000 * 24 * 60), 'yyyy-MM-dd hh:mm')
       const endDate = formatDate(new Date(), 'yyyy-MM-dd hh:mm')
       return {
+        lineSettings:{
+          yAxisName: ['数量'],
+          // xAxisType: 'time'
+        },
+        histogramSettings:{
+          yAxisName: ['会员数'],
+          // xAxisType: 'time'
+        },
         chartRowMap,
         overview:{
           userTodayCount:0,
@@ -155,7 +165,7 @@
           userTotal: 0
         },
         dateRange: [startDate, endDate],
-        amountDateRange: [startDate, startDate],
+        amountDateRange: [startDate, endDate],
         activeTable: "1",
         countFilterType: 1,
         amountFilterType: 1,

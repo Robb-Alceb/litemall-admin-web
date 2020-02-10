@@ -22,7 +22,7 @@
 
       <el-table-column align="center" :label="$t('Service_types')" prop="type">
         <template slot-scope="scope">
-          <el-tag>{{ scope.row.type | typeFilter }}</el-tag>
+          <el-tag>{{ typeFilter(scope.row.type) }}</el-tag>
         </template>
       </el-table-column>
 
@@ -30,7 +30,7 @@
 
       <el-table-column align="center" :label="$t('Request_status')" prop="status">
         <template slot-scope="scope">
-          <el-tag>{{ scope.row.status | orderStatusFilter }}</el-tag>
+          <el-tag>{{ orderStatusFilter(scope.row.status) }}</el-tag>
         </template>
       </el-table-column>
 
@@ -49,21 +49,24 @@
 
 
 <script>
-  const typeMap = {
-    1: this.$t('Purchase')
-  }
-  const statusMap = {
-    1: this.$t('Awaiting_process'),
-    2: this.$t('Processed'),
-    3: this.$t('Cancelled'),
-    4: this.$t('Denied')
-  }
+
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   export default {
     name: "repositoryList",
     components: { Pagination },
     data(){
+      const typeMap = {
+        1: this.$t('Purchase')
+      }
+      const statusMap = {
+        1: this.$t('Awaiting_process'),
+        2: this.$t('Processed'),
+        3: this.$t('Cancelled'),
+        4: this.$t('Denied')
+      }
       return {
+        typeMap,
+        statusMap,
         downloadLoading:false,
         list: [{
           repSn: "N 10001",
@@ -109,6 +112,12 @@
       this.getList()
     },
     methods: {
+      orderStatusFilter(row){
+        return this.statusMap[row]
+      },
+      typeFilter(row){
+        return this.typeMap[row]
+      },
       getList(){
 
       },
@@ -129,12 +138,7 @@
       }
     },
     filters: {
-      orderStatusFilter(row){
-        return statusMap[row]
-      },
-      typeFilter(row){
-        return typeMap[row]
-      }
+
     }
   }
 </script>

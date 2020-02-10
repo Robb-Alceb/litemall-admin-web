@@ -86,17 +86,18 @@
 </template>
 
 <script>
-  const payTypeMap = {
-    "1":this.$('Unpaid'),
-    "2":this.$('Paypal'),
-    "3":"globalpay",
-    "4":"monerispay",
-    "5":"apple pay"
-  }
+
   import { detailOrder } from '@/api/order'
   export default {
     name: "print",
     data(){
+      const payTypeMap = {
+        "1":this.$t('Unpaid'),
+        "2":this.$t('Paypal'),
+        "3":"globalpay",
+        "4":"monerispay",
+        "5":"apple pay"
+      }
       return {
         payTypeMap,
         orderDetail: {

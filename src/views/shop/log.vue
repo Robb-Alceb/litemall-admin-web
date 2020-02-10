@@ -6,6 +6,9 @@
     <div class="filter-container">
       <el-input v-model="listQuery.content" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Operator_details')"/>
       <el-input v-model="listQuery.createUserName" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Operator')"/>
+      <el-select v-model="listQuery.shopId" clearable style="width: 200px" class="filter-item" :placeholder="$t('Please_select_store_')">
+        <el-option v-for="item in shops" :label="item.name" :value="item.id"/>
+      </el-select>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('Search')}}</el-button>
     </div>
 
@@ -32,11 +35,13 @@
 <script>
 import { getLogs } from '@/api/shop'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import { allForPerm } from '@/api/shop'
 export default {
   name: 'ShopLog',
   components: { Pagination },
   data() {
     return {
+      shops: [],
       list: [],
       total: 0,
       listLoading: false,
@@ -56,6 +61,9 @@ export default {
     if (shopId) {
       this.listQuery.shopId = shopId
     }
+    allForPerm().then(response=>{
+      this.shops = response.data.data.list
+    })
     this.getList()
   },
   methods: {

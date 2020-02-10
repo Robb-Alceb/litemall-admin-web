@@ -30,7 +30,7 @@
       <el-form :inline="true">
         <el-col :span="18">
           <el-form-item :label="$t('Current_status')">
-            {{ orderDetail.order.orderStatus | orderStatusFilter }}
+            {{ orderStatusFilter(orderDetail.order.orderStatus)  }}
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -60,9 +60,9 @@
           <el-col :span="4" class="table-cell" v-if="orderDetail.order.shipSn">{{ orderDetail.order.shipSn }}</el-col>
           <el-col :span="4" class="table-cell" v-else>未发货</el-col>
           <el-col :span="4" class="table-cell">{{ orderDetail.user.nickname }}</el-col>
-          <el-col :span="4" class="table-cell">{{ orderDetail.order.payType | payTypeFilter }}</el-col>
-          <el-col :span="4" class="table-cell">{{ orderDetail.order.orderSource | orderSourceFilter}}</el-col>
-          <el-col :span="4" class="table-cell">{{ orderDetail.order.orderType | orderTypeFilter}}</el-col>
+          <el-col :span="4" class="table-cell">{{ payTypeFilter(orderDetail.order.payType) }}</el-col>
+          <el-col :span="4" class="table-cell">{{ orderSourceFilter(orderDetail.order.orderSource)  }}</el-col>
+          <el-col :span="4" class="table-cell">{{ orderTypeFilter(orderDetail.order.orderType)  }}</el-col>
         </el-row>
       </div>
 
@@ -166,48 +166,28 @@
 <script>
 import { shipOrder, detailOrder, remarkOrder } from '@/api/order'
 
-const statusMap = {
-  101: this.$t('Unpaid1'),
-  102: this.$t('Member_cancelled'),
-  103: this.$t('System_cancelled'),
-  201: this.$t('Paid'),
-  202: this.$t('Apply_for_refund'),
-  203: this.$t('Refunded'),
-  301: this.$t('Sent_for_delivery'),
-  401: this.$t('Member_received'),
-  402: this.$t('System_received')
-}
+
 
 export default {
   name: 'orderDetail',
   filters: {
-    orderStatusFilter(status) {
-      return statusMap[status]
-    },
-    payTypeFilter(status) {
-      if (status == 1) {
-        return '未支付'
-      }else if(status == 2){
-        return 'paypal'
-      }
-    },
-    orderSourceFilter(type){
-      if(type == 1){
-        return this.$t('Phone_App')
-      }else{
-        return this.$t('Others')
-      }
-    },
-    orderTypeFilter(type){
-      if(type == 1){
-        return this.$t('Normal_Order')
-      }else if(type == 2){
-        return this.$t('Delivery_order')
-      }
-    }
+
+
   },
   data() {
+    const statusMap = {
+      101: this.$t('Unpaid1'),
+      102: this.$t('Member_cancelled'),
+      103: this.$t('System_cancelled'),
+      201: this.$t('Paid'),
+      202: this.$t('Apply_for_refund'),
+      203: this.$t('Refunded'),
+      301: this.$t('Sent_for_delivery'),
+      401: this.$t('Member_received'),
+      402: this.$t('System_received')
+    }
     return {
+      statusMap,
       orderDetail: {
         order: {},
         user: {},
@@ -235,6 +215,30 @@ export default {
     this.getDetail()
   },
   methods: {
+    orderStatusFilter(status) {
+      return this.statusMap[status]
+    },
+    payTypeFilter(status) {
+      if (status == 1) {
+        return '未支付'
+      }else if(status == 2){
+        return 'paypal'
+      }
+    },
+    orderSourceFilter(type){
+      if(type == 1){
+        return this.$t('Phone_App')
+      }else{
+        return this.$t('Others')
+      }
+    },
+    orderTypeFilter(type){
+      if(type == 1){
+        return this.$t('Normal_Order')
+      }else if(type == 2){
+        return this.$t('Delivery_order')
+      }
+    },
     getDetail() {
       const id = this.$route.query.id
       console.log(id)

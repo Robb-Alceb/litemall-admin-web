@@ -21,7 +21,7 @@
         <el-form-item :label="$t('Address')" prop="location">
           <el-input v-model="admin.location"/>
         </el-form-item>
-        <el-form-item :label="this.$t('Contact_number')" prop="mobile">
+        <el-form-item :label="$t('Contact_number')" prop="mobile">
           <el-input v-model="admin.mobile"/>
         </el-form-item>
         <el-form-item :label="$t('Partner_role')" prop="roleIds">

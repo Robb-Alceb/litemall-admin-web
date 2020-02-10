@@ -33,11 +33,13 @@
           <el-col :span="12">
             <ve-pie :data="goodsData"
                     :events="goodsChartEvents"/>
+            <div align="center">商品销售分析</div>
           </el-col>
           <el-col :span="12">
             <ve-pie :data="categoryData"
                     :events="categoryChartEvents"/>
           </el-col>
+          <div align="center">类目销售分析</div>
         </el-row>
       </el-card>
       <el-card>
