@@ -56,6 +56,9 @@
         <el-form-item :label="$t('Goods_details')">
           <editor :init="editorInit" v-model="goods.detail"/>
         </el-form-item>
+        <el-form-item :label="$t('操作说明')">
+          <el-input type="textarea" v-model="goods.operationDesc"></el-input>
+        </el-form-item>
         <el-form-item :label="$t('Goods_category')" prop="goodsType">
           <el-radio-group v-model="goods.goodsType">
             <el-radio :label="1">{{$t('Normal_merchandise')}}</el-radio>
