@@ -14,7 +14,7 @@
         <el-col :span="4" class="table-cell">{{ coupon.name }}</el-col>
         <el-col :span="4" class="table-cell">{{ coupon.desc }}</el-col>
         <el-col :span="4" class="table-cell">{{ coupon.tag }}</el-col>
-        <el-col :span="4" class="table-cell">{{ coupon.type | formatType }}</el-col>
+        <el-col :span="4" class="table-cell">{{ formatType(coupon.type)  }}</el-col>
         <el-col :span="4" class="table-cell">{{$t('Full')}}{{ coupon.min }}元可用</el-col>
         <el-col :span="4" class="table-cell">{{$t('Discount')}}{{ coupon.discount }}{{$t('Dollars')}}</el-col>
       </el-row>
@@ -28,19 +28,23 @@
       </el-row>
       <el-row>
         <el-col :span="4" class="table-cell">{{ coupon.limit }}</el-col>
-        <el-col :span="4" class="table-cell">{{ coupon.status | formatStatus }}</el-col>
-        <el-col :span="4" class="table-cell">{{ coupon.goodsType | formatGoodsType }}</el-col>
+        <el-col :span="4" class="table-cell">{{ formatStatus(coupon.status)  }}</el-col>
+        <el-col :span="4" class="table-cell">{{ formatGoodsType(coupon.goodsType)  }}</el-col>
         <el-col :span="4" class="table-cell" :title="getTimeScope()">{{ getTimeScope() }}</el-col>
         <el-col :span="4" class="table-cell">{{ coupon.code }}</el-col>
         <el-col :span="4" class="table-cell">{{ coupon.total === 0 ? "不限" : coupon.total }}</el-col>
       </el-row>
       <el-row>
         <el-col :span="8" class="table-cell-title">使用门槛</el-col>
+        <el-col :span="4" class="table-cell-title">与商品活动价共用</el-col>
       </el-row>
       <el-row>
         <el-col :span="8" class="table-cell">
           <el-tag v-if="!coupon.userLevel || !coupon.userLevel.length">无限制</el-tag>
-          <el-tag v-else v-for="item in coupon.userLevel">{{item | userLeverFilter}}</el-tag>
+          <el-tag v-else v-for="item in coupon.userLevel">{{userLeverFilter(item) }}</el-tag>
+        </el-col>
+        <el-col :span="4" class="table-cell">
+          {{coupon.promotionOnly == 0 ? "共用" : "不共用"}}
         </el-col>
       </el-row>
     </div>
@@ -79,7 +83,7 @@
       <el-table-column align="center" label="领取时间" prop="addTime"/>
 
       <el-table-column align="center" label="使用状态" prop="status">
-        <template slot-scope="scope">{{ scope.row.status | formatUseStatus }}</template>
+        <template slot-scope="scope">{{ formatUseStatus(scope.row.status)  }}</template>
       </el-table-column>
 
       <el-table-column align="center" label="订单ID" prop="orderId"/>
@@ -98,48 +102,96 @@ import { readCoupon, listCouponUser, listCouponGoods } from '@/api/coupon'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { allForPerm } from '@/api/shop'
 
-const defaultTypeOptions = [
-  {
-    label: this.$t('All_purpose_coupons'),
-    value: 0
-  },
-  {
-    label: this.$t('Free_coupons_upon_registration'),
-    value: 1
-  },
-  {
-    label: this.$t('Coupon_validation_code'),
-    value: 2
-  }
-]
-
-const defaultUseStatusOptions = [
-  {
-    label: '未使用',
-    value: 0
-  },
-  {
-    label: '已使用',
-    value: 1
-  },
-  {
-    label: this.$t('Expired'),
-    value: 2
-  },
-  {
-    label: this.$t('Merchandise_removed'),
-    value: 3
-  }
-]
 
 export default {
   name: 'CouponDetail',
   components: { Pagination },
   filters: {
+
+  },
+  data() {
+    const defaultTypeOptions = [
+      {
+        label: this.$t('All_purpose_coupons'),
+        value: 0
+      },
+      {
+        label: this.$t('Free_coupons_upon_registration'),
+        value: 1
+      },
+      {
+        label: this.$t('Coupon_validation_code'),
+        value: 2
+      }
+    ]
+
+    const defaultUseStatusOptions = [
+      {
+        label: '未使用',
+        value: 0
+      },
+      {
+        label: '已使用',
+        value: 1
+      },
+      {
+        label: this.$t('Expired'),
+        value: 2
+      },
+      {
+        label: this.$t('Merchandise_removed'),
+        value: 3
+      }
+    ]
+
+    return {
+      defaultTypeOptions,
+      defaultUseStatusOptions,
+      typeOptions: Object.assign({}, defaultTypeOptions),
+      useStatusOptions: Object.assign({}, defaultUseStatusOptions),
+      coupon: {},
+      list: [],
+      total: 0,
+      listLoading: true,
+      listQuery: {
+        page: 1,
+        limit: 20,
+        couponId: 0,
+        userId: undefined,
+        status: undefined,
+        sort: 'add_time',
+        order: 'desc'
+      },
+      goodsList: [],
+      goodsTotal: 0,
+      listGoodsLoading: true,
+      listGoodsQuery: {
+        page: 1,
+        limit: 20,
+        id: 0,
+        sort: 'add_time',
+        order: 'desc'
+      },
+      downloadLoading: false,
+      shops:[],
+    }
+  },
+  created() {
+    this.init()
+    if (this.$route.query.id == null) {
+      return
+    }
+    this.listGoodsQuery.id = this.$route.query.id;
+    this.getGoodsList()
+    allForPerm().then(response=>{
+      this.shops = response.data.data.list
+    })
+  },
+  methods: {
     formatType(type) {
-      for (let i = 0; i < defaultTypeOptions.length; i++) {
-        if (type === defaultTypeOptions[i].value) {
-          return defaultTypeOptions[i].label
+      for (let i = 0; i < this.defaultTypeOptions.length; i++) {
+        if (type === this.defaultTypeOptions[i].value) {
+          return this.defaultTypeOptions[i].label
         }
       }
       return ''
@@ -185,51 +237,7 @@ export default {
       } else{
         return '无限制'
       }
-    }
-  },
-  data() {
-    return {
-      typeOptions: Object.assign({}, defaultTypeOptions),
-      useStatusOptions: Object.assign({}, defaultUseStatusOptions),
-      coupon: {},
-      list: [],
-      total: 0,
-      listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20,
-        couponId: 0,
-        userId: undefined,
-        status: undefined,
-        sort: 'add_time',
-        order: 'desc'
-      },
-      goodsList: [],
-      goodsTotal: 0,
-      listGoodsLoading: true,
-      listGoodsQuery: {
-        page: 1,
-        limit: 20,
-        id: 0,
-        sort: 'add_time',
-        order: 'desc'
-      },
-      downloadLoading: false,
-      shops:[],
-    }
-  },
-  created() {
-    this.init()
-    if (this.$route.query.id == null) {
-      return
-    }
-    this.listGoodsQuery.id = this.$route.query.id;
-    this.getGoodsList()
-    allForPerm().then(response=>{
-      this.shops = response.data.data.list
-    })
-  },
-  methods: {
+    },
     init: function() {
       if (this.$route.query.id == null) {
         return

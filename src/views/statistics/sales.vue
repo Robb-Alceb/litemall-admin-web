@@ -22,7 +22,7 @@
                 @change="handleDateChange"
                 format="yyyy-MM-dd HH:mm"
                 value-format="yyyy-MM-dd HH:mm"
-                :placeholder="this.$t('Select_dates')"/>
+                :placeholder="$t('Select_dates')"/>
             </div>
           </div>
 <!--          <div style="display: inline;float: right;">
@@ -85,7 +85,7 @@
                     @change="handleSaleDateChange"
                     format="yyyy-MM-dd HH:mm"
                     value-format="yyyy-MM-dd HH:mm"
-                    :placeholder="this.$t('Select_dates')"/>
+                    :placeholder="$t('Select_dates')"/>
                 </div>
               </div>
 <!--              <div style="display: inline;float: right;">

@@ -49,7 +49,7 @@
                   @change="handleDateChange"
                   format="yyyy-MM-dd"
                   value-format="yyyy-MM-dd hh:mm"
-                  :placeholder="this.$t('Select_dates')">
+                  :placeholder="$t('Select_dates')">
                 </el-date-picker>
               </div>
               <div v-show="countFilterType ==2" style="display: inline;float: right;" class="block">
@@ -87,7 +87,7 @@
                   @change="handleAmountDateChange"
                   format="yyyy-MM-dd"
                   value-format="yyyy-MM-dd hh:mm"
-                  :placeholder="this.$t('Select_dates')" style="width:350px;">
+                  :placeholder="$t('Select_dates')" style="width:350px;">
                 </el-date-picker>
               </div>
               <div v-show="amountFilterType ==2" style="display: inline;float: right;" class="block">

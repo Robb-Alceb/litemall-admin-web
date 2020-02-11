@@ -66,7 +66,7 @@
           <el-date-picker
             v-model="dataForm.expireTime"
             type="datetime"
-            :placeholder="this.$t('Select_dates')"
+            :placeholder="$t('Select_dates')"
             value-format="yyyy-MM-dd HH:mm:ss"/>
         </el-form-item>
       </el-form>

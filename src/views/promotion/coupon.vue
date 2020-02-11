@@ -39,11 +39,11 @@
       </el-table-column>
 
       <el-table-column align="center" :label="$t('Merchandise_usage_limits')" prop="goodsType">
-        <template slot-scope="scope">{{ scope.row.goodsType | formatGoodsType }}</template>
+        <template slot-scope="scope">{{ formatGoodsType(scope.row.goodsType)  }}</template>
       </el-table-column>
 
       <el-table-column align="center" :label="$t('Coupon_type')" prop="type">
-        <template slot-scope="scope">{{ scope.row.type | formatType }}</template>
+        <template slot-scope="scope">{{ formatType(scope.row.type)  }}</template>
       </el-table-column>
 
       <el-table-column align="center" :label="$t('Amount_of_coupons')" prop="total">
@@ -51,7 +51,7 @@
       </el-table-column>
 
       <el-table-column align="center" :label="$t('Status')" prop="status">
-        <template slot-scope="scope">{{ scope.row.status | formatStatus }}</template>
+        <template slot-scope="scope">{{ formatStatus(scope.row.status)  }}</template>
       </el-table-column>
 
       <el-table-column align="center" :label="$t('Operate')" width="300" class-name="small-padding fixed-width">
@@ -67,7 +67,7 @@
 
     <!-- 添加或修改对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-position="left" label-width="100px" style="width: 600px; margin-left:50px;">
+      <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-position="left" label-width="110px" style="width: 590px; margin-left:50px;">
         <el-form-item :label="$t('Coupon_name')" prop="name">
           <el-input v-model="dataForm.name"/>
         </el-form-item>
@@ -77,7 +77,7 @@
         <el-form-item :label="$t('Label')" prop="tag">
           <el-input v-model="dataForm.tag"/>
         </el-form-item>
-        <el-form-item label="使用门槛" prop="userLevel" >
+        <el-form-item :label="$t('使用门槛')" prop="userLevel" >
           <el-checkbox-group v-model="dataForm.userLevel" @change="nolimit()">
             <el-checkbox :label="0" >无限制</el-checkbox>
             <el-checkbox :label="1" >白银会员</el-checkbox>
@@ -85,6 +85,10 @@
             <el-checkbox :label="3" >铂金会员</el-checkbox>
             <el-checkbox :label="4" >钻石会员</el-checkbox>
           </el-checkbox-group>
+        </el-form-item>
+        <el-form-item :label="$t('商品活动价共用')" prop="promotionOnly" >
+            <el-radio v-model="dataForm.promotionOnly" :label="0">{{$t('共用')}}</el-radio>
+            <el-radio v-model="dataForm.promotionOnly" :label="1">{{$t('不共用')}}</el-radio>
         </el-form-item>
         <el-form-item :label="$t('Lowest_spending_value')" prop="min">
           <el-input v-model="dataForm.min">
@@ -128,11 +132,11 @@
         </el-form-item>
         <el-form-item v-show="dataForm.timeType === 1">
           <el-col :span="11">
-            <el-date-picker v-model="dataForm.startTime" type="datetime" :placeholder="this.$t('Select_dates')" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%;"/>
+            <el-date-picker v-model="dataForm.startTime" type="datetime" :placeholder="$t('Select_dates')" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%;"/>
           </el-col>
           <el-col :span="2" class="line">至</el-col>
           <el-col :span="11">
-            <el-date-picker v-model="dataForm.endTime" type="datetime" :placeholder="this.$t('Select_dates')" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%;"/>
+            <el-date-picker v-model="dataForm.endTime" type="datetime" :placeholder="$t('Select_dates')" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%;"/>
           </el-col>
         </el-form-item>
         <el-form-item label="商品限制范围">
@@ -199,69 +203,47 @@ import { listCoupon, createCoupon, updateCoupon, deleteCoupon } from '@/api/coup
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { listGoods } from '@/api/goods'
 
-const defaultTypeOptions = [
-  {
-    label: this.$t('All_purpose_coupons'),
-    value: 0
-  },
-  {
-    label: this.$t('Free_coupons_upon_registration'),
-    value: 1
-  },
-/*  {
-    label: '兑换码',
-    value: 2
-  }*/
-]
 
-const defaultStatusOptions = [
-  {
-    label: this.$t('Normal'),
-    value: 0
-  },
-  {
-    label: this.$t('Expired'),
-    value: 1
-  },
-  {
-    label: this.$t('Merchandise_removed'),
-    value: 2
-  }
-]
 
 export default {
   name: 'Coupon',
   components: { Pagination },
   filters: {
-    formatType(type) {
-      for (let i = 0; i < defaultTypeOptions.length; i++) {
-        if (type === defaultTypeOptions[i].value) {
-          return defaultTypeOptions[i].label
-        }
-      }
-      return ''
-    },
-    formatGoodsType(goodsType) {
-      if (goodsType === 0) {
-        return this.$t('Usable_in_any_situation')
-      } else if (goodsType === 1) {
-        return this.$t('Select_category')
-      } else {
-        return this.$t('Select_merchandise')
-      }
-    },
-    formatStatus(status) {
-      if (status === 0) {
-        return '正常'
-      } else if (status === 1) {
-        return this.$t('Expired')
-      } else {
-        return '已下架'
-      }
-    }
+
   },
   data() {
+    const defaultTypeOptions = [
+      {
+        label: this.$t('All_purpose_coupons'),
+        value: 0
+      },
+      {
+        label: this.$t('Free_coupons_upon_registration'),
+        value: 1
+      },
+      /*  {
+          label: '兑换码',
+          value: 2
+        }*/
+    ]
+
+    const defaultStatusOptions = [
+      {
+        label: this.$t('Normal'),
+        value: 0
+      },
+      {
+        label: this.$t('Expired'),
+        value: 1
+      },
+      {
+        label: this.$t('Merchandise_removed'),
+        value: 2
+      }
+    ]
     return {
+      defaultTypeOptions,
+      defaultStatusOptions,
       typeOptions: Object.assign({}, defaultTypeOptions),
       statusOptions: Object.assign({}, defaultStatusOptions),
       list: [],
@@ -300,7 +282,8 @@ export default {
         days: 0,
         startTime: null,
         endTime: null,
-        userLevel: []
+        userLevel: [],
+        promotionOnly: 1
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -321,6 +304,32 @@ export default {
     this.getGoods()
   },
   methods: {
+    formatType(type) {
+      for (let i = 0; i < this.defaultTypeOptions.length; i++) {
+        if (type === this.defaultTypeOptions[i].value) {
+          return this.defaultTypeOptions[i].label
+        }
+      }
+      return ''
+    },
+    formatGoodsType(goodsType) {
+      if (goodsType === 0) {
+        return this.$t('Usable_in_any_situation')
+      } else if (goodsType === 1) {
+        return this.$t('Select_category')
+      } else {
+        return this.$t('Select_merchandise')
+      }
+    },
+    formatStatus(status) {
+      if (status === 0) {
+        return '正常'
+      } else if (status === 1) {
+        return this.$t('Expired')
+      } else {
+        return '已下架'
+      }
+    },
     getGoods() {
       this.listLoading = true
       listGoods(this.listGoodsQuery).then(response => {
