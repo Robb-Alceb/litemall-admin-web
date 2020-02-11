@@ -36,6 +36,17 @@
         <el-form-item :label="$t('Contact_number')" prop="mobile">
           <el-input v-model="shop.mobile" placeholder="13000000000"/>
         </el-form-item>
+        <el-form-item :label="$t('服务星期')" prop="weeks">
+          <el-checkbox-group v-model="shop.weeks">
+            <el-checkbox :label="1">{{$t('星期一')}}</el-checkbox>
+            <el-checkbox :label="2">{{$t('星期二')}}</el-checkbox>
+            <el-checkbox :label="3">{{$t('星期三')}}</el-checkbox>
+            <el-checkbox :label="4">{{$t('星期四')}}</el-checkbox>
+            <el-checkbox :label="5">{{$t('星期五')}}</el-checkbox>
+            <el-checkbox :label="6">{{$t('星期六')}}</el-checkbox>
+            <el-checkbox :label="7">{{$t('星期日')}}</el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
         <el-form-item :label="$t('Service_hours')">
           <el-col :span="6">
             <el-form-item prop="date1">
@@ -103,7 +114,8 @@ export default {
         'closeTime': '22:00',
         'description': '',
         'range': 0,
-        'types': []
+        'types': [],
+        'weeks': []
       },
       shopkeeperId: undefined,
       shopManagerId: undefined,
