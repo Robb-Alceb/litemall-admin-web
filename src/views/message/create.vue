@@ -12,13 +12,18 @@
           <el-radio v-model="message.type" :label="1" border>系统消息</el-radio>
           <el-radio v-model="message.type" :label="2" border>站内消息</el-radio>
         </el-form-item>
-        <el-form-item v-show="message.type == 2" label="接收对象" prop="receiverNumber">
+<!--        <el-form-item v-show="message.type == 2" label="接收对象" prop="receiverNumber">
           <el-row>
             <span>{{message.receiverNumber}}个对象</span>
             <el-col>
               <el-button type="primary" @click="handleAdd">添加对象</el-button>
             </el-col>
           </el-row>
+        </el-form-item>-->
+        <el-form-item v-show="message.type == 2" :label="$t('接受者等级')">
+          <el-checkbox-group v-model="message.receiverLevels">
+            <el-checkbox v-for="op in userLevelOption" :label="op.value">{{op.label}}</el-checkbox>
+          </el-checkbox-group>
         </el-form-item>
         <el-form-item label="消息内容" prop="content">
           <el-input v-model="message.content" type="textarea" placeholder=""/>
@@ -57,12 +62,30 @@
   export default {
     name: "createMessage",
     data(){
+      const userLevelOption = [{
+        label: this.$t('普通会员'),
+        value: 0
+      },{
+        label: this.$t('白银会员'),
+        value: 1
+      },{
+        label: this.$t('黄金会员'),
+        value: 2
+      },{
+        label: this.$t('铂金会员'),
+        value: 3
+      },{
+        label: this.$t('钻石会员'),
+        value: 4
+      }]
       return {
+        userLevelOption,
         message: {
           title: undefined,
           type: 1,
           receiverNumber: 0,
-          content: undefined
+          content: undefined,
+          receiverLevels:[]
         },
         rules: {
           title: [

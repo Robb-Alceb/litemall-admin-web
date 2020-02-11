@@ -4,7 +4,7 @@
     <!-- 查询和其他操作 -->
     <div class="filter-container">
       <el-input v-model="listQuery.title" clearable class="filter-item" style="width: 200px;" placeholder="请输入消息标题"/>
-      <el-select v-model="listQuery.type" clearable>
+      <el-select v-model="listQuery.type" class="filter-item" clearable>
         <el-option :value="1" label="系统消息"></el-option>
         <el-option :value="2" label="站内消息"></el-option>
       </el-select>
@@ -31,8 +31,9 @@
 
       <el-table-column align="center" label="接收对象" prop="receiverNumber">
         <template slot-scope="scope">
-          <span v-if="scope.row.type == 1">所有用户</span>
-          <span v-else>{{scope.row.receiverNumber}}人</span>
+          <el-tag v-if="scope.row.type == 1">所有用户</el-tag>
+<!--          <span v-else>{{scope.row.receiverNumber}}</span>-->
+          <el-tag v-else v-for="item in scope.row.receiverLevels">{{userLevelOption[item]}}</el-tag>
         </template>
       </el-table-column>
 
@@ -97,7 +98,15 @@
     name: "messageList",
     components: { ElSelectDropdown, BackToTop, Pagination },
     data(){
+      const userLevelOption = {
+        0: this.$t('普通会员'),
+        1: this.$t('白银会员'),
+        2: this.$t('黄金会员'),
+        3: this.$t('铂金会员'),
+        4: this.$t('钻石会员')
+      }
       return {
+        userLevelOption,
         messageTypeMap,
         list: [],
         total: 0,
