@@ -93,7 +93,7 @@
               </div>-->
             </div>
             <ve-histogram :data="chartData" :settings="histogramSettings"></ve-histogram>
-            <div align="center">金额($)</div>
+            <div align="center">金额(单位:$)</div>
       </el-card>
     </el-card>
   </div>
@@ -240,7 +240,7 @@
           if(response.data.data){
             for(let item in response.data.data){
               this.chartData.rows.push({
-                amount:chartRowMap[item],
+                amount:item,
                 sales: response.data.data[item]
               })
             }

@@ -131,6 +131,12 @@
         <el-col :span="4">
           （{{summary.processingCount}}）
         </el-col>
+        <el-col :span="4" align="right">
+          {{$t('总进货金额')}}:
+        </el-col>
+        <el-col :span="4">
+          （{{summary.merchandiseTotalAmount}}）
+        </el-col>
       </el-row>
     </el-card>
     </div>

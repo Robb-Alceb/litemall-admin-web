@@ -59,3 +59,19 @@ export function updateWx(data) {
     data
   })
 }
+
+
+export function listAmount() {
+  return request({
+    url: '/config/amount',
+    method: 'get'
+  })
+}
+
+export function updateAmount(data) {
+  return request({
+    url: '/config/amount',
+    method: 'post',
+    data
+  })
+}
