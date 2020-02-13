@@ -82,3 +82,12 @@ export function couponCount(userId) {
     params: {userId}
   })
 }
+
+
+export function billStatistics(userId) {
+  return request({
+    url: '/user/statistics',
+    method: 'get',
+    params: {userId}
+  })
+}

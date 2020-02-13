@@ -159,6 +159,10 @@
     <el-card>
       <div slot="header" class="clearfix">
         <span>账户明细</span>
+
+        <label  style="float: right; padding: 3px 0">{{$t('总充值')}}:{{statistics.totalSaving}}</label>
+        <label  style="float: right; padding: 3px 0">{{$t('总消费')}}:{{statistics.totalConsume}}</label>
+        <label  style="float: right; padding: 3px 0">{{$t('余额')}}:{{statistics.totalBalance}}</label>
       </div>
       <!-- 查询结果 -->
       <el-table v-loading="listBillLoading" :data="billList" :element-loading-text="$t('Searching')" border fit highlight-current-row>
@@ -188,7 +192,7 @@
 
 <script>
 
-  import { userInfo } from '@/api/user'
+  import { userInfo, billStatistics } from '@/api/user'
   import { allForPerm } from '@/api/shop'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import { userBill } from '@/api/user'
@@ -253,6 +257,7 @@
         amount: 0,
         genderDic: ['未知', '男', '女'],
         levelDic: ['普通会员', '白银会员', '黄金会员', '铂金会员', '钻石会员'],
+        statistics: {}
       }
     },
     filters: {
@@ -264,6 +269,9 @@
       this.getBillList()
       allForPerm().then(response=>{
         this.shops = response.data.data.list
+      })
+      billStatistics(this.$route.query.id).then(response=>{
+        this.statistics = response.data.data
       })
     },
     methods: {
