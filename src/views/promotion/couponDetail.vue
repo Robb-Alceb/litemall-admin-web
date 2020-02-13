@@ -1,54 +1,58 @@
 <template>
   <div class="app-container">
-
-    <div class="table-layout">
-      <el-row>
-        <el-col :span="4" class="table-cell-title">{{$t('Name')}}</el-col>
-        <el-col :span="4" class="table-cell-title">介绍名称</el-col>
-        <el-col :span="4" class="table-cell-title">标签</el-col>
-        <el-col :span="4" class="table-cell-title">{{$t('Coupon_type')}}</el-col>
-        <el-col :span="4" class="table-cell-title">{{$t('Lowest_spending_value')}}</el-col>
-        <el-col :span="4" class="table-cell-title">优惠面值</el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="4" class="table-cell">{{ coupon.name }}</el-col>
-        <el-col :span="4" class="table-cell">{{ coupon.desc }}</el-col>
-        <el-col :span="4" class="table-cell">{{ coupon.tag }}</el-col>
-        <el-col :span="4" class="table-cell">{{ formatType(coupon.type)  }}</el-col>
-        <el-col :span="4" class="table-cell">{{$t('Full')}}{{ coupon.min }}元可用</el-col>
-        <el-col :span="4" class="table-cell">{{$t('Discount')}}{{ coupon.discount }}{{$t('Dollars')}}</el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="4" class="table-cell-title">每人限额</el-col>
-        <el-col :span="4" class="table-cell-title">{{$t('Current_status')}}</el-col>
-        <el-col :span="4" class="table-cell-title">商品范围</el-col>
-        <el-col :span="4" class="table-cell-title">有效期</el-col>
-        <el-col :span="4" class="table-cell-title">优惠兑换码</el-col>
-        <el-col :span="4" class="table-cell-title">发行数量</el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="4" class="table-cell">{{ coupon.limit }}</el-col>
-        <el-col :span="4" class="table-cell">{{ formatStatus(coupon.status)  }}</el-col>
-        <el-col :span="4" class="table-cell">{{ formatGoodsType(coupon.goodsType)  }}</el-col>
-        <el-col :span="4" class="table-cell" :title="getTimeScope()">{{ getTimeScope() }}</el-col>
-        <el-col :span="4" class="table-cell">{{ coupon.code }}</el-col>
-        <el-col :span="4" class="table-cell">{{ coupon.total === 0 ? "不限" : coupon.total }}</el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="8" class="table-cell-title">使用门槛</el-col>
-        <el-col :span="4" class="table-cell-title">与商品活动价共用</el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="8" class="table-cell">
-          <el-tag v-if="!coupon.userLevel || !coupon.userLevel.length">无限制</el-tag>
-          <el-tag v-else v-for="item in coupon.userLevel">{{userLeverFilter(item) }}</el-tag>
-        </el-col>
-        <el-col :span="4" class="table-cell">
-          {{coupon.promotionOnly == 0 ? "共用" : "不共用"}}
-        </el-col>
-      </el-row>
-    </div>
     <el-card>
+      <div slot="header" class="clearfix">
+        <span>基本信息</span>
+      </div>
+      <div class="table-layout">
+        <el-row>
+          <el-col :span="4" class="table-cell-title">{{$t('Name')}}</el-col>
+          <el-col :span="4" class="table-cell-title">介绍名称</el-col>
+          <el-col :span="4" class="table-cell-title">标签</el-col>
+          <el-col :span="4" class="table-cell-title">{{$t('Coupon_type')}}</el-col>
+          <el-col :span="4" class="table-cell-title">{{$t('Lowest_spending_value')}}</el-col>
+          <el-col :span="4" class="table-cell-title">优惠面值</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="table-cell">{{ coupon.name }}</el-col>
+          <el-col :span="4" class="table-cell">{{ coupon.desc }}</el-col>
+          <el-col :span="4" class="table-cell">{{ coupon.tag }}</el-col>
+          <el-col :span="4" class="table-cell">{{ formatType(coupon.type)  }}</el-col>
+          <el-col :span="4" class="table-cell">{{$t('Full')}}{{ coupon.min }}元可用</el-col>
+          <el-col :span="4" class="table-cell">{{$t('Discount')}}{{ coupon.discount }}{{$t('Dollars')}}</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="table-cell-title">每人限额</el-col>
+          <el-col :span="4" class="table-cell-title">{{$t('Current_status')}}</el-col>
+          <el-col :span="4" class="table-cell-title">商品范围</el-col>
+          <el-col :span="4" class="table-cell-title">有效期</el-col>
+          <el-col :span="4" class="table-cell-title">优惠兑换码</el-col>
+          <el-col :span="4" class="table-cell-title">发行数量</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="table-cell">{{ coupon.limit }}</el-col>
+          <el-col :span="4" class="table-cell">{{ formatStatus(coupon.status)  }}</el-col>
+          <el-col :span="4" class="table-cell">{{ formatGoodsType(coupon.goodsType)  }}</el-col>
+          <el-col :span="4" class="table-cell" :title="getTimeScope()">{{ getTimeScope() }}</el-col>
+          <el-col :span="4" class="table-cell">{{ coupon.code }}</el-col>
+          <el-col :span="4" class="table-cell">{{ coupon.total === 0 ? "不限" : coupon.total }}</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8" class="table-cell-title">使用门槛</el-col>
+          <el-col :span="4" class="table-cell-title">与商品活动价共用</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8" class="table-cell">
+            <el-tag v-if="!coupon.userLevel || !coupon.userLevel.length">无限制</el-tag>
+            <el-tag v-else v-for="item in coupon.userLevel">{{userLeverFilter(item) }}</el-tag>
+          </el-col>
+          <el-col :span="4" class="table-cell">
+            {{coupon.promotionOnly == 0 ? "共用" : "不共用"}}
+          </el-col>
+        </el-row>
+      </div>
+    </el-card>
+    <el-card v-if="coupon.goodsType != 0">
       <div slot="header" class="clearfix">
         <span>指定商品列表</span>
       </div>
@@ -63,7 +67,27 @@
 
       <pagination v-show="goodsTotal>0" :total="goodsTotal" :page.sync="listGoodsQuery.page" :limit.sync="listGoodsQuery.limit" @pagination="getGoodsList" />
     </el-card>
-
+    <el-card>
+      <div slot="header" class="clearfix">
+        <span>优惠券使用统计</span>
+      </div>
+      <div class="table-layout">
+        <el-row>
+          <el-col :span="4" class="table-cell-title">{{$t('已领取数量')}}</el-col>
+          <el-col :span="4" class="table-cell-title">{{$t('已使用数量')}}</el-col>
+          <el-col :span="4" class="table-cell-title">{{$t('使用优惠券订单总额')}}</el-col>
+          <el-col :span="4" class="table-cell-title">{{$t('总优惠金额')}}</el-col>
+          <el-col :span="4" class="table-cell-title">{{$t('总订单价格')}}</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="table-cell">$ {{ statistics.pullNumber }}</el-col>
+          <el-col :span="4" class="table-cell">$ {{ statistics.usedNumber }}</el-col>
+          <el-col :span="4" class="table-cell">${{ statistics.orderTotalPrice }}</el-col>
+          <el-col :span="4" class="table-cell">$ {{ statistics.orderTotalDiscount  }}</el-col>
+          <el-col :span="4" class="table-cell">$ {{ statistics.orderTotalActual }}</el-col>
+        </el-row>
+      </div>
+    </el-card>
     <!-- 查询操作 -->
     <div class="filter-container">
       <el-input v-model="listQuery.userId" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Please_enter_member_ID')"/>
@@ -98,7 +122,7 @@
 </template>
 
 <script>
-import { readCoupon, listCouponUser, listCouponGoods } from '@/api/coupon'
+import { readCoupon, listCouponUser, listCouponGoods, couponStatistics } from '@/api/coupon'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { allForPerm } from '@/api/shop'
 
@@ -174,6 +198,7 @@ export default {
       },
       downloadLoading: false,
       shops:[],
+      statistics:{}
     }
   },
   created() {
@@ -183,6 +208,9 @@ export default {
     }
     this.listGoodsQuery.id = this.$route.query.id;
     this.getGoodsList()
+    couponStatistics(this.listGoodsQuery.id).then(response=>{
+      this.statistics = response.data.data
+    })
     allForPerm().then(response=>{
       this.shops = response.data.data.list
     })

@@ -55,3 +55,11 @@ export function listCouponGoods(query) {
     params: query
   })
 }
+
+export function couponStatistics(id) {
+  return request({
+    url: '/coupon/statistics',
+    method: 'get',
+    params: {id}
+  })
+}
