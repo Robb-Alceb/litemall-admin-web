@@ -1,15 +1,9 @@
 <template>
   <div class="app-container">
     <el-form ref="dataForm" :model="dataForm" status-icon label-width="300px">
-      <el-form-item v-for="(item,index) in dataForm.amountRange" :label="$t('金额范围')">
+      <el-form-item v-for="(item,index) in dataForm.amountRange" :label="$t('面额')">
         <el-col :span="4">
-          <el-input v-model="item[0]"></el-input>
-        </el-col>
-        <el-col align="center" :span="2">
-          <span>{{$t('至')}}</span>
-        </el-col>
-        <el-col :span="4">
-          <el-input v-model="item[1]"></el-input>
+          <el-input v-model="dataForm.amountRange[index]"></el-input>
         </el-col>
         <el-col :span="2">
           <el-button type="primary" size="mini" @click="addAmountRange">{{$t('添加')}}</el-button>
@@ -19,7 +13,7 @@
         </el-col>
       </el-form-item>
     </el-form>
-    <div align="center">{{$t('说明：此配置为配置统计金额的横坐标金额范围')}}</div>
+    <div align="center">{{$t('说明：此配置为配置ipad用户下班结算时的面额配置')}}</div>
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="handleUpdate">{{$t('Confirm')}}</el-button>
     </div>
@@ -27,15 +21,14 @@
 </template>
 
 <script>
-  import { listAmount, updateAmount } from '@/api/config'
+  import { listSettlement, updateSettlement } from "@/api/config";
   export default {
-    name: "configAmount",
+    name: "settlement",
     data(){
       return {
         dataForm: {
           amountRange:[]
         },
-        value: [1,100]
       }
     },
     created() {
@@ -43,37 +36,28 @@
     },
     methods: {
       init: function() {
-        listAmount().then(response => {
+        listSettlement().then(response => {
           console.log(response.data.data)
-          let tmp = response.data.data.litemall_statistics_amount;
+          let tmp = response.data.data.litemall_settlement_amount;
           if(tmp){
             let arr = tmp.split(';')
             arr.forEach(data=>{
-              let t = data.split('-');
-              this.dataForm.amountRange.push(t);
+              this.dataForm.amountRange.push(data);
             })
           }
         })
       },
       addAmountRange(){
-        let max = this.dataForm.amountRange[this.dataForm.amountRange.length-1][1];
-        this.dataForm.amountRange.push([max,max+100])
+        this.dataForm.amountRange.push(1)
       },
       deleteAmountRange(index){
         console.log(index)
         this.dataForm.amountRange.splice(index, 1)
       },
       handleUpdate(){
-        let body = '';
-        this.dataForm.amountRange.forEach((arr,index)=>{
-          if(index != this.dataForm.amountRange.length-1){
-            body += arr.join('-') + ';'
-          }else{
-            body += arr.join('-')
-          }
-        })
+        let body = this.dataForm.amountRange.join(';')
         console.log(body);
-        updateAmount({litemall_statistics_amount:body})
+        updateSettlement({litemall_settlement_amount:body})
           .then(response => {
             this.$notify.success({
               title: this.$t('Success!'),
@@ -92,9 +76,5 @@
 </script>
 
 <style scoped>
-  .demonstration {
-    font-size: 14px;
-    color: #8492a6;
-    line-height: 44px;
-  }
+
 </style>

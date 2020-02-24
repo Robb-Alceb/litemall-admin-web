@@ -75,3 +75,18 @@ export function updateAmount(data) {
     data
   })
 }
+
+export function listSettlement() {
+  return request({
+    url: '/config/settlement',
+    method: 'get'
+  })
+}
+
+export function updateSettlement(data) {
+  return request({
+    url: '/config/settlement',
+    method: 'post',
+    data
+  })
+}

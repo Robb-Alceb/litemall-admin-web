@@ -807,6 +807,16 @@ export const asyncRouterMap = [
           noCache: true
         }
       },
+      {
+        path: 'settlement',
+        component: () => import('@/views/config/settlement'),
+        name: 'configSettlement',
+        meta: {
+          perms: ['GET /admin/config/settlement', 'POST /admin/config/settlement'],
+          title: '结算面额配置',
+          noCache: true
+        }
+      },
       /*{
         path: 'wx',
         component: () => import('@/views/config/wx'),
