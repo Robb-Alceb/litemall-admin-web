@@ -44,6 +44,9 @@
             arr.forEach(data=>{
               this.dataForm.amountRange.push(data);
             })
+            this.dataForm.amountRange = this._.sortBy(this.dataForm.amountRange, function(o){
+              return Number(o.amount)
+            })
           }
         })
       },

@@ -58,11 +58,11 @@
   import { listFeedback, replyFeedback, ignoreFeedback } from '@/api/feedback'
   import BackToTop from '@/components/BackToTop'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
-  const statusMap = ['未处理', '已回复', '已忽略']
   export default {
     name: "feedbackList",
     components: { ElSelectDropdown, BackToTop, Pagination },
     data() {
+      const statusMap = ['未处理', '已回复', '已忽略']
       return {
         statusMap,
         list: [],
@@ -87,8 +87,16 @@
     },
     methods: {
       getList(){
-        listFeedback(this.listQuery).then(res=>{
-          this.list = res.data.data.list
+        this.listLoading = true
+        listFeedback(this.listQuery).then(response => {
+          this.list = response.data.data.list
+          this.total = response.data.data.total
+
+          this.listLoading = false
+        }).catch(() => {
+          this.list = []
+          this.total = 0
+          this.listLoading = false
         })
       },
       handleFilter(){

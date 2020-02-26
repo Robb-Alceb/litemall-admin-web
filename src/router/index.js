@@ -498,7 +498,50 @@ export const asyncRouterMap = [
         name: 'couponDetail',
         meta: {
           perms: ['GET /admin/coupon/list', 'GET /admin/coupon/listuser'],
-          title: '优惠券详情',
+          title: 'couponDetail',
+          noCache: true
+        },
+        hidden: true
+      },
+      {
+        path: 'giftcard',
+        component: () => import('@/views/gift/list'),
+        name: 'giftcard',
+        meta: {
+          perms: ['GET /admin/giftcard/list', 'POST /admin/giftcard/create', 'PUT /admin/giftcard/update', 'DELETE /admin/giftcard/delete'],
+          title: '礼物卡管理',
+          noCache: true
+        },
+      },
+      {
+        path: 'giftcard/create',
+        component: () => import('@/views/gift/create'),
+        name: 'giftcardCreate',
+        meta: {
+          perms: ['POST /admin/giftcard/create'],
+          title: '礼物卡添加',
+          noCache: true
+        },
+        hidden: true
+      },
+      {
+        path: 'giftcard/edit',
+        component: () => import('@/views/gift/edit'),
+        name: 'giftcardEdit',
+        meta: {
+          perms: ['PUT /admin/giftcard/update'],
+          title: '礼物卡编辑',
+          noCache: true
+        },
+        hidden: true
+      },
+      {
+        path: 'giftcard/detail',
+        component: () => import('@/views/gift/detail'),
+        name: 'giftcardDetail',
+        meta: {
+          perms: ['PUT /admin/giftcard/update'],
+          title: '礼物卡详情',
           noCache: true
         },
         hidden: true
@@ -767,7 +810,7 @@ export const asyncRouterMap = [
       icon: 'chart'
     },
     children: [
-      {
+/*      {
         path: 'mall',
         component: () => import('@/views/config/mall'),
         name: 'configMall',
@@ -776,7 +819,7 @@ export const asyncRouterMap = [
           title: '商场配置',
           noCache: true
         }
-      },
+      },*/
       {
         path: 'express',
         component: () => import('@/views/config/express'),

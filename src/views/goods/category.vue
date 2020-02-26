@@ -73,7 +73,7 @@
           <el-upload
             :headers="headers"
             :action="uploadPath"
-            :show-file-list="false"
+            :show-file-list="true"
             :on-success="uploadIconUrl"
             class="avatar-uploader"
             accept=".jpg,.jpeg,.png,.gif">
