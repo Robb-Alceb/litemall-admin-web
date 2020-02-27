@@ -31,10 +31,12 @@
             :action="uploadPath"
             :show-file-list="false"
             :on-success="uploadPicUrl"
+            :on-remove="handleGoodsPicRemove"
             class="avatar-uploader"
             accept=".jpg,.jpeg,.png,.gif">
             <img v-if="goods.picUrl" :src="goods.picUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"/>
+            <label v-if="goods.picUrl" class="el-upload-list__item-status-label avatar-uploader__status_label" @click.stop="handleGoodsPicRemove()"><i class="el-icon-delete"></i></label>
           </el-upload>
         </el-form-item>
 
@@ -139,12 +141,13 @@
             <el-upload
               :headers="headers"
               :action="uploadPath"
-              :show-file-list="false"
               :on-success="uploadSpecPicUrl"
+              show-file-list="false"
               class="avatar-uploader"
               accept=".jpg,.jpeg,.png,.gif">
               <img v-if="specForm.picUrl" :src="specForm.picUrl" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon"/>
+              <label v-if="specForm.picUrl" class="el-upload-list__item-status-label avatar-uploader__status_label" @click.stop="handleSpecRemove()"><i class="el-icon-delete"></i></label>
             </el-upload>
           </el-form-item>
         </el-form>
@@ -341,6 +344,10 @@
     height: 145px;
     display: block;
   }
+  .avatar-uploader__status_label{
+    display: block;
+    color: red;
+  }
 </style>
 
 <script>
@@ -386,7 +393,7 @@
         categoryList: [],
         brandList: [],
         categoryIds: [],
-        goods: { priceType:"1",gallery: [],goodsType:1, isReturn:false, isDistribution: false },
+        goods: { picUrl: '',priceType:"1",gallery: [],goodsType:1, isReturn:false, isDistribution: false },
         specVisiable: false,
         specForm: { specification: '', value: '', picUrl: '' },
         specifications: [{ specification: '规格', price:0.0, value: '标准', picUrl: '' }],
@@ -636,7 +643,13 @@
           platinumVipPrice: (this.productForm.sellPrice * 0.04).toFixed(2),
           diamondVipPrice: (this.productForm.sellPrice * 0.1).toFixed(2)
         }
-      }
+      },
+      handleSpecRemove: function() {
+        this.specForm.picUrl = undefined
+      },
+      handleGoodsPicRemove: function() {
+        this.goods.picUrl = undefined
+      },
     }
   }
 </script>

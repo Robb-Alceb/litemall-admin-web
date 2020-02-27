@@ -29,12 +29,14 @@
           <el-upload
             :headers="headers"
             :action="uploadPath"
-            :show-file-list="false"
             :on-success="uploadPicUrl"
+            :on-remove="handleGoodsPicRemove"
+            :show-file-list="false"
             class="avatar-uploader"
             accept=".jpg,.jpeg,.png,.gif">
             <img v-if="goods.picUrl" :src="goods.picUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"/>
+            <label v-if="goods.picUrl" class="el-upload-list__item-status-label avatar-uploader__status_label" @click.stop="handleGoodsPicRemove()"><i class="el-icon-delete"></i></label>
           </el-upload>
         </el-form-item>
 
@@ -138,12 +140,14 @@
             <el-upload
               :headers="headers"
               :action="uploadPath"
-              :show-file-list="false"
               :on-success="uploadSpecPicUrl"
+              :on-remove="handleSpecRemove"
+              :show-file-list="false"
               class="avatar-uploader"
               accept=".jpg,.jpeg,.png,.gif">
               <img v-if="specForm.picUrl" :src="specForm.picUrl" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon"/>
+              <label v-if="specForm.picUrl" class="el-upload-list__item-status-label avatar-uploader__status_label" @click.stop="handleSpecRemove()"><i class="el-icon-delete"></i></label>
             </el-upload>
           </el-form-item>
         </el-form>
@@ -339,6 +343,10 @@
     width: 145px;
     height: 145px;
     display: block;
+  }
+  .avatar-uploader__status_label{
+    display: block;
+    color: red;
   }
 </style>
 
@@ -772,6 +780,12 @@
               type: 'error'
             })
           })
+      },
+      handleSpecRemove: function() {
+        this.specForm.picUrl = undefined
+      },
+      handleGoodsPicRemove: function() {
+        this.goods.picUrl = undefined
       },
     }
   }

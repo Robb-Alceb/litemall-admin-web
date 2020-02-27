@@ -10,16 +10,25 @@
         </el-form-item>
         <el-form-item :label="$t('图片')" prop="picUrl">
           <el-upload
-            :limit="5"
             :headers="headers"
             :action="uploadPath"
-            :show-file-list="true"
+            :show-file-list="false"
             :on-success="uploadPicUrl"
-            :on-remove="handleRemove"
             class="avatar-uploader"
             accept=".jpg,.jpeg,.png,.gif">
             <img v-if="dataForm.picUrl" :src="dataForm.picUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"/>
+<!--            <span v-if="dataForm.picUrl" @click.stop="handleRemove1" class="el-upload-list&#45;&#45;picture-card">
+              <span class="el-upload-list__item-actions">
+                <span class="el-upload-list__item-edit">
+                  <i class="el-icon-edit"></i>
+                </span>
+                <span class="el-upload-list__item-delete" @click.stop="handleRemove1">
+                  <i class="el-icon-delete"></i>
+                </span>
+              </span>
+            </span>-->
+            <label v-if="dataForm.picUrl" class="el-upload-list__item-status-label avatar-uploader__status_label" @click.stop="handleRemove()"><i class="el-icon-delete"></i></label>
           </el-upload>
         </el-form-item>
         <el-form-item :label="$t('礼物卡类型')" prop="type">
@@ -96,19 +105,9 @@
         })
 
       },
-      handleRemove: function(file, fileList) {
-        // 这里存在两种情况
-        // 1. 如果所删除图片是刚刚上传的图片，那么图片地址是file.response.data.url
-        //    此时的file.url虽然存在，但是是本机地址，而不是远程地址。
-        // 2. 如果所删除图片是后台返回的已有图片，那么图片地址是file.url
-        var url
-        if (file.response === undefined) {
-          url = file.url
-        } else {
-          url = file.response.data.url
-        }
-        this.dataForm.picUrl = undefined
-      },
+      handleRemove: function() {
+          this.dataForm.picUrl = undefined
+      }
     }
   }
 </script>
@@ -136,5 +135,10 @@
     width: 145px;
     height: 145px;
     display: block;
+  }
+  .avatar-uploader__status_label{
+    display: block;
+    color: red;
+    cursor: pointer;
   }
 </style>

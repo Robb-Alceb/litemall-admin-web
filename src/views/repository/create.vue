@@ -19,6 +19,7 @@
             accept=".jpg,.jpeg,.png,.gif">
             <img v-if="merchandise.picUrl" :src="merchandise.picUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"/>
+            <label v-if="merchandise.picUrl" class="el-upload-list__item-status-label avatar-uploader__status_label" @click.stop="handleRemove()"><i class="el-icon-delete"></i></label>
           </el-upload>
         </el-form-item>
         <el-form-item :label="$t('Sale_price')" prop="sellingPrice">
@@ -114,11 +115,42 @@ export default {
     },
     handleCancel: function() {
       this.$router.push({ path: '/repository/merchandise' })
+    },
+    handleRemove: function () {
+      this.merchandise.picUrl = undefined
     }
   }
 }
 </script>
 
-<style scoped>
 
+<style>
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #20a0ff;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 120px;
+    height: 120px;
+    line-height: 120px;
+    text-align: center;
+  }
+  .avatar {
+    width: 145px;
+    height: 145px;
+    display: block;
+  }
+  .avatar-uploader__status_label{
+    display: block;
+    color: red;
+    cursor: pointer;
+  }
 </style>

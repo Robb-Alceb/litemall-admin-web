@@ -87,6 +87,7 @@
             accept=".jpg,.jpeg,.png,.gif">
             <img v-if="dataForm.url" :src="dataForm.url" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"/>
+            <label v-if="dataForm.url" class="el-upload-list__item-status-label avatar-uploader__status_label" @click.stop="handleRemove()"><i class="el-icon-delete"></i></label>
             <div slot="tip" class="el-upload__tip">{{this.$t('Only_upload_jpg/png_files_and_may_not_exceed_1024kb')}}</div>
           </el-upload>
         </el-form-item>
@@ -138,6 +139,11 @@
   width: 145px;
   height: 145px;
   display: block;
+}
+.avatar-uploader__status_label{
+  display: block;
+  color: red;
+  cursor: pointer;
 }
 </style>
 
@@ -393,6 +399,9 @@ export default {
       }else{
         return this.store.state.user.shop.id != row.shopId
       }
+    },
+    handleRemove(){
+      this.dataForm.url = undefined
     }
   }
 }

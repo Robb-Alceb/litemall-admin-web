@@ -16,6 +16,7 @@
             accept=".jpg,.jpeg,.png,.gif">
             <img v-if="admin.avatar" :src="admin.avatar" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"/>
+            <label v-if="admin.avatar" class="el-upload-list__item-status-label avatar-uploader__status_label" @click.stop="handleRemove()"><i class="el-icon-delete"></i></label>
           </el-upload>
         </el-form-item>
         <el-form-item :label="$t('Address')" prop="location">
@@ -85,6 +86,10 @@
     height: 145px;
     display: block;
   }
+  .avatar-uploader__status_label{
+    display: block;
+    color: red;
+  }
 </style>
 
 <script>
@@ -98,7 +103,7 @@
     data() {
       return {
         uploadPath,
-        admin: {},
+        admin: {avatar:''},
         roles: [],
         shops: [],
         rules: {
@@ -153,6 +158,9 @@
       },
       handleCancel(){
         this.$router.push({ path: '/sys/admin'})
+      },
+      handleRemove(){
+        this.admin.avatar = undefined
       }
     }
   }

@@ -79,6 +79,7 @@
             accept=".jpg,.jpeg,.png,.gif">
             <img v-if="dataForm.iconUrl" :src="dataForm.iconUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"/>
+            <label v-if="dataForm.iconUrl" class="el-upload-list__item-status-label avatar-uploader__status_label" @click.stop="handleRemove()"><i class="el-icon-delete"></i></label>
           </el-upload>
         </el-form-item>
         <el-form-item :label="$t('Category_Image')" prop="picUrl">
@@ -91,6 +92,7 @@
             accept=".jpg,.jpeg,.png,.gif">
             <img v-if="dataForm.picUrl" :src="dataForm.picUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"/>
+            <label v-if="dataForm.picUrl" class="el-upload-list__item-status-label avatar-uploader__status_label" @click.stop="handlePicRemove()"><i class="el-icon-delete"></i></label>
           </el-upload>
         </el-form-item>
         <el-form-item :label="$t('Category_description')" prop="desc">
@@ -133,6 +135,11 @@
   width: 145px;
   height: 145px;
   display: block;
+}
+.avatar-uploader__status_label{
+  display: block;
+  color: red;
+  cursor: pointer;
 }
 </style>
 
@@ -332,6 +339,12 @@ export default {
     },
     handleCategoryChange(value) {
       this.dataForm.pid = value[value.length - 1]
+    },
+    handleRemove: function() {
+      this.dataForm.iconUrl = undefined
+    },
+    handlePicRemove: function() {
+      this.dataForm.picUrl = undefined
     },
   }
 }
