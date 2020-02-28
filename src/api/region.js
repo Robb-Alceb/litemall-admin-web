@@ -7,9 +7,18 @@ export function listRegion() {
   })
 }
 
-export function listSubRegion(query) {
+export function listCountryRegion(query) {
   return request({
     url: '/region/clist',
+    method: 'get',
+    params: query
+  })
+}
+
+
+export function listSubRegion(query) {
+  return request({
+    url: '/region/slist',
     method: 'get',
     params: query
   })

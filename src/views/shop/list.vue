@@ -19,11 +19,11 @@
 
       <el-table-column align="center" :label="$t('Store_name')" prop="name"/>
 
-      <el-table-column align="center" :label="$t('Store_address')" prop="address"/>
+      <el-table-column align="center" :label="$t('Store_address')" prop="streetAddress"/>
 
       <el-table-column align="center" :label="$t('Store_Manager')" prop="shopkeeper"/>
 
-      <el-table-column align="center" label="成员" prop="members"/>
+      <el-table-column align="center" :label="$t('成员')" prop="members"/>
 
       <el-table-column align="center" :label="$t('Time_added')" prop="addTime"/>
 

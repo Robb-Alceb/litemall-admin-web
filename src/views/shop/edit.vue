@@ -12,9 +12,60 @@
         <el-form-item :label="$t('Store_name')" prop="name">
           <el-input v-model="shop.name"/>
         </el-form-item>
-        <el-form-item :label="$t('Store_address')" prop="address">
-          <el-input v-model="shop.address"/>
-        </el-form-item>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('国家')">
+              <el-select v-model="regionIds[0]" filterable @change="getPrivonces(true)">
+                <el-option
+                  v-for="item in countrys"
+                  :label="item.nameCn"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('省份')">
+              <el-select v-model="regionIds[1]" filterable  @change="getCitys(true)">
+                <el-option
+                  v-for="item in provinces"
+                  :label="item.nameCn"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('城市')">
+              <el-select v-model="regionIds[2]" filterable >
+                <el-option
+                  v-for="item in citys"
+                  :label="item.nameCn"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('编码')" prop="postalCode">
+              <el-input v-model="shop.postalCode"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('街道')" prop="streetAddress">
+              <el-input v-model="shop.streetAddress"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('单元')" prop="aptUnit">
+              <el-input v-model="shop.aptUnit"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('Longitude')">
@@ -104,6 +155,7 @@
 <script>
 import { detailShop, editShop } from '@/api/shop'
 import { getShopkeeper, getShopManager, getShopMembers } from '@/api/admin'
+import { listCountryRegion, listSubRegion } from '@/api/region'
 import { MessageBox } from 'element-ui'
 
 
@@ -113,11 +165,15 @@ export default {
     return {
       limited:false,
       shop: { types: [], weeks: [] },
+      regionIds:[],
       shopManager: {},
       shopkeeper: {},
       shopMembers:[],
+      countrys:[],
+      provinces:[],
+      citys:[],
       rules: {
-        address: [
+        streetAddress: [
           { required: true, message: this.$t('Store_address_cannot_be_empty'), trigger: 'blur' }
         ],
         name: [{ required: true, message: this.$t('Store_name_cannot_be_empty'), trigger: 'blur' }],
@@ -135,7 +191,7 @@ export default {
   },*/
   created() {
     this.init()
-
+    this.getCountrys()
   },
   methods: {
     init: function() {
@@ -147,6 +203,11 @@ export default {
         console.log(this.shop)
         console.log(response.data.data)
         this.shop = response.data.data
+        this.shop.regions.forEach(region=>{
+          this.regionIds.push(region.regionId)
+          this.getPrivonces()
+          this.getCitys()
+        })
         if(this.shop.range){
           this.limited = true
         }
@@ -177,8 +238,37 @@ export default {
       }).catch(() => {
 
       })
-      getShopMembers(shopId).then((res)=>{
+      getShopMembers().then((res)=>{
         this.shopMembers = res.data.data
+      })
+    },
+    getCountrys(){
+      listCountryRegion().then(response=>{
+        this.countrys = response.data.data.list
+      })
+    },
+    getPrivonces(refresh){
+      let query = {
+        id: this.regionIds[0],
+        type: 1
+      }
+      if(refresh){
+        this.regionIds.splice(1,1)
+      }
+      listSubRegion(query).then(response=>{
+        this.provinces = response.data.data.list
+      })
+    },
+    getCitys(refresh){
+      let query = {
+        id: this.regionIds[1],
+        type: 2
+      }
+      if(refresh){
+        this.regionIds.splice(2,1)
+      }
+      listSubRegion(query).then(response=>{
+        this.citys = response.data.data.list
       })
     },
     handleCancel: function() {
@@ -189,7 +279,8 @@ export default {
       let shop = {
         litemallShop: this.shop,
         shopManagerId: this.shopManager.id || null,
-        shopkeeperId: this.shopkeeper.id || null
+        shopkeeperId: this.shopkeeper.id || null,
+        regionIds: this.regionIds
       }
       this.$refs['shop'].validate(valid=> {
         if(valid){

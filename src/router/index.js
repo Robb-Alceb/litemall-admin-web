@@ -859,7 +859,7 @@ export const asyncRouterMap = [
           title: '结算面额配置',
           noCache: true
         }
-      },
+      }
       /*{
         path: 'wx',
         component: () => import('@/views/config/wx'),
