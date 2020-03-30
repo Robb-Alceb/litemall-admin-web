@@ -5,7 +5,7 @@
     <breadcrumb class="breadcrumb-container"/>
 
     <div class="right-menu">
-      <template v-if="device!=='mobile'">
+      <template>
 
         <el-tooltip :content="$t('Full_Screen')" effect="dark" placement="bottom">
           <screenfull class="screenfull right-menu-item"/>

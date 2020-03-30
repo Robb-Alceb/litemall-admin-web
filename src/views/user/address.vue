@@ -21,7 +21,7 @@
 
       <el-table-column align="center" min-width="300px" label="区域地址">
         <template slot-scope="scope">
-          {{ scope.row.province + scope.row.city + scope.row.county }}
+          {{ scope.row.country + scope.row.province + scope.row.city + scope.row.county }}
         </template>
       </el-table-column>
 

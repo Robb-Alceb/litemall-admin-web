@@ -77,6 +77,20 @@ export default {
   methods: {
     handleSetLineChartData(type) {
       this.$emit('handleSetLineChartData', type)
+      switch (type) {
+        case 'newVisitis':
+          this.$router.push({path:'user/list'})
+          break
+        case 'messages':
+          this.$router.push({path:'goods/list'})
+          break
+        case 'purchases':
+          this.$router.push({path:'repository/merchandise'})
+          break
+        case 'shoppings':
+          this.$router.push({path:'order/list'})
+          break
+      }
     }
   }
 }

@@ -4,6 +4,7 @@
     <!-- 查询和其他操作 -->
     <div class="filter-container">
       <el-input v-model="listQuery.goodsSn" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Please_enter_merchandise_ID')"/>
+      <el-input v-model="listQuery.goodsName" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Please_enter_merchandise_name')"/>
       <el-input v-model="listQuery.userName" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Please_enter_operator')"/>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('Search')}}</el-button>
     </div>
@@ -49,6 +50,7 @@ export default {
         limit: 20,
         goodsId:undefined,
         goodsSn: undefined,
+        goodsName:undefined,
         userName: undefined,
         sort: 'add_time',
         order: 'desc'

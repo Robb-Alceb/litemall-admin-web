@@ -285,7 +285,7 @@ export const asyncRouterMap = [
           perms: ['GET /admin/goods/list', 'POST /admin/goods/delete'],
           title: 'Tickets_list',
           noCache: true
-        }
+        },
       },
       {
         path: 'detail',
@@ -388,7 +388,7 @@ export const asyncRouterMap = [
     },
     children: [
       {
-        path: 'user',
+        path: 'list',
         component: () => import('@/views/user/user'),
         name: 'user',
         meta: {
