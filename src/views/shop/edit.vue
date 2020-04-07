@@ -238,7 +238,7 @@ export default {
       }).catch(() => {
 
       })
-      getShopMembers().then((res)=>{
+      getShopMembers(shopId).then((res)=>{
         this.shopMembers = res.data.data
       })
     },

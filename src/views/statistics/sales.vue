@@ -95,6 +95,19 @@
             <ve-histogram :data="chartData" :settings="histogramSettings"></ve-histogram>
             <div align="center">金额(单位:$)</div>
       </el-card>
+
+<!--      <el-card>
+
+        <div slot="header" class="clearfix">
+          <span>{{$t('销售对比')}}</span>
+          <div style="display: inline;float: right;">
+            <el-select v-model="compareType">
+              <el-option :value="0" :label="$t('最近一周')"></el-option>
+              <el-option :value="1" :label="$t('最近一个月')"></el-option>
+            </el-select>
+          </div>
+        </div>
+      </el-card>-->
     </el-card>
   </div>
 
@@ -169,7 +182,8 @@
           }]
         },
         funnelData: undefined,
-        statistics: undefined
+        statistics: undefined,
+        compareType: 0
       }
     },
     created(){
