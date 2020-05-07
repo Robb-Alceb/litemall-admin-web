@@ -41,13 +41,17 @@
         </div>
       </div>-->
     </el-form>
-
+<!--    <icon-uploader></icon-uploader>-->
   </div>
 </template>
 
 <script>
+  import IconUploader from '@/components/IconUploader'
 export default {
   name: 'Login',
+  components: {
+    IconUploader,
+  },
   data() {
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {

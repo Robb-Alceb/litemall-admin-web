@@ -183,7 +183,7 @@
         },
         funnelData: undefined,
         statistics: undefined,
-        compareType: 0
+        compareType: 0,
       }
     },
     created(){

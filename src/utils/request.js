@@ -3,6 +3,7 @@ import { Message, MessageBox } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 
+
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.BASE_API, // api 的 base_url
@@ -32,8 +33,8 @@ service.interceptors.response.use(
     const res = response.data
 
     if (res.errno === 501) {
-      MessageBox.alert('系统未登录，请重新登录', '错误', {
-        confirmButtonText: this.$t('Confirm'),
+      MessageBox.alert('The system is not logged in, please login again', 'Error', {
+        confirmButtonText: 'Confirm',
         type: 'error'
       }).then(() => {
         store.dispatch('FedLogOut').then(() => {
@@ -42,32 +43,32 @@ service.interceptors.response.use(
       })
       return Promise.reject('error')
     } else if (res.errno === 502) {
-      MessageBox.alert('系统内部错误，请联系管理员维护', '错误', {
-        confirmButtonText: this.$t('Confirm'),
+      MessageBox.alert('System internal error, please contact the administrator to maintain', 'Error', {
+        confirmButtonText: 'Confirm',
         type: 'error'
       })
       return Promise.reject('error')
     } else if (res.errno === 503) {
-      MessageBox.alert('请求业务目前未支持', this.$t('Warning'), {
-        confirmButtonText: this.$t('Confirm'),
+      MessageBox.alert('The request business is not currently supported', 'Warning', {
+        confirmButtonText: 'Confirm',
         type: 'error'
       })
       return Promise.reject('error')
     } else if (res.errno === 504) {
-      MessageBox.alert('更新数据已经失效，请刷新页面重新操作', this.$t('Warning'), {
-        confirmButtonText: this.$t('Confirm'),
+      MessageBox.alert('The update data is invalid, please refresh the page and operate again', 'Warning', {
+        confirmButtonText: 'Confirm',
         type: 'error'
       })
       return Promise.reject('error')
     } else if (res.errno === 505) {
-      MessageBox.alert('更新失败，请再尝试一次', this.$t('Warning'), {
-        confirmButtonText: this.$t('Confirm'),
+      MessageBox.alert('Update failed, please try again', 'Warning', {
+        confirmButtonText: 'Confirm',
         type: 'error'
       })
       return Promise.reject('error')
     } else if (res.errno === 506) {
-      MessageBox.alert('没有操作权限，请联系管理员授权', '错误', {
-        confirmButtonText: this.$t('Confirm'),
+      MessageBox.alert('No operation permission, please contact the administrator for authorization', 'Error', {
+        confirmButtonText: 'Confirm',
         type: 'error'
       })
       return Promise.reject('error')
@@ -80,7 +81,7 @@ service.interceptors.response.use(
   }, error => {
     console.log('err' + error)// for debug
     Message({
-      message: '登录连接超时（后台不能连接，请联系系统管理员）',
+      message: 'Login connection timeout',
       type: 'error',
       duration: 5 * 1000
     })

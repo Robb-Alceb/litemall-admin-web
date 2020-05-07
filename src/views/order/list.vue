@@ -3,7 +3,7 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.userId" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Please_enter_member_ID')"/>
+      <el-input v-model="listQuery.userName" clearable class="filter-item" style="width: 200px;" :placeholder="$t('请输入用户账号')"/>
       <el-input v-model="listQuery.orderSn" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Please_enter_order_number')"/>
       <el-select v-model="listQuery.shopId" clearable style="width: 200px" class="filter-item" :placeholder="$t('Please_select_store_')">
         <el-option v-for="item in shops" :label="item.name" :value="item.id"/>
@@ -66,7 +66,7 @@
         <template slot-scope="scope">
           <el-button v-permission="['GET /admin/order/detail']" type="primary" size="mini" @click="handleDetail(scope.row)">{{$t('Details')}}</el-button>
           <el-button v-permission="['POST /admin/order/ship']" v-if="scope.row.orderStatus==201" type="primary" size="mini" @click="handleShip(scope.row)">{{$t('Delivery_')}}</el-button>
-          <!--          <el-button v-permission="['POST /admin/order/refund']" v-if="scope.row.orderStatus==202" type="primary" size="mini" @click="handleRefund(scope.row)">退款</el-button>-->
+          <el-button v-permission="['POST /admin/order/refund']" v-if="scope.row.orderStatus==202" type="primary" size="mini" @click="handleRefund(scope.row)">退款</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -193,7 +193,8 @@ export default {
 
     const payTypeMap = {
       1: this.$t('Unpaid'),
-      2: this.$t('Paypal')
+      2: this.$t('Paypal'),
+      3: this.$t('礼物卡支付')
     }
 
     const orderSourceMap = {
@@ -209,6 +210,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
+        userName:undefined,
         id: undefined,
         name: undefined,
         shopId: undefined,
@@ -315,7 +317,7 @@ export default {
     },
     handleRefund(row) {
       this.refundForm.orderId = row.id
-      this.refundForm.refundMoney = row.actualPrice
+      this.refundForm.refundMoney = row.actualPrice || row.orderPrice
 
       this.refundDialogVisible = true
       this.$nextTick(() => {

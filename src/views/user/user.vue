@@ -10,20 +10,26 @@
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
-      <el-table-column align="center" width="100px" :label="$t('Member_ID')" prop="id" sortable/>
+    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row @sort-change="handleSort">
+      <el-table-column align="center" width="100px" :label="$t('Member_ID')" prop="id" sortable="custom"/>
 
-      <el-table-column align="center" label="用户名" prop="username"/>
+      <el-table-column align="center" label="用户名" prop="username" sortable="custom"/>
 
-      <el-table-column align="center" label="会员等级" prop="userLevel">
+      <el-table-column align="center" label="用户姓名" prop="nickname"/>
+
+      <el-table-column align="center" label="手机号码" prop="mobile"/>
+
+      <el-table-column align="center" label="邮箱" prop="email"/>
+
+      <el-table-column align="center" label="会员等级" prop="userLevel" sortable="custom">
         <template slot-scope="scope">
           <el-tag >{{ levelDic[scope.row.userLevel] }}</el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="消费金额" prop="mobile"/>
+<!--      <el-table-column align="center" label="消费金额" prop="mobile"/>-->
 
-      <el-table-column align="center" label="账号状态" prop="status">
+      <el-table-column align="center" label="账号状态" prop="status" sortable="custom">
         <template slot-scope="scope">
           <el-tag>{{ statusDic[scope.row.status] }}</el-tag>
         </template>
@@ -62,6 +68,7 @@
 <script>
 import { fetchList } from '@/api/user'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import {toLine} from '@/utils/stringConvert'
 
 
 export default {
@@ -117,6 +124,16 @@ export default {
         excel.export_json_to_excel2(tHeader, this.list, filterVal, '用户信息')
         this.downloadLoading = false
       })
+    },
+    handleSort(item){
+      console.log(item);
+      if(item.order == 'ascending') {
+        this.listQuery.order = 'asc'
+      }else if(item.order == 'descending'){
+        this.listQuery.order = 'desc'
+      }
+      this.listQuery.sort = toLine(item.prop)
+      this.handleFilter();
     }
   }
 }

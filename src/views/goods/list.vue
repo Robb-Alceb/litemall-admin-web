@@ -3,7 +3,7 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-select v-model="listQuery.shopId" clearable>
+      <el-select v-model="listQuery.shopId" clearable class="filter-item" :placeholder="$t('请选择门店')">
           <el-option v-for="item in shops" :value="item.id" :label="item.name"></el-option>
       </el-select>
       <el-input v-model="listQuery.goodsSn" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Please_enter_merchandise_ID')"/>
