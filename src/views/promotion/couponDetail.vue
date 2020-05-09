@@ -11,7 +11,7 @@
           <el-col :span="4" class="table-cell-title">标签</el-col>
           <el-col :span="4" class="table-cell-title">{{$t('Coupon_type')}}</el-col>
           <el-col :span="4" class="table-cell-title">{{$t('Lowest_spending_value')}}</el-col>
-          <el-col :span="4" class="table-cell-title">优惠面值</el-col>
+          <el-col :span="4" class="table-cell-title">{{$t('折扣类型')}}</el-col>
         </el-row>
         <el-row>
           <el-col :span="4" class="table-cell">{{ coupon.name }}</el-col>
@@ -19,29 +19,53 @@
           <el-col :span="4" class="table-cell">{{ coupon.tag }}</el-col>
           <el-col :span="4" class="table-cell">{{ formatType(coupon.type)  }}</el-col>
           <el-col :span="4" class="table-cell">{{$t('Full')}}{{ coupon.min }}元可用</el-col>
-          <el-col :span="4" class="table-cell">{{$t('Discount')}}{{ coupon.discount }}{{$t('Dollars')}}</el-col>
+          <el-col v-if="coupon.discountType == 1" :span="4" class="table-cell">
+            <el-tag>{{$t('满减')}}</el-tag>
+          </el-col>
+          <el-col v-else :span="4" class="table-cell">
+            <el-tag>{{$t('百分比')}}</el-tag>
+          </el-col>
         </el-row>
         <el-row>
+          <el-col :span="4" class="table-cell-title">
+            <span v-if="coupon.discountType == 1">
+              {{$t('优惠面值')}}
+            </span>
+            <span v-else>
+              {{$t('优惠折扣')}}
+            </span>
+          </el-col>
           <el-col :span="4" class="table-cell-title">每人限额</el-col>
           <el-col :span="4" class="table-cell-title">{{$t('Current_status')}}</el-col>
           <el-col :span="4" class="table-cell-title">商品范围</el-col>
           <el-col :span="4" class="table-cell-title">有效期</el-col>
           <el-col :span="4" class="table-cell-title">优惠兑换码</el-col>
-          <el-col :span="4" class="table-cell-title">发行数量</el-col>
         </el-row>
         <el-row>
+          <el-col :span="4" class="table-cell">
+            <span v-if="coupon.discountType == 1">
+              {{$t('Discount')}}{{ coupon.discount }}{{$t('Dollars')}}
+            </span>
+            <span v-else>
+              {{$t('折扣')}}{{ coupon.discountRate }}{{$t('%')}}
+            </span>
+          </el-col>
+
           <el-col :span="4" class="table-cell">{{ coupon.limit }}</el-col>
           <el-col :span="4" class="table-cell">{{ formatStatus(coupon.status)  }}</el-col>
           <el-col :span="4" class="table-cell">{{ formatGoodsType(coupon.goodsType)  }}</el-col>
           <el-col :span="4" class="table-cell" :title="getTimeScope()">{{ getTimeScope() }}</el-col>
           <el-col :span="4" class="table-cell">{{ coupon.code }}</el-col>
-          <el-col :span="4" class="table-cell">{{ coupon.total === 0 ? "不限" : coupon.total }}</el-col>
         </el-row>
         <el-row>
+          <el-col :span="4" class="table-cell-title">发行数量</el-col>
+
           <el-col :span="8" class="table-cell-title">使用门槛</el-col>
           <el-col :span="4" class="table-cell-title">与商品活动价共用</el-col>
         </el-row>
         <el-row>
+          <el-col :span="4" class="table-cell">{{ coupon.total === 0 ? "不限" : coupon.total }}</el-col>
+
           <el-col :span="8" class="table-cell">
             <el-tag v-if="!coupon.userLevel || !coupon.userLevel.length">无限制</el-tag>
             <el-tag v-else v-for="item in coupon.userLevel">{{userLeverFilter(item) }}</el-tag>

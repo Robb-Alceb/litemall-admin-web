@@ -136,3 +136,11 @@ export function updateGoodsDiscountPrice(data) {
     data
   })
 }
+
+export function batchCreate(data) {
+  return request({
+    url: '/goods/batch',
+    method: 'post',
+    data
+  })
+}

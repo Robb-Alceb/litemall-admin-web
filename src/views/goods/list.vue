@@ -89,7 +89,7 @@
       <el-table-column align="center" :label="$t('Operate')" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-row>
-            <el-button v-permission="['POST /admin/goods/approve', 'POST /admin/goods/reject']" type="primary" size="mini" :disabled="isShowReview(scope.row.reviewType)" @click="handleReview(scope.row)">审核</el-button>
+            <el-button v-permission="['POST /admin/goods/approve', 'POST /admin/goods/reject']" type="primary" size="mini" :disabled="isShowReview(scope.row.reviewType)" @click="handleReview(scope.row)">{{$t('Review')}}</el-button>
             <el-button v-permission="['GET /admin/goods/queryGoodsLogList']" type="primary" size="mini" @click="handleLog(scope.row)">{{$t('Journal')}}</el-button>
           </el-row>
           <el-row style="margin-top: 5px;">
@@ -163,8 +163,8 @@
       </el-form>
       <el-card class="el-card">
         <div slot="header" class="clearfix">
-          <span>优惠价格</span>
-          <el-button v-permission="['PUT /admin/goods/updateDiscountPrice']" style="float: right;" type="primary" @click="handleUpdateDiscountPrice">更新优惠价格</el-button>
+          <span>{{$t('Discounts')}}</span>
+          <el-button v-permission="['PUT /admin/goods/updateDiscountPrice']" style="float: right;" type="primary" @click="handleUpdateDiscountPrice">{{$t('Update_Discounts')}}</el-button>
         </div>
         <el-tabs :value="priceForm.priceType" @tab-click="handleTabSwitch" tab-position="top">
           <el-tab-pane :label="$t('Member_costs')" name="1">
@@ -311,7 +311,7 @@ export default {
   data() {
     const reviewMap = {
       1: '待审核',
-      2: '已审核',
+      2: this.$t('Reviewed'),
       3: this.$t('Denied')
     }
     return {

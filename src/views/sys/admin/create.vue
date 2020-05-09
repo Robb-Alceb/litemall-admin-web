@@ -6,6 +6,28 @@
         <el-form-item :label="$t('Partner_name')" prop="nickName">
           <el-input v-model="admin.nickName"/>
         </el-form-item>
+
+        <el-form-item :label="$t('员工代号')" prop="code">
+          <el-input v-model="admin.code"/>
+        </el-form-item>
+        <el-form-item :label="$t('社保号码')" prop="socialSecurityNumber">
+          <el-input v-model="admin.socialSecurityNumber"/>
+        </el-form-item>
+        <el-form-item :label="$t('性别')" prop="gender">
+          <el-select v-model="admin.gender" clearable>
+            <el-option :value="1" :label="$t('其他')"></el-option>
+            <el-option :value="2" :label="$t('女')"></el-option>
+            <el-option :value="3" :label="$t('男')"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="$t('生日')" prop="birthday">
+          <el-date-picker clearable
+              class="filter-date-item"
+              v-model="admin.birthday"
+              type="date"
+              value-format="yyyy-MM-dd HH:mm:ss">
+          </el-date-picker>
+        </el-form-item>
         <el-form-item :label="$t('Partner_picture')" prop="avatar">
           <el-upload
             :headers="headers"
@@ -43,7 +65,7 @@
         <el-form-item :label="$t('Account_login')" prop="username">
           <el-input v-model="admin.username"/>
         </el-form-item>
-        <el-form-item label="登录密码" prop="name">
+        <el-form-item label="登录密码" prop="password">
           <el-input v-model="admin.password" show-password/>
         </el-form-item>
 <!--        <el-form-item label="确认密码" prop="name">
@@ -111,7 +133,34 @@
             { required: true, message: this.$t('Controller_name_cannot_be_empty'), trigger: 'blur' }
           ],
           password: [{ required: true, message: this.$t('Password_cannot_be_empty'), trigger: 'blur' },
-            { min: 6, max: 16, message: this.$t('Password_length_from_6_-_16_characters'), trigger: 'blur' }]
+            { min: 6, max: 16, message: this.$t('Password_length_from_6_-_16_characters'), trigger: 'blur' }],
+          code: [
+            { required: true, message: this.$t('员工代号不能为空'), trigger: 'blur' }
+          ],
+          nickName: [
+            { required: true, message: this.$t('员工名称不能为空'), trigger: 'blur' }
+          ],
+          socialSecurityNumber: [
+            { required: true, message: this.$t('社保号码不能为空'), trigger: 'blur' }
+          ],
+          gender: [
+            { required: true, message: this.$t('性别不能为空'), trigger: 'blur' }
+          ],
+          birthday: [
+            { required: true, message: this.$t('生日不能为空'), trigger: 'blur' }
+          ],
+          location: [
+            { required: true, message: this.$t('联系地址不能为空'), trigger: 'blur' }
+          ],
+          mobile: [
+            { required: true, message: this.$t('联系电话不能为空'), trigger: 'blur' }
+          ],
+          email: [
+            { required: true, message: this.$t('邮箱不能为空'), trigger: 'blur' }
+          ],
+          password: [
+            { required: true, message: this.$t('邮箱不能为空'), trigger: 'blur' }
+          ]
         }
       }
     },

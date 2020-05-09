@@ -4,6 +4,12 @@
     <!-- 查询和其他操作 -->
     <div class="filter-container">
       <el-input v-model="listQuery.nickname" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Name')"/>
+      <el-select v-model="listQuery.shopId" clearable class="filter-item" :placeholder="$t('请选择门店')">
+        <el-option v-for="item in shops" :value="item.id" :label="item.name"></el-option>
+      </el-select>
+      <el-select v-model="listQuery.roleId" clearable class="filter-item" :placeholder="$t('请选择角色')">
+        <el-option v-for="item in roleOptions" :value="item.value" :label="item.label"></el-option>
+      </el-select>
       <el-button v-permission="['GET /admin/admin/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('Search')}}</el-button>
       <el-button v-permission="['POST /admin/admin/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">{{$t('Add')}}</el-button>
 <!--      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{$t('Find')}}</el-button>-->
@@ -13,21 +19,49 @@
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
 
+      <el-table-column align="center" :label="$t('所属门店')">
+        <template slot-scope="scope">
+          <span v-for="item in shops" v-if="item.id == scope.row.shopId">
+            {{item.name}}
+          </span>
+        </template>
+      </el-table-column>
+
       <el-table-column align="center" :label="$t('Partner_name')" prop="nickName"/>
 
       <el-table-column align="center" :label="$t('Account_login')" prop="username"/>
+
+      <el-table-column align="center" :label="$t('员工代号')" prop="code"/>
+
+      <el-table-column align="center" :label="$t('社保号码')" prop="socialSecurityNumber"/>
+
+      <el-table-column align="center" :label="$t('性别')" prop="gender">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.gender == 1" type="waring" style="margin-right: 20px;"> {{ $t('其他') }} </el-tag>
+          <el-tag v-else-if="scope.row.gender == 2" type="danger" style="margin-right: 20px;"> {{ $t('女') }} </el-tag>
+          <el-tag v-else-if="scope.row.gender == 3" type="primary" style="margin-right: 20px;"> {{ $t('男') }} </el-tag>
+          <el-tag v-else type="info" style="margin-right: 20px;"> {{ $t('保密') }} </el-tag>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" :label="$t('生日')" prop="birthday">
+
+      </el-table-column>
 
       <el-table-column align="center" :label="$t('Address')" prop="location"/>
 
       <el-table-column align="center" :label="$t('Partner_role')" prop="roleIds">
         <template slot-scope="scope">
-          <el-tag v-for="roleId in scope.row.roleIds" :key="roleId" type="primary" style="margin-right: 20px;"> {{ formatRole(roleId) }} </el-tag>
+          <el-tag v-for="roleId in scope.row.roleIds" type="primary" style="margin-right: 20px;"> {{ formatRole(roleId) }} </el-tag>
         </template>
       </el-table-column>
 
       <el-table-column align="center" :label="$t('Time_added')" prop="addTime"/>
 
       <el-table-column align="center" :label="$t('Contact_number')" prop="mobile"/>
+
+
+      <el-table-column align="center" :label="$t('邮箱')" prop="email"/>
 
       <el-table-column align="center" :label="$t('Operate')" width="300" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -111,7 +145,9 @@ import { listAdmin, createAdmin, updateAdmin, deleteAdmin } from '@/api/admin'
 import { roleOptions } from '@/api/role'
 import { uploadPath } from '@/api/storage'
 import { getToken } from '@/utils/auth'
+import { allForPerm } from '@/api/shop'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+
 
 export default {
   name: 'Admin',
@@ -127,7 +163,8 @@ export default {
         page: 1,
         limit: 20,
         nickname: undefined,
-        shopId: null,
+        shopId: undefined,
+        roleId: undefined,
         sort: 'add_time',
         order: 'desc'
       },
@@ -150,7 +187,8 @@ export default {
         ],
         password: [{ required: true, message: this.$t('Password_cannot_be_empty'), trigger: 'blur' }]
       },
-      downloadLoading: false
+      downloadLoading: false,
+      shops:[],
     }
   },
   computed: {
@@ -167,6 +205,9 @@ export default {
       .then(response => {
         this.roleOptions = response.data.data.list
       })
+    allForPerm().then(response=>{
+      this.shops = response.data.data.list
+    })
   },
   methods: {
     formatRole(roleId) {
@@ -279,6 +320,15 @@ export default {
       })
     },
     handleDelete(row) {
+      this.$confirm(this.$t('Confirm_Delete?'), this.$t('Hint'), {
+        confirmButtonText: this.$t('Confirm'),
+        cancelButtonText: this.$t('Cancel'),
+        type: 'warning'
+      }).then(() => {
+        this.doDelete(row)
+      });
+    },
+    doDelete(row){
       deleteAdmin(row)
         .then(response => {
           this.$notify.success({

@@ -81,11 +81,29 @@
             <template slot="append">{{$t('Dollars')}}</template>
           </el-input>
         </el-form-item>
-        <el-form-item :label="$t('Merchandise_Tax')" prop="tax">
+        <el-row>
+          <el-col v-for="item in taxes" :span="8">
+            <el-row>
+              <el-form-item :label="''" prop="tax">
+                <el-checkbox  v-model="item.enable">
+                  {{ filterTaxType(item.type)}}
+                </el-checkbox>
+              </el-form-item>
+            </el-row>
+            <el-row v-if="item.enable">
+              <el-form-item :label="''" prop="tax">
+                <el-input v-model="item.value">
+                  <template slot="append">%</template>
+                </el-input>
+              </el-form-item>
+            </el-row>
+          </el-col>
+        </el-row>
+<!--        <el-form-item :label="$t('Merchandise_Tax')" prop="tax">
           <el-input v-model="productForm.tax">
             <template slot="append">%</template>
           </el-input>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item :label="$t('Cost_of_merchandise')" prop="costPrice">
           <el-input v-model="productForm.costPrice">
             <template slot="append">{{$t('Dollars')}}</template>
@@ -444,7 +462,8 @@
                 failure(this.$t('Upload_failed_please_reupload'))
               })
           }
-        }
+        },
+        taxes:[]
       }
     },
     computed: {
@@ -475,6 +494,7 @@
           this.stepPriceForms = response.data.data.ladderPrices.length > 0 ? response.data.data.ladderPrices : [{}]
           this.moneyOfPriceForms = response.data.data.maxMinusPrices.length > 0 ? response.data.data.maxMinusPrices : [{}]
           this.vipPriceForm = response.data.data.vipGoodsPrice || {}
+          this.taxes = response.data.data.goodsTaxes
 
           this.galleryFileList = []
           for (var i = 0; i < this.goods.gallery.length; i++) {
@@ -751,6 +771,7 @@
           specifications: this.specifications,
           products: [this.productForm],
           attributes: this.attributes,
+          goodsTaxes: this.taxes
         }
         if(this.goods.priceType == "1"){
           finalGoods.vipPrice = this.vipPriceForm
@@ -787,6 +808,15 @@
       handleGoodsPicRemove: function() {
         this.goods.picUrl = undefined
       },
+      filterTaxType(type){
+        if(type == 1){
+          return this.$t('国税')
+        }else if(type == 2){
+          return this.$t('省税')
+        }else if(type == 3){
+          return this.$t('地方税')
+        }
+      }
     }
   }
 </script>

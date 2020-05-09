@@ -132,7 +132,7 @@
           （{{summary.processingCount}}）
         </el-col>
         <el-col :span="4" align="right">
-          {{$t('总进货金额')}}:
+          {{$t('Current_inventory_value')}}:
         </el-col>
         <el-col :span="4">
           （{{summary.merchandiseTotalAmount}}）

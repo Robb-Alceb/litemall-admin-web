@@ -859,6 +859,16 @@ export const asyncRouterMap = [
           title: '结算面额配置',
           noCache: true
         }
+      },
+      {
+        path: 'other',
+        component: () => import('@/views/config/other'),
+        name: 'configOther',
+        meta: {
+          perms: ['GET /admin/config/other', 'POST /admin/config/other'],
+          title: '其他配置',
+          noCache: true
+        }
       }
       /*{
         path: 'wx',

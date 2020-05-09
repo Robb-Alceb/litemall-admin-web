@@ -91,3 +91,11 @@ export function billStatistics(userId) {
     params: {userId}
   })
 }
+
+export function resetUserPwd(data) {
+  return request({
+    url: '/user/resetpwd',
+    method: 'put',
+    params: data
+  })
+}

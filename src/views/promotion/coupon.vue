@@ -30,8 +30,24 @@
         <template slot-scope="scope">{{$t('Full')}}{{ scope.row.min }}{{$t('Dollars')}} {{$t('Lowest_spending_value')}}</template>
       </el-table-column>
 
+
+      <el-table-column align="center" :label="$t('折扣类型')" prop="discountType">
+        <template slot-scope="scope">
+          <el-tag>
+            {{ scope.row.discountType == 1 ? $t('满减') : $t('百分比') }}
+          </el-tag>
+        </template>
+      </el-table-column>
+
       <el-table-column align="center" :label="$t('Discount_price')" prop="discount">
-        <template slot-scope="scope">{{$t('Discount')}}{{ scope.row.discount }}{{$t('Dollars')}}</template>
+        <template slot-scope="scope">
+          <span v-if="scope.row.discountType == 1">
+            {{$t('Discount')}}{{ scope.row.discount }}{{$t('Dollars')}}
+          </span>
+          <span v-else>
+            {{$t('折扣')}}{{ scope.row.discountRate }}{{$t('%')}}
+          </span>
+        </template>
       </el-table-column>
 
       <el-table-column align="center" :label="$t('Limited_per_person')" prop="limit">
@@ -87,17 +103,26 @@
           </el-checkbox-group>
         </el-form-item>
         <el-form-item :label="$t('商品活动价共用')" prop="promotionOnly" >
-            <el-radio v-model="dataForm.promotionOnly" :label="0">{{$t('共用')}}</el-radio>
-            <el-radio v-model="dataForm.promotionOnly" :label="1">{{$t('不共用')}}</el-radio>
+            <el-radio v-model="dataForm.promotionOnly" :label="false">{{$t('共用')}}</el-radio>
+            <el-radio v-model="dataForm.promotionOnly" :label="true">{{$t('不共用')}}</el-radio>
         </el-form-item>
         <el-form-item :label="$t('Lowest_spending_value')" prop="min">
           <el-input v-model="dataForm.min">
             <template slot="append">{{$t('Dollars')}}</template>
           </el-input>
         </el-form-item>
-        <el-form-item :label="$t('Discount_price')" prop="discount">
+        <el-form-item :label="$t('折扣类型')" prop="discountType">
+          <el-radio v-model="dataForm.discountType" :label="1">{{$t('满减')}}</el-radio>
+          <el-radio v-model="dataForm.discountType" :label="2">{{$t('百分比')}}</el-radio>
+        </el-form-item>
+        <el-form-item v-if="dataForm.discountType == 1" :label="$t('Discount_price')" prop="discount">
           <el-input v-model="dataForm.discount">
             <template slot="append">{{$t('Dollars')}}</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item v-else :label="$t('百分比')" prop="discountRate">
+          <el-input v-model="dataForm.discountRate">
+            <template slot="append">%</template>
           </el-input>
         </el-form-item>
         <el-form-item :label="$t('Limited_per_person')" prop="limit">
@@ -142,12 +167,19 @@
         <el-form-item label="商品限制范围">
           <el-radio-group v-model="dataForm.goodsType">
             <el-radio-button :label="0">{{$t('Usable_in_any_situation')}}</el-radio-button>
-<!--            <el-radio-button :label="1">指定分类</el-radio-button>-->
-            <el-radio-button :label="2">{{$t('Select_merchandise')}}</el-radio-button>
+            <el-radio-button :label="1">{{$t('指定分类')}}</el-radio-button>
+<!--            <el-radio-button :label="2">{{$t('Select_merchandise')}}</el-radio-button>-->
           </el-radio-group>
         </el-form-item>
         <el-form-item v-show="dataForm.goodsType === 1">
-          {{$t('Not_supported_at_the_moment')}}
+<!--          {{$t('Not_supported_at_the_moment')}}-->
+          <el-cascader
+            :options="categories"
+            :props="props"
+            v-model="dataForm.goodsValue"
+            :show-all-levels="false"
+            collapse-tags
+            clearable></el-cascader>
         </el-form-item>
         <el-form-item v-show="dataForm.goodsType === 2">
           <template>
@@ -202,7 +234,7 @@
 import { listCoupon, createCoupon, updateCoupon, deleteCoupon } from '@/api/coupon'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { listGoods } from '@/api/goods'
-
+import { listCategory } from '@/api/category'
 
 
 export default {
@@ -221,10 +253,10 @@ export default {
         label: this.$t('Free_coupons_upon_registration'),
         value: 1
       },
-      /*  {
-          label: '兑换码',
-          value: 2
-        }*/
+      {
+        label: this.$t('兑换码'),
+        value: 2
+      }
     ]
 
     const defaultStatusOptions = [
@@ -272,6 +304,8 @@ export default {
         tag: undefined,
         total: 0,
         discount: 0,
+        discountType: 1,
+        discountRate: 100,
         min: 0,
         limit: 1,
         type: 0,
@@ -283,7 +317,7 @@ export default {
         startTime: null,
         endTime: null,
         userLevel: [],
-        promotionOnly: 1
+        promotionOnly: false
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -296,12 +330,16 @@ export default {
           { required: true, message: this.$t('Coupon_title_cannot_be_empty'), trigger: 'blur' }
         ]
       },
-      downloadLoading: false
+      downloadLoading: false,
+      categories: [],
+      props: { multiple: true,value: 'id', label: 'name' },
+
     }
   },
   created() {
     this.getList()
     this.getGoods()
+    this.getCategories()
   },
   methods: {
     formatType(type) {
@@ -370,6 +408,8 @@ export default {
         tag: undefined,
         total: 0,
         discount: 0,
+        discountType: 1,
+        discountRate: 100,
         min: 0,
         limit: 1,
         type: 0,
@@ -394,6 +434,13 @@ export default {
     createData() {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
+          if(this.dataForm.discountType == 2){
+            let p = [];
+            this.dataForm.goodsValue.forEach(goodsId=>{
+              p.push(goodsId[2])
+            })
+            this.dataForm.goodsValue = p;
+          }
           createCoupon(this.dataForm)
             .then(response => {
               this.list.unshift(response.data.data)
@@ -424,11 +471,19 @@ export default {
           this.dataForm.daysType = 0
         }
         this.$refs['dataForm'].clearValidate()
+        this.getCategories()
       })
     },
     updateData() {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
+          if(this.dataForm.discountType == 2){
+            let p = [];
+            this.dataForm.goodsValue.forEach(goodsId=>{
+              p.push(goodsId[2])
+            })
+            this.dataForm.goodsValue = p;
+          }
           updateCoupon(this.dataForm)
             .then(() => {
               for (const v of this.list) {
@@ -506,6 +561,35 @@ export default {
         ]
         excel.export_json_to_excel2(tHeader, this.list, filterVal, '优惠券信息')
         this.downloadLoading = false
+      })
+    },
+    getCategories(){
+      listCategory().then(response=>{
+        console.log(response)
+        this.categories = response.data.data.list
+        if(this.dataForm.goodsValue && this.dataForm.goodsValue.length > 0){
+          let p = [];
+          this.dataForm.goodsValue.forEach(goodsId=>{
+            this.categories.forEach(category=>{
+              if(category.children && category.children.length > 0){
+                category.children.forEach(item=>{
+                  if(item.children && item.children.length > 0){
+                    item.children.forEach(sub=>{
+                      if(sub.id == goodsId){
+                        let tmp = [];
+                        tmp.push(category.id)
+                        tmp.push(item.id)
+                        tmp.push(sub.id)
+                        p.push(tmp)
+                      }
+                    })
+                  }
+                })
+              }
+            })
+          })
+          this.dataForm.goodsValue = p;
+        }
       })
     }
   }

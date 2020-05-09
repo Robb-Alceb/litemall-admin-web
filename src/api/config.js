@@ -90,3 +90,19 @@ export function updateSettlement(data) {
     data
   })
 }
+
+export function otherConfig(keyName) {
+  return request({
+    url: '/config/system',
+    method: 'get',
+    params: keyName
+  })
+}
+
+export function updateOtherConfig(data) {
+  return request({
+    url: '/config/system',
+    method: 'post',
+    data
+  })
+}

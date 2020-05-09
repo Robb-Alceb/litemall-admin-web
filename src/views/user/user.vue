@@ -17,6 +17,7 @@
 
       <el-table-column align="center" label="用户姓名" prop="nickname"/>
 
+
       <el-table-column align="center" label="手机号码" prop="mobile"/>
 
       <el-table-column align="center" label="邮箱" prop="email"/>
@@ -39,7 +40,9 @@
 
       <el-table-column align="center" :label="$t('Operate')" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-permission="['GET /admin/user/detail']" type="primary" size="mini" @click="handleDetail(scope.row)">{{$t('Details')}}</el-button>
+          <el-button v-permission="['GET /admin/user/detail']" type="primary" @click="handleDetail(scope.row)">{{$t('Details')}}</el-button>
+          <el-button v-permission="['PUT /admin/user/resetpwd']" type="primary" @click="handleReset(scope.row)">{{$t('重置密码')}}</el-button>
+
         </template>
       </el-table-column>
 <!--
@@ -62,11 +65,26 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
+    <!-- 回复反馈对话框 -->
+    <el-dialog :visible.sync="resetDialogVisible" :title="$t('重置密码')">
+      <el-form ref="feedbackForm" :model="resetForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
+        <el-form-item label="填写新密码" prop="newPwd">
+          <el-input v-model="resetForm.newPwd" :placeholder="$t('新密码，不填则系统生成')" />
+        </el-form-item>
+        <el-form-item v-if="pwd" label="新密码" prop="pwd">
+          <el-input v-model="pwd"/>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="resetDialogVisible = false">{{$t('Cancel')}}</el-button>
+        <el-button type="primary" @click="resetConfirm">{{$t('Confirm')}}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { fetchList } from '@/api/user'
+import { fetchList, resetUserPwd } from '@/api/user'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import {toLine} from '@/utils/stringConvert'
 
@@ -90,7 +108,14 @@ export default {
       downloadLoading: false,
       genderDic: ['未知', '男', '女'],
       levelDic: ['普通会员', '白银会员', '黄金会员', '铂金会员', '钻石会员'],
-      statusDic: [this.$t('Usable'), '禁用', '注销']
+      statusDic: [this.$t('Usable'), '禁用', '注销'],
+      resetDialogVisible: false,
+      resetForm: {
+        userId: undefined,
+        newPwd: undefined
+      },
+      pwd: undefined
+
     }
   },
   created() {
@@ -134,6 +159,27 @@ export default {
       }
       this.listQuery.sort = toLine(item.prop)
       this.handleFilter();
+    },
+    handleReset(row){
+      this.resetDialogVisible = !this.resetDialogVisible
+      this.resetForm.userId = row.id
+      this.resetForm.newPwd = undefined
+      this.pwd = undefined
+    },
+    resetConfirm(){
+      resetUserPwd(this.resetForm).then(response => {
+        // this.resetDialogVisible = false
+        this.$notify.success({
+          title: this.$t('Success!'),
+          message: this.$t('重置成功')
+        })
+        this.pwd = response.data.data
+      }).catch(response => {
+        this.$notify.error({
+          title: this.$t('Failed'),
+          message: response.data.errmsg
+        })
+      })
     }
   }
 }

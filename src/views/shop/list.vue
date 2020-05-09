@@ -40,7 +40,7 @@
 
       <el-table-column align="center" :label="$t('Store_Manager')" prop="shopkeeper"/>
 
-      <el-table-column align="center" :label="$t('成员')" prop="members"/>
+      <el-table-column align="center" :label="$t('Partners')" prop="members"/>
 
       <el-table-column align="center" :label="$t('Time_added')" prop="addTime"/>
 

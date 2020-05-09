@@ -8,11 +8,16 @@
         <el-form-item :label="$t('Category')" prop="categoryId">
           <el-cascader :options="categoryList" v-model="categoryIds" expand-trigger="hover" @change="handleCategoryChange"/>
         </el-form-item>
-        <el-form-item :label="$t('Store_belong')" prop="shopId">
-          <el-select v-model="goods.shopId">
+        <el-form-item :label="$t('Store_belong')" prop="shopIds">
+          <el-select v-model="shopIds" multiple>
             <el-option v-for="item in shops" :value="item.id" :label="item.name"></el-option>
           </el-select>
         </el-form-item>
+<!--        <el-form-item :label="$t('Store_belong')" prop="shopId">
+          <el-select v-model="goods.shopId">
+            <el-option v-for="item in shops" :value="item.id" :label="item.name"></el-option>
+          </el-select>
+        </el-form-item>-->
         <el-form-item :label="$t('Merchandise_code')" prop="goodsSn">
           <el-input v-model="goods.goodsSn"/>
         </el-form-item>
@@ -81,11 +86,44 @@
             <template slot="append">{{$t('Dollars')}}</template>
           </el-input>
         </el-form-item>
-        <el-form-item :label="$t('Merchandise_Tax')" prop="tax">
+        <el-row>
+          <el-col v-for="item in taxes" :span="8">
+            <el-row>
+              <el-form-item :label="''" prop="tax">
+                <el-checkbox  v-model="item.enable">
+                  {{ filterTaxType(item.type)}}
+                </el-checkbox>
+              </el-form-item>
+            </el-row>
+            <el-row v-if="item.enable">
+              <el-form-item :label="''" prop="tax">
+                <el-input v-model="item.value">
+                  <template slot="append">%</template>
+                </el-input>
+              </el-form-item>
+            </el-row>
+          </el-col>
+<!--          <el-col :span="8">
+            <el-form-item :label="$t('省税')" prop="tax">
+              <el-input v-model="productForm.tax">
+                <template slot="append">%</template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item :label="$t('地方税')" prop="tax">
+              <el-input v-model="productForm.tax">
+                <template slot="append">%</template>
+              </el-input>
+            </el-form-item>
+          </el-col>-->
+        </el-row>
+
+<!--        <el-form-item :label="$t('Merchandise_Tax')" prop="tax">
           <el-input v-model="productForm.tax">
             <template slot="append">%</template>
           </el-input>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item :label="$t('Cost_of_merchandise')" prop="costPrice">
           <el-input v-model="productForm.costPrice">
             <template slot="append">{{$t('Dollars')}}</template>
@@ -351,7 +389,7 @@
 </style>
 
 <script>
-  import { publishGoods, listCatAndBrand } from '@/api/goods'
+  import { publishGoods, listCatAndBrand, batchCreate } from '@/api/goods'
   import { createStorage, uploadPath } from '@/api/storage'
   import Editor from '@tinymce/tinymce-vue'
   import { MessageBox } from 'element-ui'
@@ -448,7 +486,21 @@
                 failure(this.$t('Upload_failed_please_reupload'))
               })
           }
-        }
+        },
+        taxes:[{
+          value:0,
+          type:1,
+          enable:false
+        },{
+          value:0,
+          type:2,
+          enable:false
+        },{
+          value:0,
+          type:3,
+          enable:false
+        }],
+        shopIds:[]
       }
     },
     computed: {
@@ -599,7 +651,9 @@
           goods: this.goods,
           specifications: this.specifications,
           products: [this.productForm],
-          attributes: this.attributes
+          attributes: this.attributes,
+          goodsTaxes: this.taxes,
+          shopIds: this.shopIds
         }
         if(this.goods.priceType == "1"){
           finalGoods.vipPrice = this.vipPriceForm
@@ -618,7 +672,8 @@
         console.log(finalGoods)
         this.$refs['goodsForm'].validate((valid) => {
           if (valid) {
-            publishGoods(finalGoods)
+            // publishGoods(finalGoods)
+            batchCreate(finalGoods)
               .then(response => {
                 this.$notify.success({
                   title: this.$t('Success!'),
@@ -650,6 +705,15 @@
       handleGoodsPicRemove: function() {
         this.goods.picUrl = undefined
       },
+      filterTaxType(type){
+        if(type == 1){
+          return this.$t('国税')
+        }else if(type == 2){
+          return this.$t('省税')
+        }else if(type == 3){
+          return this.$t('地方税')
+        }
+      }
     }
   }
 </script>

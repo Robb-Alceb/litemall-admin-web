@@ -3,7 +3,7 @@
 
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span>门店编辑</span>
+        <span>{{$t('Edit_Store_Details')}}</span>
 
         <el-button v-permission="['GET /admin/admin/list']" style="float: right; padding: 3px 0" type="text" @click="members()">{{$t('View_partners_list')}}</el-button>
         <el-button v-permission="['GET /admin/shopLog/list']" style="float: right; padding: 3px 0;margin-right: 10px;" type="text" @click="handleLogs()">{{$t('View_Journals')}}</el-button>
@@ -17,7 +17,7 @@
         </el-form-item>
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="$t('国家')" prop="country">
+            <el-form-item :label="$t('Country')" prop="country">
               <el-select v-model="regionIds[0]" filterable @change="getPrivonces(true)">
                 <el-option
                   v-for="item in countrys"
@@ -28,7 +28,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item :label="$t('省份')" prop="province">
+            <el-form-item :label="$t('Province')" prop="province">
               <el-select v-model="regionIds[1]" filterable  @change="getCitys(true)">
                 <el-option
                   v-for="item in provinces"
@@ -41,7 +41,7 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="$t('城市')" prop="city">
+            <el-form-item :label="$t('City')" prop="city">
               <el-select v-model="regionIds[2]" filterable @change="getCountys(true)">
                 <el-option
                   v-for="item in citys"
@@ -65,7 +65,7 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="$t('编码')" prop="postalCode">
+            <el-form-item :label="$t('Postal_ZIP')" prop="postalCode">
               <el-input v-model="shop.postalCode"/>
             </el-form-item>
           </el-col>
@@ -75,7 +75,7 @@
             </el-form-item>
           </el-col>-->
           <el-col :span="12">
-            <el-form-item :label="$t('单元')" prop="aptUnit">
+            <el-form-item :label="$t('Unit')" prop="aptUnit">
               <el-input v-model="shop.aptUnit"/>
             </el-form-item>
           </el-col>
@@ -105,15 +105,15 @@
         <el-form-item :label="$t('Contact_number')" prop="mobile">
           <el-input v-model="shop.mobile" placeholder="13000000000"/>
         </el-form-item>
-        <el-form-item :label="$t('服务星期')" prop="weeks">
+        <el-form-item :label="$t('Business_Days')" prop="weeks">
           <el-checkbox-group v-model="shop.weeks">
-            <el-checkbox :label="1">{{$t('星期一')}}</el-checkbox>
-            <el-checkbox :label="2">{{$t('星期二')}}</el-checkbox>
-            <el-checkbox :label="3">{{$t('星期三')}}</el-checkbox>
-            <el-checkbox :label="4">{{$t('星期四')}}</el-checkbox>
-            <el-checkbox :label="5">{{$t('星期五')}}</el-checkbox>
-            <el-checkbox :label="6">{{$t('星期六')}}</el-checkbox>
-            <el-checkbox :label="7">{{$t('星期日')}}</el-checkbox>
+            <el-checkbox :label="1">{{$t('Monday')}}</el-checkbox>
+            <el-checkbox :label="2">{{$t('Tuesday')}}</el-checkbox>
+            <el-checkbox :label="3">{{$t('Wednesday')}}</el-checkbox>
+            <el-checkbox :label="4">{{$t('Thursday')}}</el-checkbox>
+            <el-checkbox :label="5">{{$t('Friday')}}</el-checkbox>
+            <el-checkbox :label="6">{{$t('Saturday')}}</el-checkbox>
+            <el-checkbox :label="7">{{$t('Sunday')}}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item :label="$t('Service_hours')"  prop="serviceTime">
