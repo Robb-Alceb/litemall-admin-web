@@ -55,3 +55,23 @@ export function getUserListByGiftId(query) {
   })
 
 }
+
+
+export function bindEntity(data) {
+  return request({
+    url: '/giftcarduser/bind',
+    method: 'post',
+    data
+  })
+
+}
+
+
+export function unBindEntity(id) {
+  return request({
+    url: '/giftcarduser/unbind',
+    method: 'put',
+    params: {id}
+  })
+
+}

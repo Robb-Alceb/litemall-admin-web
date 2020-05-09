@@ -106,7 +106,7 @@ export default {
         order: 'desc'
       },
       downloadLoading: false,
-      genderDic: ['未知', '男', '女'],
+      genderDic: ['其他', '男', '女'],
       levelDic: ['普通会员', '白银会员', '黄金会员', '铂金会员', '钻石会员'],
       statusDic: [this.$t('Usable'), '禁用', '注销'],
       resetDialogVisible: false,

@@ -255,7 +255,7 @@
         listBillLoading : false,
         couponCount: 0,
         amount: 0,
-        genderDic: ['未知', '男', '女'],
+        genderDic: ['其他', '男', '女'],
         levelDic: ['普通会员', '白银会员', '黄金会员', '铂金会员', '钻石会员'],
         statistics: {}
       }
