@@ -12,7 +12,7 @@
       <el-table-column align="center" :label="$t('Operating_Controller')" prop="admin"/>
       <el-table-column align="center" label="IP地址" prop="ip"/>
       <el-table-column align="center" :label="$t('Operating_time')" prop="addTime"/>
-      <el-table-column align="center" label="$t('Operating_Category')" prop="type">
+      <el-table-column align="center" :label="$t('Operating_Category')" prop="type">
         <template slot-scope="scope">
           <el-tag>{{ typeFilter(scope.row.type)  }}</el-tag>
         </template>
@@ -76,7 +76,7 @@ export default {
   },
   methods: {
     typeFilter(type) {
-      return typeMap[type]
+      return this.typeMap[type]
     },
     getList() {
       this.listLoading = true

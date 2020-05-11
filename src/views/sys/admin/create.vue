@@ -25,7 +25,7 @@
               class="filter-date-item"
               v-model="admin.birthday"
               type="date"
-              value-format="yyyy-MM-dd HH:mm:ss">
+              value-format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
         <el-form-item :label="$t('Partner_picture')" prop="avatar">

@@ -99,3 +99,11 @@ export function resetUserPwd(data) {
     params: data
   })
 }
+
+export function updateIntegral(data) {
+  return request({
+    url: '/user/integral',
+    method: 'put',
+    params: data
+  })
+}
