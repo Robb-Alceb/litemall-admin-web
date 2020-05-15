@@ -869,6 +869,16 @@ export const asyncRouterMap = [
           title: '其他配置',
           noCache: true
         }
+      },
+      {
+        path: 'tax',
+        component: () => import('@/views/config/tax'),
+        name: 'configTax',
+        meta: {
+          perms: ['GET /admin/tax/list', 'POST /admin/tax/create', , 'PUT /admin/tax/update'],
+          title: '税费配置',
+          noCache: true
+        }
       }
       /*{
         path: 'wx',

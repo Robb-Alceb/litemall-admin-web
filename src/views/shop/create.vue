@@ -187,6 +187,34 @@ export default {
         callback()
       }
     }
+    const validateCountry = (rule, value, callback) => {
+      if (!this.regionIds[0]) {
+        callback(new Error(this.$t('国家不能为空')))
+      } else {
+        callback()
+      }
+    }
+    const validateProvince = (rule, value, callback) => {
+      if (!this.regionIds[1]) {
+        callback(new Error(this.$t('省份不能为空')))
+      } else {
+        callback()
+      }
+    }
+    const validateCity= (rule, value, callback) => {
+      if (!this.regionIds[2]) {
+        callback(new Error(this.$t('城市不能为空')))
+      } else {
+        callback()
+      }
+    }
+    const validateCounty = (rule, value, callback) => {
+      if (!this.regionIds[3]) {
+        callback(new Error(this.$t('区县不能为空')))
+      } else {
+        callback()
+      }
+    }
     return {
       limited:true,
       shop: {
@@ -220,26 +248,30 @@ export default {
           { required: true, message: this.$t('联系电话不能为空'), trigger: 'blur' },
         ],
         weeks: [
-          { required: true, message: this.$t('服务星期不能为空'), trigger: 'blur' },
+          { required: true, message: this.$t('服务星期不能为空'), trigger: 'change' },
         ],
         types: [
-          { required: true, message: this.$t('订单类型不能为空'), trigger: 'blur' },
+          { required: true, message: this.$t('订单类型不能为空'), trigger: 'change' },
         ],
         serviceTime: [
           // { required: true, message: this.$t('服务时间不能为空'), trigger: 'blur' },
           { validator: validateService, trigger: 'change' }
         ],
         country: [
-          { required: true, message: this.$t('国家不能为空'), trigger: 'blur' },
+          // { required: true, message: this.$t('国家不能为空'), trigger: 'blur' },
+          { validator: validateCountry, trigger: 'change' }
         ],
         province: [
-          { required: true, message: this.$t('省份不能为空'), trigger: 'blur' },
+          // { required: true, message: this.$t('省份不能为空'), trigger: 'blur' },
+          { validator: validateProvince, trigger: 'change' }
         ],
         city: [
-          { required: true, message: this.$t('城市不能为空'), trigger: 'blur' },
+          // { required: true, message: this.$t('城市不能为空'), trigger: 'blur' },
+          { validator: validateCity, trigger: 'change' }
         ],
         county: [
-          { required: true, message: this.$t('区县不能为空'), trigger: 'blur' },
+          // { required: true, message: this.$t('区县不能为空'), trigger: 'blur' },
+          { validator: validateCounty, trigger: 'change' }
         ],
       }
     }

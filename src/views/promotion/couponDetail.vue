@@ -58,10 +58,12 @@
           <el-col :span="4" class="table-cell">{{ coupon.code }}</el-col>
         </el-row>
         <el-row>
-          <el-col :span="4" class="table-cell-title">发行数量</el-col>
+          <el-col v-if="coupon.type == 3" :span="4" class="table-cell-title">{{$t('剩余数量')}}</el-col>
+          <el-col v-else :span="4" class="table-cell-title">发行数量</el-col>
 
           <el-col :span="8" class="table-cell-title">使用门槛</el-col>
           <el-col :span="4" class="table-cell-title">与商品活动价共用</el-col>
+          <el-col v-if="coupon.type == 3" :span="4" class="table-cell-title">{{$t('优惠券码')}}</el-col>
         </el-row>
         <el-row>
           <el-col :span="4" class="table-cell">{{ coupon.total === 0 ? "不限" : coupon.total }}</el-col>
@@ -73,10 +75,13 @@
           <el-col :span="4" class="table-cell">
             {{coupon.promotionOnly == 0 ? "共用" : "不共用"}}
           </el-col>
+          <el-col v-if="coupon.type == 3" :span="4" class="table-cell">
+            <el-button type="primary" @click="handleQrcode">{{$t('查看')}}</el-button>
+          </el-col>
         </el-row>
       </div>
     </el-card>
-    <el-card v-if="coupon.goodsType != 0">
+    <el-card v-if="coupon.goodsType == 2">
       <div slot="header" class="clearfix">
         <span>指定商品列表</span>
       </div>
@@ -91,7 +96,19 @@
 
       <pagination v-show="goodsTotal>0" :total="goodsTotal" :page.sync="listGoodsQuery.page" :limit.sync="listGoodsQuery.limit" @pagination="getGoodsList" />
     </el-card>
-    <el-card>
+
+    <el-card v-if="coupon.goodsType == 1">
+      <div slot="header" class="clearfix">
+        <span>指定类目列表</span>
+      </div>
+      <!-- 查询结果 -->
+      <el-table v-loading="listGoodsLoading" :data="goodsList" :element-loading-text="$t('Searching')" border fit highlight-current-row>
+        <el-table-column align="center" :label="$t('Category_Name')" prop="name"/>
+      </el-table>
+
+      <pagination v-show="goodsTotal>0" :total="goodsTotal" :page.sync="listGoodsQuery.page" :limit.sync="listGoodsQuery.limit" @pagination="getGoodsList" />
+    </el-card>
+    <el-card v-if="coupon.type != 3">
       <div slot="header" class="clearfix">
         <span>优惠券使用统计</span>
       </div>
@@ -104,8 +121,8 @@
           <el-col :span="4" class="table-cell-title">{{$t('总订单价格')}}</el-col>
         </el-row>
         <el-row>
-          <el-col :span="4" class="table-cell">$ {{ statistics.pullNumber }}</el-col>
-          <el-col :span="4" class="table-cell">$ {{ statistics.usedNumber }}</el-col>
+          <el-col :span="4" class="table-cell">{{ statistics.pullNumber }}</el-col>
+          <el-col :span="4" class="table-cell">{{ statistics.usedNumber }}</el-col>
           <el-col :span="4" class="table-cell">${{ statistics.orderTotalPrice }}</el-col>
           <el-col :span="4" class="table-cell">$ {{ statistics.orderTotalDiscount  }}</el-col>
           <el-col :span="4" class="table-cell">$ {{ statistics.orderTotalActual }}</el-col>
@@ -113,7 +130,7 @@
       </div>
     </el-card>
     <!-- 查询操作 -->
-    <div class="filter-container">
+    <div v-if="coupon.type != 3" class="filter-container">
       <el-input v-model="listQuery.userId" clearable class="filter-item" style="width: 200px;" :placeholder="$t('Please_enter_member_ID')"/>
       <el-select v-model="listQuery.status" clearable style="width: 200px" class="filter-item" placeholder="请选择使用状态">
         <el-option v-for="type in useStatusOptions" :key="type.value" :label="type.label" :value="type.value"/>
@@ -122,7 +139,7 @@
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
+    <el-table v-if="coupon.type != 3" v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
 
       <el-table-column align="center" label="用户优惠券ID" prop="id" sortable/>
 
@@ -142,18 +159,24 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
+    <!-- 回复反馈对话框 -->
+    <el-dialog :visible.sync="qrcodeDialogVisible" :title="$t('优惠券码')">
+      <div align="center" @click="">
+        <div id="qrcode" ref="qrcode"></div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { readCoupon, listCouponUser, listCouponGoods, couponStatistics } from '@/api/coupon'
+import { readCoupon, listCouponUser, listCouponGoods, couponStatistics, listCouponCategory } from '@/api/coupon'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { allForPerm } from '@/api/shop'
-
+import QRCode from "qrcodejs2";
 
 export default {
   name: 'CouponDetail',
-  components: { Pagination },
+  components: { Pagination, QRCode },
   filters: {
 
   },
@@ -222,7 +245,9 @@ export default {
       },
       downloadLoading: false,
       shops:[],
-      statistics:{}
+      statistics:{},
+      qrcodeDialogVisible: false,
+      qrcodeData: undefined
     }
   },
   created() {
@@ -232,12 +257,17 @@ export default {
     }
     this.listGoodsQuery.id = this.$route.query.id;
     this.getGoodsList()
+    this.getCategoryList()
     couponStatistics(this.listGoodsQuery.id).then(response=>{
       this.statistics = response.data.data
     })
     allForPerm().then(response=>{
       this.shops = response.data.data.list
     })
+
+  },
+  mounted(){
+
   },
   methods: {
     formatType(type) {
@@ -328,6 +358,20 @@ export default {
           this.listGoodsLoading = false
         })
     },
+    getCategoryList(){
+      this.listGoodsLoading = true
+      listCouponCategory(this.listGoodsQuery)
+        .then(response => {
+          this.goodsList = response.data.data.list
+          this.goodsTotal = response.data.data.total
+          this.listGoodsLoading = false
+        })
+        .catch(() => {
+          this.goodsList = []
+          this.goodsTotal = 0
+          this.listGoodsLoading = false
+        })
+    },
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
@@ -343,7 +387,21 @@ export default {
     },
     getGoodsScope() {
     },
-
+    qrcode() {//这里是调用的方法
+      this.qrcodeData =  new QRCode("qrcode", {
+        width: 200, // 设置宽度
+        height: 200, // 设置高度
+        text: this.coupon.barCode
+      });
+    },
+    handleQrcode(){
+      this.qrcodeDialogVisible = !this.qrcodeDialogVisible
+      if(!this.qrcodeData){
+        this.$nextTick(function() {
+          this.qrcode();
+        });
+      }
+    }
   }
 }
 </script>

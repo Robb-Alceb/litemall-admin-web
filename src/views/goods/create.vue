@@ -86,7 +86,7 @@
             <template slot="append">{{$t('Dollars')}}</template>
           </el-input>
         </el-form-item>
-        <el-row>
+        <!--<el-row>
           <el-col v-for="item in taxes" :span="8">
             <el-row>
               <el-form-item :label="''" prop="tax">
@@ -103,7 +103,7 @@
               </el-form-item>
             </el-row>
           </el-col>
-<!--          <el-col :span="8">
+          <el-col :span="8">
             <el-form-item :label="$t('省税')" prop="tax">
               <el-input v-model="productForm.tax">
                 <template slot="append">%</template>
@@ -116,8 +116,8 @@
                 <template slot="append">%</template>
               </el-input>
             </el-form-item>
-          </el-col>-->
-        </el-row>
+          </el-col>
+        </el-row>-->
 
 <!--        <el-form-item :label="$t('Merchandise_Tax')" prop="tax">
           <el-input v-model="productForm.tax">
@@ -402,7 +402,7 @@
     data() {
       const validateDouble = (rule, value, callback) => {
         console.log('value' + value)
-        if (!/^[0-9,.]*$/.test(value)) {
+        if (!value || !/^[0-9,.]*$/.test(value)) {
           callback(new Error(this.$t('Sale_price_must_be_a_number')))
         } else {
           callback()
@@ -461,9 +461,9 @@
             { type: 'number', message: this.$t('Stock_amount_must_be_a_number'), trigger: 'blur' }
           ],
           sellPrice: [{ required: true, message: this.$t('Sale_price_cannot_be_empty'), trigger: 'change' },
-            { validator: validateDouble, trigger: 'change' }],
+            { required: true,validator: validateDouble, trigger: 'change' }],
           costPrice: [{ required: true, message: this.$t('Buy-in_cost_cannot_be_empty'), trigger: 'change' },
-            { validator: validateDouble, trigger: 'change' }],
+            { required: true,validator: validateDouble, trigger: 'change' }],
         },
         editorInit: {
           language: 'zh_CN',
@@ -671,7 +671,8 @@
         }
         console.log(finalGoods)
         this.$refs['goodsForm'].validate((valid) => {
-          if (valid) {
+          this.$refs['product'].validate((validproduct)=>{
+            if (valid && validproduct) {
             // publishGoods(finalGoods)
             batchCreate(finalGoods)
               .then(response => {
@@ -687,16 +688,18 @@
                   type: 'error'
                 })
               })
-          }
+            }
+          })
+
         })
 
       },
       changeVipPrice(){
         this.vipPriceForm = {
-          silverVipPrice: (this.productForm.sellPrice * 0.01).toFixed(2),
-          goldVipPrice: (this.productForm.sellPrice * 0.02).toFixed(2),
-          platinumVipPrice: (this.productForm.sellPrice * 0.04).toFixed(2),
-          diamondVipPrice: (this.productForm.sellPrice * 0.1).toFixed(2)
+          silverVipPrice: !this.productForm.sellPrice?0:(this.productForm.sellPrice * 0.01).toFixed(2),
+          goldVipPrice: !this.productForm.sellPrice?0:(this.productForm.sellPrice * 0.02).toFixed(2),
+          platinumVipPrice: !this.productForm.sellPrice?0:(this.productForm.sellPrice * 0.04).toFixed(2),
+          diamondVipPrice: !this.productForm.sellPrice?0:(this.productForm.sellPrice * 0.1).toFixed(2)
         }
       },
       handleSpecRemove: function() {

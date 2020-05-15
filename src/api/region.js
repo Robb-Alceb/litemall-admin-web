@@ -23,3 +23,10 @@ export function listSubRegion(query) {
     params: query
   })
 }
+
+export function getParentIds(id) {
+  return request({
+    url: '/region/parents/'+id,
+    method: 'get'
+  })
+}

@@ -87,14 +87,23 @@
         <el-form-item :label="$t('Coupon_name')" prop="name">
           <el-input v-model="dataForm.name"/>
         </el-form-item>
+        <el-form-item label="分发类型" prop="type">
+          <el-select v-model="dataForm.type" @change="handleChangeType">
+            <el-option
+              v-for="type in typeOptions"
+              :key="type.value"
+              :label="type.label"
+              :value="type.value"/>
+          </el-select>
+        </el-form-item>
         <el-form-item :label="$t('Introduction')" prop="desc">
           <el-input v-model="dataForm.desc"/>
         </el-form-item>
         <el-form-item :label="$t('Label')" prop="tag">
           <el-input v-model="dataForm.tag"/>
         </el-form-item>
-        <el-form-item :label="$t('使用门槛')" prop="userLevel" >
-          <el-checkbox-group v-model="dataForm.userLevel" @change="nolimit()">
+        <el-form-item v-if="dataForm.type != 3" :label="$t('使用门槛')" prop="userLevel" >
+          <el-checkbox-group v-model="dataForm.userLevel" @change="nolimit">
             <el-checkbox :label="0" >无限制</el-checkbox>
             <el-checkbox :label="1" >白银会员</el-checkbox>
             <el-checkbox :label="2" >黄金会员</el-checkbox>
@@ -102,7 +111,7 @@
             <el-checkbox :label="4" >钻石会员</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item :label="$t('商品活动价共用')" prop="promotionOnly" >
+        <el-form-item v-if="dataForm.type != 3" :label="$t('商品活动价共用')" prop="promotionOnly" >
             <el-radio v-model="dataForm.promotionOnly" :label="false">{{$t('共用')}}</el-radio>
             <el-radio v-model="dataForm.promotionOnly" :label="true">{{$t('不共用')}}</el-radio>
         </el-form-item>
@@ -130,15 +139,7 @@
             <template slot="append">{{$t('Sheets')}}</template>
           </el-input>
         </el-form-item>
-        <el-form-item label="分发类型" prop="type">
-          <el-select v-model="dataForm.type">
-            <el-option
-              v-for="type in typeOptions"
-              :key="type.value"
-              :label="type.label"
-              :value="type.value"/>
-          </el-select>
-        </el-form-item>
+
         <el-form-item :label="$t('Amount_of_coupons')" prop="total">
           <el-input v-model="dataForm.total">
             <template slot="append">{{$t('Sheets')}}</template>
@@ -146,7 +147,7 @@
         </el-form-item>
         <el-form-item label="有效期">
           <el-radio-group v-model="dataForm.timeType">
-            <el-radio-button :label="0">{{$t('Respective_days_after_claiming_the_coupon')}}</el-radio-button>
+            <el-radio-button v-if="dataForm.type != 3" :label="0">{{$t('Respective_days_after_claiming_the_coupon')}}</el-radio-button>
             <el-radio-button :label="1">{{$t('Select_deadline')}}</el-radio-button>
           </el-radio-group>
         </el-form-item>
@@ -167,7 +168,7 @@
         <el-form-item label="商品限制范围">
           <el-radio-group v-model="dataForm.goodsType">
             <el-radio-button :label="0">{{$t('Usable_in_any_situation')}}</el-radio-button>
-            <el-radio-button :label="1">{{$t('指定分类')}}</el-radio-button>
+            <el-radio-button v-if="coupon.type != 3" :label="1">{{$t('指定分类')}}</el-radio-button>
 <!--            <el-radio-button :label="2">{{$t('Select_merchandise')}}</el-radio-button>-->
           </el-radio-group>
         </el-form-item>
@@ -256,6 +257,10 @@ export default {
       {
         label: this.$t('兑换码'),
         value: 2
+      },
+      {
+        label: this.$t('实物券'),
+        value: 3
       }
     ]
 
@@ -316,7 +321,7 @@ export default {
         days: 0,
         startTime: null,
         endTime: null,
-        userLevel: [],
+        userLevel: [0],
         promotionOnly: false
       },
       dialogFormVisible: false,
@@ -420,7 +425,8 @@ export default {
         days: 0,
         startTime: null,
         endTime: null,
-        userLevel: []
+        userLevel: [0],
+        promotionOnly: false
       }
     },
     handleCreate() {
@@ -532,8 +538,14 @@ export default {
       return item.label.indexOf(query) > -1
     },
     nolimit(){
-      if(this.dataForm.userLevel && this.dataForm.userLevel.indexOf(0) > -1){
+      if(this.dataForm.userLevel && this.dataForm.userLevel.indexOf(0) ==  this.dataForm.userLevel.length-1){
         this.dataForm.userLevel = [0]
+      }else if(this.dataForm.userLevel.indexOf(0) >= 0){
+        _.forEach(this.dataForm.userLevel,(item, index)=>{
+          if(item == 0){
+            this.dataForm.userLevel.splice(index, 1)
+          }
+        })
       }
     },
     handleDownload() {
@@ -591,6 +603,14 @@ export default {
           this.dataForm.goodsValue = p;
         }
       })
+    },
+    handleChangeType(){
+      if(this.dataForm.type == 3){
+        this.dataForm.userLevel = [0]
+        this.dataForm.promotionOnly = false
+        this.dataForm.timeType = 1
+        this.dataForm.goodsType = 0
+      }
     }
   }
 }

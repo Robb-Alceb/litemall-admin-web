@@ -81,7 +81,7 @@
             <template slot="append">{{$t('Dollars')}}</template>
           </el-input>
         </el-form-item>
-        <el-row>
+<!--        <el-row>
           <el-col v-for="item in taxes" :span="8">
             <el-row>
               <el-form-item :label="''" prop="tax">
@@ -98,7 +98,7 @@
               </el-form-item>
             </el-row>
           </el-col>
-        </el-row>
+        </el-row>-->
 <!--        <el-form-item :label="$t('Merchandise_Tax')" prop="tax">
           <el-input v-model="productForm.tax">
             <template slot="append">%</template>
@@ -382,7 +382,7 @@
     data() {
       const validateDouble = (rule, value, callback) => {
         console.log('value' + value)
-        if (!/^[0-9,.]*$/.test(value)) {
+        if (!value || !/^[0-9,.]*$/.test(value)) {
           callback(new Error('必须为数字'))
         } else {
           callback()
@@ -787,20 +787,26 @@
             }
           })
         }
-        editGoods(finalGoods)
-          .then(response => {
-            this.$notify.success({
-              title: this.$t('Success!'),
-              message: '修改成功'
-            })
-            this.$router.push({ path: '/goods/list' })
+        this.$refs['goodsForm'].validate((valid) => {
+          this.$refs['product'].validate((validproduct) => {
+            if (valid && validproduct) {
+              editGoods(finalGoods)
+                .then(response => {
+                  this.$notify.success({
+                    title: this.$t('Success!'),
+                    message: '修改成功'
+                  })
+                  this.$router.push({ path: '/goods/list' })
+                })
+                .catch(response => {
+                  MessageBox.alert(this.$t('Error') + response.data.errmsg, this.$t('Warning'), {
+                    confirmButtonText: this.$t('Confirm'),
+                    type: 'error'
+                  })
+                })
+            }
           })
-          .catch(response => {
-            MessageBox.alert(this.$t('Error') + response.data.errmsg, this.$t('Warning'), {
-              confirmButtonText: this.$t('Confirm'),
-              type: 'error'
-            })
-          })
+        })
       },
       handleSpecRemove: function() {
         this.specForm.picUrl = undefined

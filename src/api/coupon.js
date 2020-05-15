@@ -63,3 +63,11 @@ export function couponStatistics(id) {
     params: {id}
   })
 }
+
+export function listCouponCategory(query) {
+  return request({
+    url: '/coupon/categoryList',
+    method: 'get',
+    params: query
+  })
+}
