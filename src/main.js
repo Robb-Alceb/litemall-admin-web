@@ -65,7 +65,7 @@ const messages = {
 }
 // Create VueI18n instance with options
 const i18n = new VueI18n({
-  locale: store.getters.language || 'en', // set locale
+  locale: store.getters.language || 'cn', // set locale
   messages, // set locale messages
 })
 

@@ -20,7 +20,7 @@
       return {
         props: {
           value:'id',
-          label: 'nameCn',
+          label: 'nameEn',
           children: 'children',
           checkStrictly: true
         },

@@ -13,6 +13,7 @@
         @active-item-change="handleItemChange"
         :props="props"
         clearable
+        filterable
       ></el-cascader>
       <el-select v-model="listQuery.status" clearable class="filter-item" :placeholder="this.$t('Please_select')">
         <el-option :value="1" :label="$t('Open_for_business')"/>
@@ -32,7 +33,7 @@
       <el-table-column align="center" :label="$t('Store_address')" prop="streetAddress">
         <template slot-scope="scope">
           <span v-if="scope.row.regions" v-for="item in scope.row.regions">
-              {{item.nameCn}}
+              {{item.nameCn || item.nameEn}}
           </span>
           <span>{{scope.row.streetAddress}}</span>
         </template>
@@ -106,7 +107,7 @@ export default {
       }],*/
       props: {
         value:'id',
-        label: 'nameCn',
+        label: 'nameEn',
         children: 'children',
         checkStrictly: true
       },
@@ -195,7 +196,7 @@ export default {
         let result = this.findObject(this.countrys, val)
         console.log(result)
         response.data.data.list.forEach(child=>{
-          if(step <= 2){
+          if(step <= 1){
             result.children.push(this._.defaults(child,{children:[]}))
           }else{
             result.children.push(child)

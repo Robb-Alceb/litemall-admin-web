@@ -47,9 +47,14 @@
 
       <el-table-column align="center" :label="$t('Operate')" width="300" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-permission="['GET /admin/user/detail']" type="primary" size="small" @click="handleDetail(scope.row)">{{$t('Details')}}</el-button>
-          <el-button v-permission="['PUT /admin/user/resetpwd']" type="primary" size="small" @click="handleReset(scope.row)">{{$t('重置密码')}}</el-button>
-          <el-button v-permission="['PUT /admin/user/integral']" type="primary" size="small" @click="handleIntegral(scope.row)">{{$t('赠送积分')}}</el-button>
+          <el-row>
+            <el-button v-permission="['PUT /admin/user/update']" type="primary" size="small" @click="handleEdit(scope.row)">{{$t('修改')}}</el-button>
+            <el-button v-permission="['PUT /admin/user/resetpwd']" type="primary" size="small" @click="handleReset(scope.row)">{{$t('重置密码')}}</el-button>
+          </el-row>
+          <el-row style="padding-top: 10px;">
+            <el-button v-permission="['GET /admin/user/detail']" type="primary" size="small" @click="handleDetail(scope.row)">{{$t('Details')}}</el-button>
+            <el-button v-permission="['PUT /admin/user/integral']" type="primary" size="small" @click="handleIntegral(scope.row)">{{$t('赠送积分')}}</el-button>
+          </el-row>
         </template>
       </el-table-column>
 <!--
@@ -100,11 +105,48 @@
         <el-button type="primary" @click="integralConfirm">{{$t('Confirm')}}</el-button>
       </div>
     </el-dialog>
+
+    <!-- 修改用户信息对话框 -->
+    <el-dialog :visible.sync="editDialogVisible" :title="$t('修改用户信息')">
+      <el-form ref="editForm" :model="editForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
+        <el-form-item :label="$t('账号')" prop="username">
+          <el-input v-model.number="editForm.username" disabled/>
+        </el-form-item>
+        <el-form-item :label="$t('性别')" prop="gender">
+          <el-select v-model="editForm.gender" clearable>
+            <el-option :value="1" :label="$t('其他')"></el-option>
+            <el-option :value="2" :label="$t('女')"></el-option>
+            <el-option :value="3" :label="$t('男')"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="$t('生日')" prop="birthday">
+          <el-date-picker clearable
+                          class="filter-date-item"
+                          v-model="editForm.birthday"
+                          type="date"
+                          value-format="yyyy-MM-dd">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item :label="$t('昵称')" prop="nickname">
+          <el-input v-model.number="editForm.nickname"/>
+        </el-form-item>
+        <el-form-item :label="$t('邮箱')" prop="email">
+          <el-input v-model="editForm.email"/>
+        </el-form-item>
+        <el-form-item :label="$t('手机号码')" prop="mobile">
+          <el-input v-model="editForm.mobile"/>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="editDialogVisible = false">{{$t('Cancel')}}</el-button>
+        <el-button type="primary" @click="updateConfirm">{{$t('Confirm')}}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { fetchList, resetUserPwd, updateIntegral } from '@/api/user'
+import { fetchList, resetUserPwd, updateIntegral, updateUser } from '@/api/user'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import {toLine} from '@/utils/stringConvert'
 
@@ -126,7 +168,7 @@ export default {
         order: 'desc'
       },
       downloadLoading: false,
-      genderDic: ['其他', '男', '女'],
+      genderDic: ['', '其他', '男', '女'],
       levelDic: ['普通会员', '白银会员', '黄金会员', '铂金会员', '钻石会员'],
       statusDic: [this.$t('Usable'), '禁用', '注销'],
       resetDialogVisible: false,
@@ -141,7 +183,10 @@ export default {
         userId: undefined,
         integral: undefined
       },
+      editDialogVisible: false,
+      editForm: {
 
+      }
     }
   },
   created() {
@@ -227,6 +272,25 @@ export default {
         })
       })
     },
+    handleEdit(row){
+      this.editDialogVisible = !this.editDialogVisible
+      this.editForm = row
+    },
+    updateConfirm(){
+      updateUser(this.editForm).then(response => {
+        this.editDialogVisible = false
+        this.$notify.success({
+          title: this.$t('Success!'),
+          message: this.$t('成功')
+        })
+        this.getList();
+      }).catch(response => {
+        this.$notify.error({
+          title: this.$t('Failed'),
+          message: response.data.errmsg
+        })
+      })
+    }
   }
 }
 </script>

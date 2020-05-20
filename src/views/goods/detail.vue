@@ -4,7 +4,7 @@
 
     <el-card class="box-card">
       <h4>{{$t('Basic_Information')}}</h4>
-      <el-form ref="goods" :rules="rules" :model="goods" label-width="150px">
+      <el-form ref="goodsForm" :rules="rules" :model="goods" label-width="150px">
         <el-form-item :label="$t('Category')">
           <el-cascader :options="categoryList" v-model="categoryIds" expand-trigger="hover" @change="handleCategoryChange"/>
         </el-form-item>
@@ -81,7 +81,7 @@
             <template slot="append">{{$t('Dollars')}}</template>
           </el-input>
         </el-form-item>
-<!--        <el-row>
+        <el-row>
           <el-col v-for="item in taxes" :span="8">
             <el-row>
               <el-form-item :label="''" prop="tax">
@@ -90,15 +90,15 @@
                 </el-checkbox>
               </el-form-item>
             </el-row>
-            <el-row v-if="item.enable">
+<!--            <el-row v-if="item.enable">
               <el-form-item :label="''" prop="tax">
                 <el-input v-model="item.value">
                   <template slot="append">%</template>
                 </el-input>
               </el-form-item>
-            </el-row>
+            </el-row>-->
           </el-col>
-        </el-row>-->
+        </el-row>
 <!--        <el-form-item :label="$t('Merchandise_Tax')" prop="tax">
           <el-input v-model="productForm.tax">
             <template slot="append">%</template>
@@ -111,6 +111,9 @@
         </el-form-item>
         <el-form-item :label="$t('Merchandise_warning')" prop="earlyWarningValue">
           <el-input v-model.number="productForm.earlyWarningValue"/>
+        </el-form-item>
+        <el-form-item :label="$t('计量单位')" prop="unit">
+          <el-input v-model="productForm.unit"/>
         </el-form-item>
       </el-form>
     </el-card>
@@ -463,7 +466,19 @@
               })
           }
         },
-        taxes:[]
+        taxes:[{
+          value:0,
+          type:1,
+          enable:false
+        },{
+          value:0,
+          type:2,
+          enable:false
+        },{
+          value:0,
+          type:3,
+          enable:false
+        }],
       }
     },
     computed: {
@@ -494,7 +509,14 @@
           this.stepPriceForms = response.data.data.ladderPrices.length > 0 ? response.data.data.ladderPrices : [{}]
           this.moneyOfPriceForms = response.data.data.maxMinusPrices.length > 0 ? response.data.data.maxMinusPrices : [{}]
           this.vipPriceForm = response.data.data.vipGoodsPrice || {}
-          this.taxes = response.data.data.goodsTaxes
+          if(this.productForm.taxTypes){
+            this.taxes.forEach(tax=>{
+              if(this.productForm.taxTypes.indexOf(tax.type) >= 0){
+                tax.enable = true
+              }
+            })
+          }
+          // this.taxes = response.data.data.goodsTaxes
 
           this.galleryFileList = []
           for (var i = 0; i < this.goods.gallery.length; i++) {
@@ -771,8 +793,14 @@
           specifications: this.specifications,
           products: [this.productForm],
           attributes: this.attributes,
-          goodsTaxes: this.taxes
+          // goodsTaxes: this.taxes
         }
+        this.productForm.taxTypes = []
+        this.taxes.forEach(tax=>{
+          if(tax.enable && this.productForm.taxTypes.indexOf(tax) < 0){
+            this.productForm.taxTypes.push(tax.type)
+          }
+        })
         if(this.goods.priceType == "1"){
           finalGoods.vipPrice = this.vipPriceForm
         }else if(this.goods.priceType == "2"){
@@ -788,7 +816,7 @@
           })
         }
         this.$refs['goodsForm'].validate((valid) => {
-          this.$refs['product'].validate((validproduct) => {
+          this.$refs['productForm'].validate((validproduct) => {
             if (valid && validproduct) {
               editGoods(finalGoods)
                 .then(response => {

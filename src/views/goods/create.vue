@@ -86,38 +86,19 @@
             <template slot="append">{{$t('Dollars')}}</template>
           </el-input>
         </el-form-item>
-        <!--<el-row>
-          <el-col v-for="item in taxes" :span="8">
-            <el-row>
-              <el-form-item :label="''" prop="tax">
-                <el-checkbox  v-model="item.enable">
-                  {{ filterTaxType(item.type)}}
-                </el-checkbox>
-              </el-form-item>
-            </el-row>
-            <el-row v-if="item.enable">
-              <el-form-item :label="''" prop="tax">
-                <el-input v-model="item.value">
-                  <template slot="append">%</template>
-                </el-input>
-              </el-form-item>
-            </el-row>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item :label="$t('省税')" prop="tax">
-              <el-input v-model="productForm.tax">
-                <template slot="append">%</template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item :label="$t('地方税')" prop="tax">
-              <el-input v-model="productForm.tax">
-                <template slot="append">%</template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>-->
+        <el-row>
+          <el-form-item :label="$t('税费')" prop="taxes">
+            <el-col v-for="item in taxes" :span="8">
+              <el-row>
+                <el-form-item :label="''" prop="tax">
+                  <el-checkbox  v-model="item.enable">
+                    {{ filterTaxType(item.type)}}
+                  </el-checkbox>
+                </el-form-item>
+              </el-row>
+            </el-col>
+          </el-form-item>
+        </el-row>
 
 <!--        <el-form-item :label="$t('Merchandise_Tax')" prop="tax">
           <el-input v-model="productForm.tax">
@@ -131,6 +112,9 @@
         </el-form-item>
         <el-form-item :label="$t('Merchandise_warning')" prop="earlyWarningValue">
           <el-input v-model.number="productForm.earlyWarningValue"/>
+        </el-form-item>
+        <el-form-item :label="$t('计量单位')" prop="unit">
+          <el-input v-model="productForm.unit"/>
         </el-form-item>
       </el-form>
     </el-card>
@@ -442,7 +426,8 @@
           price: 0.0,
           number: 0,
           url: '',
-          tax:0.0
+          tax:0.0,
+          taxTypes:[]
         },
         attributeVisiable: false,
         attributeForm: { attribute: '', value: '' },
@@ -652,9 +637,14 @@
           specifications: this.specifications,
           products: [this.productForm],
           attributes: this.attributes,
-          goodsTaxes: this.taxes,
+          // goodsTaxes: this.taxes,
           shopIds: this.shopIds
         }
+        this.taxes.forEach(tax=>{
+          if(tax.enable && this.productForm.taxTypes.indexOf(tax) < 0){
+            this.productForm.taxTypes.push(tax.type)
+          }
+        })
         if(this.goods.priceType == "1"){
           finalGoods.vipPrice = this.vipPriceForm
         }else if(this.goods.priceType == "2"){

@@ -107,3 +107,11 @@ export function updateIntegral(data) {
     params: data
   })
 }
+
+export function updateUser(data) {
+  return request({
+    url: '/user/update',
+    method: 'put',
+    data
+  })
+}

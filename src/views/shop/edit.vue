@@ -21,7 +21,7 @@
               <el-select v-model="regionIds[0]" filterable @change="getPrivonces(true)">
                 <el-option
                   v-for="item in countrys"
-                  :label="item.nameCn"
+                  :label="item.nameCn || item.nameEn"
                   :value="item.id">
                 </el-option>
               </el-select>
@@ -32,7 +32,7 @@
               <el-select v-model="regionIds[1]" filterable  @change="getCitys(true)">
                 <el-option
                   v-for="item in provinces"
-                  :label="item.nameCn"
+                  :label="item.nameCn || item.nameEn"
                   :value="item.id">
                 </el-option>
               </el-select>
@@ -45,18 +45,18 @@
               <el-select v-model="regionIds[2]" filterable @change="getCountys(true)">
                 <el-option
                   v-for="item in citys"
-                  :label="item.nameCn"
+                  :label="item.nameCn || item.nameEn"
                   :value="item.id">
                 </el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item :label="$t('区县')" prop="county">
+            <el-form-item :label="$t('区县')" prop="county" v-if="countys && countys.length > 0">
               <el-select v-model="regionIds[3]" filterable >
                 <el-option
                   v-for="item in countys"
-                  :label="item.nameCn"
+                  :label="item.nameCn || item.nameEn"
                   :value="item.id">
                 </el-option>
               </el-select>
@@ -141,8 +141,8 @@
           <div class="block">
             <el-slider
               :min="1"
-              :max="10000"
-              v-model="shop.range"
+              :max="100"
+              v-model="rangeMI"
               show-input>
             </el-slider>
 
@@ -150,6 +150,25 @@
 <!--          <el-input v-show="limited" v-model.number="shop.range" :placeholder="$t('Service_area_setting')">
             <template slot="append">KM</template>
           </el-input>-->
+        </el-form-item>
+
+        <el-form-item prop="range">
+          <el-radio-group v-model="limited">
+            <!--            <el-radio :label="false">{{$t('Not_limited_to_')}}</el-radio>-->
+            <el-radio :label="true" >{{$t('Service_area_setting')}}{{$t('(单位：KM)')}}</el-radio>
+          </el-radio-group>
+          <div class="block">
+            <el-slider
+              :min="1"
+              :max="161"
+              v-model="shop.range"
+              show-input>
+            </el-slider>
+
+          </div>
+          <!--          <el-input v-show="limited" v-model="shop.range" :placeholder="$t('Service_area_setting')">
+                      <template slot="append">KM</template>
+                    </el-input>-->
         </el-form-item>
         <el-form-item :label="$t('Order_type')" prop="types">
           <el-checkbox-group v-model="shop.types">
@@ -263,9 +282,9 @@ export default {
         city: [
           { validator: validateCity,  trigger: 'blur' }
         ],
-        county: [
+/*        county: [
           { validator: validateCounty, trigger: 'blur' }
-        ],
+        ],*/
       }
     }
   },
@@ -277,6 +296,16 @@ export default {
       return false
     }
   },*/
+  computed: {
+    rangeMI: {
+      get: function(){
+        return this.shop.range/1.61
+      },
+      set: function(newValue){
+        this.shop.range = newValue*1.61
+      }
+    }
+  },
   created() {
     this.init()
     this.getCountrys()
