@@ -879,6 +879,16 @@ export const asyncRouterMap = [
           title: '税费配置',
           noCache: true
         }
+      },
+      {
+        path: 'i18n',
+        component: () => import('@/views/config/i18n'),
+        name: 'configI18n',
+        meta: {
+          perms: ['GET /admin/i18n/list', 'POST /admin/i18n/create', , 'PUT /admin/i18n/update'],
+          title: '国际化配置',
+          noCache: true
+        }
       }
       /*{
         path: 'wx',

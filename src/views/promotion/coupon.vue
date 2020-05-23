@@ -168,7 +168,7 @@
         <el-form-item label="商品限制范围">
           <el-radio-group v-model="dataForm.goodsType">
             <el-radio-button :label="0">{{$t('Usable_in_any_situation')}}</el-radio-button>
-            <el-radio-button v-if="coupon.type != 3" :label="1">{{$t('指定分类')}}</el-radio-button>
+            <el-radio-button v-if="dataForm.type != 3" :label="1">{{$t('指定分类')}}</el-radio-button>
 <!--            <el-radio-button :label="2">{{$t('Select_merchandise')}}</el-radio-button>-->
           </el-radio-group>
         </el-form-item>

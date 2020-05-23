@@ -78,6 +78,7 @@
         feedbackDialogVisible:false,
         feedbackForm: {
           id: undefined,
+          userId: undefined,
           reply: undefined
         }
       }
@@ -105,6 +106,7 @@
       handleReply(row){
         this.feedbackDialogVisible = true
         this.feedbackForm.id = row.id
+        this.feedbackForm.userId = row.userId
       },
       doReply(){
         replyFeedback(this.feedbackForm).then(response => {
