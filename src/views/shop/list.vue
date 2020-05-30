@@ -15,7 +15,7 @@
         clearable
         filterable
       ></el-cascader>
-      <el-select v-model="listQuery.status" clearable class="filter-item" :placeholder="this.$t('Please_select')">
+      <el-select v-model="listQuery.status" clearable class="filter-item" :placeholder="$t('Please_select')">
         <el-option :value="1" :label="$t('Open_for_business')"/>
         <el-option :value="2" :label="$t('Closed')"/>
         <el-option :value="3" :label="$t('Renovating')"/>

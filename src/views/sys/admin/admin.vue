@@ -95,7 +95,7 @@
           </el-upload>
         </el-form-item>
         <el-form-item label="管理员角色" prop="roleIds">
-          <el-select v-model="dataForm.roleIds" multiple :placeholder="this.$t('Please_select')">
+          <el-select v-model="dataForm.roleIds" multiple :placeholder="$t('Please_select')">
             <el-option
               v-for="item in roleOptions"
               :key="item.value"

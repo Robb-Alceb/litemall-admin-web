@@ -10,13 +10,15 @@
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
 
-      <el-table-column align="center" label="用户名称" prop="username"/>
+      <el-table-column align="center" :label="$t('用户名称')" prop="username"/>
 
-      <el-table-column align="center" label="手机号" prop="mobile"/>
+      <el-table-column align="center" :label="$t('手机号')" prop="mobile"/>
 
-      <el-table-column align="center" label="反馈时间" prop="addTime"/>
+      <el-table-column align="center" :label="$t('反馈时间')" prop="addTime"/>
 
-      <el-table-column align="center" label="反馈内容" prop="content"/>
+      <el-table-column align="center" :label="$t('反馈内容')" prop="content"/>
+
+      <el-table-column align="center" :label="$t('回复内容')" prop="reply"/>
 
       <el-table-column align="center" :label="$t('Status')" prop="status">
         <template slot-scope="scope">
@@ -27,7 +29,7 @@
       <el-table-column align="center" :label="$t('Operate')" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button v-permission="['POST /admin/feedback/reply']" type="primary" size="mini" @click="handleReply(scope.row)">{{$t('Undo')}}</el-button>
-          <el-button v-permission="['POST /admin/feedback/ignore']" type="info" size="mini" @click="handleIgnore(scope.row)">忽略</el-button>
+          <el-button v-permission="['POST /admin/feedback/ignore']" type="info" size="mini" @click="handleIgnore(scope.row)">{{$t('忽略')}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -42,7 +44,7 @@
     <el-dialog :visible.sync="feedbackDialogVisible" :title="$t('Undo')">
       <el-form ref="feedbackForm" :model="feedbackForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
         <el-form-item label="内容" prop="reply">
-          <el-input v-model="feedbackForm.content" type="textarea"/>
+          <el-input v-model="feedbackForm.reply" type="textarea"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

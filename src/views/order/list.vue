@@ -66,7 +66,7 @@
         <template slot-scope="scope">
           <el-button v-permission="['GET /admin/order/detail']" type="primary" size="mini" @click="handleDetail(scope.row)">{{$t('Details')}}</el-button>
           <el-button v-permission="['POST /admin/order/ship']" v-if="scope.row.orderStatus==201" type="primary" size="mini" @click="handleShip(scope.row)">{{$t('Delivery_')}}</el-button>
-          <el-button v-permission="['POST /admin/order/refund']" v-if="scope.row.orderStatus==202" type="primary" size="mini" @click="handleRefund(scope.row)">退款</el-button>
+          <el-button v-permission="['POST /admin/order/refund']" type="primary" size="mini" @click="handleRefund(scope.row)">{{$t('退货退款')}}</el-button>
         </template>
       </el-table-column>
     </el-table>

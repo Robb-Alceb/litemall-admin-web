@@ -92,7 +92,7 @@
           </el-upload>
         </el-form-item>
         <el-form-item :label="$t('Advertisement_location')" prop="position">
-          <el-select v-model="dataForm.position" :placeholder="this.$t('Please_select')">
+          <el-select v-model="dataForm.position" :placeholder="$t('Please_select')">
             <el-option :value="1" :label="$t('Home')"/>
           </el-select>
         </el-form-item>
@@ -100,7 +100,7 @@
           <el-input v-model="dataForm.link"/>
         </el-form-item>
         <el-form-item :label="$t('Activate?')" prop="enabled">
-          <el-select v-model="dataForm.enabled" :placeholder="this.$t('Please_select')">
+          <el-select v-model="dataForm.enabled" :placeholder="$t('Please_select')">
             <el-option :value="true" :label="$t('Activate_')"/>
             <el-option :value="false" :label="$t('Do_not_activate')"/>
           </el-select>

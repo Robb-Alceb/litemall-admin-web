@@ -51,13 +51,13 @@
           <el-input v-model="dataForm.url"/>
         </el-form-item>
         <el-form-item label="是否推荐" prop="isHot">
-          <el-select v-model="dataForm.isHot" :placeholder="this.$t('Please_select')">
+          <el-select v-model="dataForm.isHot" :placeholder="$t('Please_select')">
             <el-option :value="true" :label="$t('Recommendation')"/>
             <el-option :value="false" label="普通"/>
           </el-select>
         </el-form-item>
         <el-form-item label="是否默认" prop="isDefault">
-          <el-select v-model="dataForm.isDefault" :placeholder="this.$t('Please_select')">
+          <el-select v-model="dataForm.isDefault" :placeholder="$t('Please_select')">
             <el-option :value="true" label="默认"/>
             <el-option :value="false" label="非默认"/>
           </el-select>

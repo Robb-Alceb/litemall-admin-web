@@ -5,7 +5,7 @@
       <el-select v-model="listQuery.shopId" clearable style="width: 200px" class="filter-item" :placeholder="$t('Please_select_store_')">
         <el-option v-for="item in shops" :label="item.name" :value="item.id"/>
       </el-select>
-      <el-select v-model="listQuery.orderStatus" clearable class="filter-item" :placeholder="this.$t('Please_select')">
+      <el-select v-model="listQuery.orderStatus" clearable class="filter-item" :placeholder="$t('Please_select')">
         <el-option :value="1" :label="$t('Awaiting_process')"/>
         <el-option :value="2" label="待付款"/>
         <el-option :value="3" label="待发货"/>

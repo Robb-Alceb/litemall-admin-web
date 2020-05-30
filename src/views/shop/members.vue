@@ -3,7 +3,7 @@
     <!-- 查询和其他操作 -->
     <div class="filter-container">
       <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入门店成员名称"/>
-      <el-select v-model="listQuery.role" clearable class="filter-item" :placeholder="this.$t('Please_select')">
+      <el-select v-model="listQuery.role" clearable class="filter-item" :placeholder="$t('Please_select')">
         <el-option-group v-model="roles">
           <el-option :value="id" property="name"/>
         </el-option-group>

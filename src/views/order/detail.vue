@@ -3,7 +3,13 @@
     <el-card class="box-card">
       <h3>{{$t('Order_details')}}</h3>
       <div>
-        <el-steps :active="formatStepStatus(orderDetail.order.orderStatus)" finish-status="success" align-center>
+        <el-steps :active="formatStepStatus(orderDetail.order.orderStatus)" finish-status="error" align-center v-if="orderDetail.order.orderStatus == 203">
+          <el-step>
+            <span slot="title">{{$t('Refunded')}}</span>
+            <span v-if="orderDetail.order.orderStatus == 203" slot="description">{{orderDetail.order.updateTime}}</span>
+          </el-step>
+        </el-steps>
+        <el-steps v-else :active="formatStepStatus(orderDetail.order.orderStatus)" finish-status="success" align-center>
           <el-step>
             <span slot="title">{{$t('Submit_order')}}</span>
             <span v-if="orderDetail.order.orderStatus == 101" slot="description">{{orderDetail.order.updateTime}}</span>
