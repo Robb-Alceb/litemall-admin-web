@@ -240,9 +240,11 @@ export default {
     },
     orderTypeFilter(type){
       if(type == 1){
-        return this.$t('Normal_Order')
+        return this.$t('自提订单')
       }else if(type == 2){
         return this.$t('Delivery_order')
+      } else if(type == 2){
+        return this.$t('堂食订单')
       }
     },
     getDetail() {

@@ -92,11 +92,11 @@
     name: "print",
     data(){
       const payTypeMap = {
-        "1":this.$t('Unpaid'),
-        "2":this.$t('Paypal'),
-        "3":"globalpay",
-        "4":"monerispay",
-        "5":"apple pay"
+        1: this.$t('Unpaid'),
+        2: this.$t('Paypal'),
+        3: this.$t('礼物卡支付'),
+        4: this.$t('余额支付'),
+        5: this.$t('现金支付')
       }
       return {
         payTypeMap,

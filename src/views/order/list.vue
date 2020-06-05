@@ -64,9 +64,19 @@
 
       <el-table-column align="center" :label="$t('Operate')" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-permission="['GET /admin/order/detail']" type="primary" size="mini" @click="handleDetail(scope.row)">{{$t('Details')}}</el-button>
-          <el-button v-permission="['POST /admin/order/ship']" v-if="scope.row.orderStatus==201" type="primary" size="mini" @click="handleShip(scope.row)">{{$t('Delivery_')}}</el-button>
-          <el-button v-permission="['POST /admin/order/refund']" type="primary" size="mini" @click="handleRefund(scope.row)">{{$t('退货退款')}}</el-button>
+          <el-row>
+            <el-col :span="12">
+              <el-button v-permission="['GET /admin/order/detail']" type="primary" size="mini" @click="handleDetail(scope.row)">{{$t('Details')}}</el-button>
+            </el-col>
+            <el-col :span="12">
+              <el-button v-permission="['POST /admin/order/ship']" v-if="scope.row.orderStatus==201" type="primary" size="mini" @click="handleShip(scope.row)">{{$t('Delivery_')}}</el-button>
+            </el-col>
+          </el-row>
+          <el-row style="padding-top: 10px;">
+            <el-col :span="12">
+              <el-button v-permission="['POST /admin/order/refund']" v-if="scope.row.orderStatus!=203"  size="mini" type="warning" @click="handleRefund(scope.row)">{{$t('退款')}}</el-button>
+            </el-col>
+          </el-row>
         </template>
       </el-table-column>
     </el-table>
@@ -194,11 +204,14 @@ export default {
     const payTypeMap = {
       1: this.$t('Unpaid'),
       2: this.$t('Paypal'),
-      3: this.$t('礼物卡支付')
+      3: this.$t('礼物卡支付'),
+      4: this.$t('余额支付'),
+      5: this.$t('现金支付')
     }
 
     const orderSourceMap = {
-      1: '手机app'
+      1: '手机app',
+      2: this.$t('门店下单')
     }
     return {
       statusMap,

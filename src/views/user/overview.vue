@@ -181,6 +181,7 @@
           <template slot-scope="scope">
             <span v-if="scope.row.type == 1" style="color:green;">账户充值:${{scope.row.amount}}</span>
             <span v-if="scope.row.type == 2" style="color:red;">账户消费:${{scope.row.amount}}</span>
+            <span v-if="scope.row.type == 6" style="color:red;">账户退款:${{scope.row.amount}}</span>
           </template>
         </el-table-column>
       </el-table>
@@ -216,7 +217,10 @@
 
       const payTypeMap = {
         1: this.$t('Unpaid'),
-        2: this.$t('Paypal')
+        2: this.$t('Paypal'),
+        3: this.$t('礼物卡支付'),
+        4: this.$t('余额支付'),
+        5: this.$t('现金支付')
       }
 
       const orderSourceMap = {
