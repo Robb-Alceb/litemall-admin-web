@@ -140,7 +140,7 @@
     </el-card>
 
     <div class="op-container" style="margin-top: 20px;">
-      <el-button @click="handleCancel">{{$t('Cancel')}}</el-button>
+      <el-button @click="handleCancel">{{$t('返回')}}</el-button>
       <el-button v-if="orderDetail.orderStatus == 3" v-permission="['POST /admin/shopOrder/deliverGoods']" type="primary" @click="handleDeliverGoods">同意发货</el-button>
       <el-button v-if="orderDetail.orderStatus == 3" v-permission="['POST /admin/shopOrder/cancelDeliverGoods']" type="danger" @click="handleCancelDeliverGoods">拒绝发货</el-button>
       <el-button v-if="orderDetail.orderStatus == 2" v-permission="['POST /admin/shopOrder/orderPay']" type="primary" @click="handleOrderPay">支付货款</el-button>

@@ -178,6 +178,51 @@
         </div>
       </el-dialog>
     </el-card>
+
+
+    <!-- 辅料 -->
+    <el-card class="box-card">
+      <h4>{{$t('商品辅料')}}</h4>
+      <el-button :plain="true" type="primary" @click="handleAccessoryShow">{{$t('Add')}}</el-button>
+
+      <el-table :data="accessories">
+        <el-table-column property="groupName" :label="$t('辅料组名')" />
+        <el-table-column property="name" :label="$t('辅料名')" />
+        <el-table-column property="price" :label="$t('价格')" >
+        </el-table-column>
+        <el-table-column align="center" :label="$t('Operate')" width="250" class-name="small-padding fixed-width">
+          <template slot-scope="scope">
+            <el-button type="danger" size="mini" @click="handleAccessoryDelete(scope.row)">{{$t('Delete')}}</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <el-dialog :visible.sync="accessoryVisiable" :title="$t('辅料设置')">
+        <el-form ref="accessoryForm" :rules="accessoryRules" :model="accessoryForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
+          <el-form-item :label="$t('辅料组名')" prop="groupName">
+            <el-input v-model="accessoryForm.groupName"/>
+          </el-form-item>
+          <el-form-item :label="$t('辅料')" prop="merchandiseId">
+            <el-select v-model="accessoryForm.merchandiseId" filterable @change="handleAccessoryMerChange">
+              <el-option v-for="item in merchandise" :value="item.id" :label="item.name"></el-option>
+            </el-select>
+          </el-form-item>
+          <!--          <el-form-item :label="$t('辅料名')" prop="name">
+                      <el-input v-model="accessoryForm.name"/>
+                    </el-form-item>-->
+          <el-form-item :label="$t('价格')" prop="price">
+            <el-input v-model="accessoryForm.price">
+              <template slot="append">{{$t('Dollars')}}</template>
+            </el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="accessoryVisiable = false">{{$t('Cancel')}}</el-button>
+          <el-button type="primary" @click="handleAccessoryAdd">{{$t('Confirm')}}</el-button>
+        </div>
+      </el-dialog>
+    </el-card>
+
     <el-card class="box-card">
       <h4>{{$t('Other_information')}}</h4>
       <el-form ref="goods" :rules="rules" :model="goods" label-width="150px">
@@ -378,6 +423,7 @@
   import { MessageBox } from 'element-ui'
   import { getToken } from '@/utils/auth'
   import { allForPerm } from '@/api/shop'
+  import { allMerchandise } from '@/api/merchandise'
 
   export default {
     name: 'GoodsDetail',
@@ -479,6 +525,16 @@
           type:3,
           enable:false
         }],
+
+        accessoryVisiable: false,
+        accessoryForm: {},
+        accessories: [],
+        accessoryRules: {
+          groupName: [{ required: true, message: this.$t('辅料组名不能为空'), trigger: 'blur' }],
+          merchandiseId: [{ required: true, message: this.$t('辅料名不能为空'), trigger: 'change' }],
+          price: [{ required: true, message: this.$t('辅料价格不能为空'), trigger: 'blur' }],
+        },
+        merchandise: []
       }
     },
     computed: {
@@ -509,6 +565,7 @@
           this.stepPriceForms = response.data.data.ladderPrices.length > 0 ? response.data.data.ladderPrices : [{}]
           this.moneyOfPriceForms = response.data.data.maxMinusPrices.length > 0 ? response.data.data.maxMinusPrices : [{}]
           this.vipPriceForm = response.data.data.vipGoodsPrice || {}
+          this.accessories = response.data.data.accessories || []
           if(this.productForm.taxTypes){
             this.taxes.forEach(tax=>{
               if(this.productForm.taxTypes.indexOf(tax.type) >= 0){
@@ -793,6 +850,7 @@
           specifications: this.specifications,
           products: [this.productForm],
           attributes: this.attributes,
+          accessories: this.accessories
           // goodsTaxes: this.taxes
         }
         this.productForm.taxTypes = []
@@ -850,6 +908,50 @@
         }else if(type == 3){
           return this.$t('地方税')
         }
+      },
+      handleAccessoryShow(){
+        if(!this.goods.shopId){
+          this.$notify.error({
+            title: this.$t('失败'),
+            message: this.$t('请先选择门店')
+          })
+        }else{
+          allMerchandise(this.goods.shopId).then(response=>{
+            this.merchandise = response.data.data
+            this.accessoryForm = { groupName: '', name: '', price: 0.00 }
+            this.accessoryVisiable = true
+          })
+        }
+      },
+      handleAccessoryDelete(row){
+        const index = this.accessories.indexOf(row)
+        this.accessories.splice(index, 1)
+      },
+      handleAccessoryAdd(){
+        this.$refs['accessoryForm'].validate((valid) => {
+          if (valid) {
+            var index = this.accessories.length - 1
+            for (var i = 0; i < this.accessories.length; i++) {
+              const v = this.accessories[i]
+              if (v.accessories === this.accessoryForm.name) {
+                index = i
+              }
+            }
+
+            this.accessories.splice(index + 1, 0, this.accessoryForm)
+            this.accessoryVisiable = false
+          }
+        })
+
+      },
+      handleAccessoryMerChange(){
+        let m = this.merchandise.find(item=>{
+          if(item.id == this.accessoryForm.merchandiseId){
+            return item
+          }
+        })
+        this.accessoryForm.name = m.name
+        this.accessoryForm.price = m.sellingPrice
       }
     }
   }
