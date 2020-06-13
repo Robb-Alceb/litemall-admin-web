@@ -211,7 +211,7 @@
             <el-input v-model="accessoryForm.name"/>
           </el-form-item>-->
           <el-form-item :label="$t('价格')" prop="price">
-            <el-input v-model="accessoryForm.price">
+            <el-input v-model="accessoryForm.price" readonly="true">
               <template slot="append">{{$t('Dollars')}}</template>
             </el-input>
           </el-form-item>
@@ -596,18 +596,18 @@
         this.specVisiable = true
       },
       handleAccessoryShow(){
-        if(!this.goods.shopId){
+/*        if(!this.goods.shopId){
           this.$notify.error({
             title: this.$t('失败'),
             message: this.$t('请先选择门店')
           })
-        }else{
+        }else{*/
           allMerchandise(this.goods.shopId).then(response=>{
             this.merchandise = response.data.data
             this.accessoryForm = { groupName: '', name: '', price: 0.00 }
             this.accessoryVisiable = true
           })
-        }
+        // }
       },
       handleSpecificationAdd() {
         var index = this.specifications.length - 1
