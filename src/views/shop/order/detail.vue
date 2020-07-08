@@ -4,19 +4,19 @@
       <h3>进货详情</h3>
       <div v-if="orderDetail.orderStatus != 6">
         <el-steps :active="formatStepStatus(orderDetail.orderStatus)" finish-status="success" align-center>
-          <el-step title="申请调货"/>
-          <el-step title="同意调货" />
-          <el-step title="支付付款" />
-          <el-step title="处理发货" />
+          <el-step :title="$t('申请调货')"/>
+          <el-step :title="$t('同意调货')" />
+          <!--          <el-step title="支付付款" />-->
+          <el-step :title="$t('erp处理发货')" />
           <el-step :title="$t('Receive_confirm')" />
         </el-steps>
       </div>
       <div v-else>
         <el-steps :active="6" finish-status="error" align-center>
-          <el-step title="申请调货"/>
-          <el-step title="同意调货" />
-          <el-step title="支付付款" />
-          <el-step title="处理发货" />
+          <el-step :title="$t('申请调货')"/>
+          <el-step :title="$t('同意调货')" />
+<!--          <el-step title="支付付款" />-->
+          <el-step :title="$t('erp处理发货')" />
           <el-step :title="$t('Receive_confirm')" />
           <el-step :title="$t('Denied')"/>
         </el-steps>
@@ -30,12 +30,16 @@
         <el-table v-loading="listLoading" :data="merchandises" :element-loading-text="$t('Searching')" border fit highlight-current-row>
           <el-table-column align="center" :label="$t('Merchandise_number')" prop="merchandiseSn"/>
           <el-table-column align="center" :label="$t('Product_name')" prop="merchandiseName"/>
-          <el-table-column align="center" :label="$t('Merchandise_picture')" prop="addTime">
+<!--          <el-table-column align="center" :label="$t('Merchandise_picture')" prop="addTime">
             <template slot-scope="scope">
               <img :src="scope.row.picUrl" width="40">
             </template>
-          </el-table-column>
+          </el-table-column>-->
           <el-table-column align="center" label="现有库存" prop="store">
+            <template slot-scope="scope">
+<!--              <img :src="scope.row.picUrl" width="40">-->
+              {{scope.row.store}}
+            </template>
           </el-table-column>
           <el-table-column align="center" :label="$t('Price')" prop="price"/>
           <el-table-column align="center" label="订货数量" prop="number"/>
@@ -141,18 +145,19 @@
 
     <div class="op-container" style="margin-top: 20px;">
       <el-button @click="handleCancel">{{$t('返回')}}</el-button>
-      <el-button v-if="orderDetail.orderStatus == 3" v-permission="['POST /admin/shopOrder/deliverGoods']" type="primary" @click="handleDeliverGoods">同意发货</el-button>
-      <el-button v-if="orderDetail.orderStatus == 3" v-permission="['POST /admin/shopOrder/cancelDeliverGoods']" type="danger" @click="handleCancelDeliverGoods">拒绝发货</el-button>
+<!--      <el-button v-if="orderDetail.orderStatus == 3" v-permission="['POST /admin/shopOrder/deliverGoods']" type="primary" @click="handleDeliverGoods">同意发货</el-button>-->
+<!--      <el-button v-if="orderDetail.orderStatus == 3" v-permission="['POST /admin/shopOrder/cancelDeliverGoods']" type="danger" @click="handleCancelDeliverGoods">拒绝发货</el-button>-->
       <el-button v-if="orderDetail.orderStatus == 2" v-permission="['POST /admin/shopOrder/orderPay']" type="primary" @click="handleOrderPay">支付货款</el-button>
       <el-button v-if="orderDetail.orderStatus == 1" v-permission="['POST /admin/shopOrder/orderPass']" type="primary" @click="handleOrderPass">同意调货</el-button>
       <el-button v-if="orderDetail.orderStatus == 1" v-permission="['POST /admin/shopOrder/orderNoPass']" type="danger" @click="handleOrderNoPass">拒绝调货</el-button>
-      <el-button v-if="orderDetail.orderStatus == 4" v-permission="['POST /admin/shopOrder/takeDelivery']" type="primary" @click="handleTakeDelivery">确认收货</el-button>
+      <el-button v-if="orderDetail.orderStatus == 4" v-shop="true" v-permission="['POST /admin/shopOrder/takeDelivery']" type="primary" @click="handleTakeDelivery">确认收货</el-button>
     </div>
   </div>
 </template>
 
 <script>
 import {shopOrderDetail, shopOrderPass, shopOrderNoPass, shopOrderPay, shopDeliverGoods, shopCancelDeliverGoods, shopTakeDelivery, merchandiseNumber} from '@/api/shop'
+import {materialApply} from '@/api/erp'
 import { MessageBox } from 'element-ui'
 
 const orderStatusMap = {
@@ -206,7 +211,6 @@ export default {
       this.orderId = this.$route.query.id
     }
     this.getDetail()
-
   },
   methods: {
     getDetail(){
@@ -218,16 +222,18 @@ export default {
         this.merchandises.forEach(merchandise=>{
           let queryParam = {
             shopId: this.orderDetail.shopId,
-            merchandiseSn: merchandise.merchandiseSn
+            merchandiseId: merchandise.merchandiseId
           }
           merchandiseNumber(queryParam).then(res=>{
             merchandise.store = res.data.data
           })
         })
-      })
+      })/*.finally(()=>{
+        this.$forceUpdate()
+      })*/
     },
     formatStepStatus(value) {
-      if (value === 2) {
+      /*if (value === 2) {
         // 支付
         return 2
       } else if (value === 3) {
@@ -239,6 +245,23 @@ export default {
       } else if(value === 5){
         // 确认收货
         return 5
+      } else {
+        // 同意调货、拒绝调货
+        return 1
+      }*/
+
+      if (value === 2) {
+        // 支付
+        return 2
+      } else if (value === 3) {
+        // 处理发货
+        return 2
+      } else if (value === 4) {
+        // 确认发货
+        return 3
+      } else if(value === 5){
+        // 确认收货
+        return 4
       } else {
         // 同意调货、拒绝调货
         return 1
@@ -261,6 +284,23 @@ export default {
       this.passForm.adminOrderId = this.orderDetail.id
       this.$refs['passForm'].validate(valid => {
         if (valid) {
+          materialApply(this.passForm.adminOrderId).then(response => {
+            this.$notify.success({
+              title: this.$t('Success!'),
+              message: '处理成功'
+            })
+            this.$router.push({ path: '/repository/list' })
+          })
+            .catch(response => {
+              MessageBox.alert(this.$t('Error') + response.data.errmsg, this.$t('Warning'), {
+                confirmButtonText: this.$t('Confirm'),
+                type: 'error'
+              })
+            })
+        }
+      })
+/*      this.$refs['passForm'].validate(valid => {
+        if (valid) {
           shopOrderPass(this.passForm).then(response => {
             this.$notify.success({
               title: this.$t('Success!'),
@@ -275,7 +315,7 @@ export default {
             })
           })
         }
-      })
+      })*/
     },
     handleOrderNoPass(){
       this.passForm.adminOrderId = this.orderDetail.id

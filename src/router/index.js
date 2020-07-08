@@ -342,7 +342,7 @@ export const asyncRouterMap = [
           noCache: true
         }
       },
-      {
+/*      {
         path: 'merchandise',
         component: () => import('@/views/repository/merchandise'),
         name: 'merchandise',
@@ -351,6 +351,27 @@ export const asyncRouterMap = [
           title: 'Merchandise_list',
           noCache: true
         }
+      },*/
+      {
+        path: 'merchandise',
+        component: () => import('@/views/material/list'),
+        name: 'merchandise',
+        meta: {
+          perms: ['GET /admin/merchandise/list'],
+          title: 'Merchandise_list',
+          noCache: true
+        }
+      },
+      {
+        path: 'apply',
+        component: () => import('@/views/material/apply'),
+        name: 'apply',
+        meta: {
+          perms: ['POST /admin/shopOrder/purchaseApplying'],
+          title: 'Add_Products',
+          noCache: true
+        },
+        hidden: true
       },
       {
         path: 'create',

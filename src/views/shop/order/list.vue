@@ -85,7 +85,7 @@ export default {
       1: this.$t('Awaiting_process'),
       2: '待付款',
       3: '待发货',
-      4: this.$t('Sent_for_delivery'),
+      4: this.$t('erp已发货'),
       5: this.$t('Receive_confirm'),
       6: this.$t('Denied')
     }

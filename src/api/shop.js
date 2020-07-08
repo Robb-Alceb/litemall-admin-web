@@ -146,3 +146,12 @@ export function shopOverview(id) {
   })
 }
 
+
+
+export function purchaseApplying(data) {
+  return request({
+    url: '/shopOrder/purchaseApplying',
+    method: 'post',
+    data
+  })
+}
