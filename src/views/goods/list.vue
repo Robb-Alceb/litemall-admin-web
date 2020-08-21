@@ -98,7 +98,8 @@
           </el-row>
           <el-row style="margin-top: 5px;">
             <el-button v-permission="['GET /admin/goods/allPrice']" type="info" size="mini" @click="getPriceDetail(scope.row)">{{$t('Price')}}</el-button>
-            <el-button v-permission="['GET /admin/goods/allPrice']" type="info" size="mini" @click="getStoreDetail(scope.row)">{{$t('Stock')}}</el-button>
+<!--            <el-button v-permission="['GET /admin/goods/allPrice']" type="info" size="mini" @click="getStoreDetail(scope.row)">{{$t('Stock')}}</el-button>-->
+            <el-button v-shop="true" v-permission="['GET /admin/goods/readGoodsProduct']" type="info" size="mini" @click="getProductDetail(scope.row)">{{$t('Stock')}}</el-button>
           </el-row>
 
         </template>
@@ -271,6 +272,48 @@
         <el-button @click="handleUpdateStore" type="primary">{{$t('Confirm')}}</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog :visible.sync="productDialogVisiable" :title="$t('Merchandise_stock')">
+      <el-form ref="productForm" :model="productForm" :rules="productRules" status-icon label-position="left" label-width="100px">
+        <el-form-item :label="$t('Merchandise_name')" prop="goodsName">
+          <el-col>{{productForm.goodsName}}</el-col>
+        </el-form-item>
+
+        <el-form-item :label="$t('Merchandise_stock')" prop="number">
+          <el-input v-model.number="productForm.number"/>
+        </el-form-item>
+        <el-form-item :label="$t('Merchandise_sale_price')" prop="sellPrice">
+          <el-input v-model.number="productForm.sellPrice">
+            <template slot="append">{{$t('Dollars')}}</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item :label="$t('Cost_of_merchandise')" prop="costPrice">
+          <el-input v-model="productForm.costPrice">
+            <template slot="append">{{$t('Dollars')}}</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item :label="$t('Merchandise_warning')" prop="earlyWarningValue">
+          <el-input v-model.number="productForm.earlyWarningValue"/>
+        </el-form-item>
+        <el-row>
+          <el-form-item :label="$t('税费')" prop="taxes">
+            <el-col v-for="item in taxes" :span="8">
+              <el-row>
+                <el-form-item :label="''" prop="tax">
+                  <el-checkbox  v-model="item.enable">
+                    {{ filterTaxType(item.type)}}
+                  </el-checkbox>
+                </el-form-item>
+              </el-row>
+            </el-col>
+          </el-form-item>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="productDialogVisiable = false">{{$t('Cancel')}}</el-button>
+        <el-button @click="handleUpdateProduct" type="primary">{{$t('Confirm')}}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -293,7 +336,7 @@
 </style>
 
 <script>
-import { listGoods, deleteGoods, approveGoods, rejectGoods, pushGoods, newProductGoods, recommendGoods, updatePriceGoods, updateSpecPriceGoods, getAllPriceGoods, updateStoreGoods, updateGoodsDiscountPrice } from '@/api/goods'
+import { listGoods, deleteGoods, approveGoods, rejectGoods, pushGoods, newProductGoods, recommendGoods, updatePriceGoods, updateSpecPriceGoods, getAllPriceGoods, updateStoreGoods, updateGoodsDiscountPrice, readGoodsProduct, updateGoodsProduct, addGoodsProduct } from '@/api/goods'
 import BackToTop from '@/components/BackToTop'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { allForPerm } from '@/api/shop'
@@ -310,9 +353,17 @@ export default {
   },
   data() {
     const reviewMap = {
-      1: '待审核',
+      1: this.$t('待审核'),
       2: this.$t('Reviewed'),
       3: this.$t('Denied')
+    }
+    const validateDouble = (rule, value, callback) => {
+      console.log('value' + value)
+      if (!value || !/^[0-9,.]*$/.test(value)) {
+        callback(new Error(this.$t('Sale_price_must_be_a_number')))
+      } else {
+        callback()
+      }
     }
     return {
       reviewMap,
@@ -369,7 +420,35 @@ export default {
           { required: true, message: this.$t('Stock_amount_cannot_be_empty'), trigger: 'blur' },
           { type: 'number', message: this.$t('Stock_amount_must_be_a_number') }
         ]
-    }
+      },
+
+      productDialogVisiable: false,
+      productForm: {
+        taxTypes: [],
+      },
+      productRules:{
+        number: [
+          { required: true, message: this.$t('Stock_amount_cannot_be_empty'), trigger: 'blur' },
+          { type: 'number', message: this.$t('Stock_amount_must_be_a_number'), trigger: 'blur' }
+        ],
+        sellPrice: [{ required: true, message: this.$t('Sale_price_cannot_be_empty'), trigger: 'change' },
+          { required: true,validator: validateDouble, trigger: 'change' }],
+        costPrice: [{ required: true, message: this.$t('Buy-in_cost_cannot_be_empty'), trigger: 'change' },
+          { required: true,validator: validateDouble, trigger: 'change' }],
+      },
+      taxes:[{
+        value:0,
+        type:1,
+        enable:false
+      },{
+        value:0,
+        type:2,
+        enable:false
+      },{
+        value:0,
+        type:3,
+        enable:false
+      }],
     }
   },
   created() {
@@ -524,6 +603,8 @@ export default {
         })
         if(shop){
           return shop.name
+        }else{
+          return this.$t('总部所有')
         }
       }
     },
@@ -728,6 +809,64 @@ export default {
           title: this.$t('Failed'),
           message: response.data.errmsg
         })
+      })
+    },
+    handleUpdateProduct(){
+      this.taxes.forEach(tax=>{
+        if(tax.enable && this.productForm.taxTypes.indexOf(tax) < 0){
+          this.productForm.taxTypes.push(tax.type)
+        }
+      })
+      this.$refs['productForm'].validate((validproduct) => {
+        if(validproduct){
+          if(this.productForm.id){
+            updateGoodsProduct(this.productForm).then(response=>{
+              this.$notify.success({
+                title: this.$t('Success!'),
+                message: '修改成功'
+              })
+              this.productDialogVisiable = false
+              this.getList()
+            })
+          }else{
+            addGoodsProduct(this.productForm).then(response=>{
+              this.$notify.success({
+                title: this.$t('Success!'),
+                message: '修改成功'
+              })
+              this.productDialogVisiable = false
+              this.getList()
+            })
+          }
+        }
+      })
+
+    },
+    filterTaxType(type){
+      if(type == 1){
+        return this.$t('国税')
+      }else if(type == 2){
+        return this.$t('省税')
+      }else if(type == 3){
+        return this.$t('地方税')
+      }
+    },
+    getProductDetail(goods){
+      readGoodsProduct({goodsId: goods.id}).then(response=>{
+        if(response.data.data.length > 0){
+          this.productForm = response.data.data[0]
+          this.productForm.goodsName = goods.name
+          if(this.productForm.taxTypes){
+            this.taxes.forEach(tax=>{
+              if(this.productForm.taxTypes.indexOf(tax.type) >= 0){
+                tax.enable = true
+              }else{
+                tax.enable = false
+              }
+            })
+          }
+        }
+        this.productDialogVisiable = true
       })
     }
   }

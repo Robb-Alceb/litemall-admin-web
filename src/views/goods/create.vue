@@ -13,11 +13,11 @@
             <el-option v-for="item in shops" :value="item.id" :label="item.name"></el-option>
           </el-select>
         </el-form-item>-->
-        <el-form-item :label="$t('Store_belong')" prop="shopId">
+<!--        <el-form-item :label="$t('Store_belong')" prop="shopId">
           <el-select v-model="goods.shopId" filterable>
             <el-option v-for="item in shops" :value="item.id" :label="item.name"></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item :label="$t('Merchandise_code')" prop="goodsSn">
           <el-input v-model="goods.goodsSn"/>
         </el-form-item>
@@ -26,6 +26,15 @@
         </el-form-item>
         <el-form-item :label="$t('Subtitle')" prop="subhead">
           <el-input v-model="goods.subhead"/>
+        </el-form-item>
+        <el-form-item :label="$t('默认销售价')" prop="retailPrice">
+          <el-input v-model.number="goods.retailPrice"/>
+        </el-form-item>
+        <el-form-item :label="$t('默认进货价')" prop="counterPrice">
+          <el-input v-model.number="goods.counterPrice"/>
+        </el-form-item>
+        <el-form-item :label="$t('计量单位')" prop="unit">
+          <el-input v-model="goods.unit"/>
         </el-form-item>
         <el-form-item :label="$t('About_the_merchandise')">
           <el-input v-model="goods.brief"/>
@@ -75,7 +84,7 @@
         </el-form-item>
       </el-form>
     </el-card>
-    <el-card class="box-card">
+    <el-card v-shop="true" class="box-card">
       <h4>{{$t('Storage_specifications')}}</h4>
       <el-form ref="product" :rules="productRules" :model="productForm" label-width="150px">
         <el-form-item :label="$t('Merchandise_stock')" prop="number">
@@ -482,7 +491,7 @@
             { required: true, message: this.$t('Merchandise_ID_must_not_be_empty'), trigger: 'blur' }
           ],
           name: [{ required: true, message: this.$t('Merchandise_name_must_not_be_empty'), trigger: 'blur' }],
-          shopId: [{ required: true, message: this.$t('Store_cannot_be_empty'), trigger: 'change' }],
+          // shopId: [{ required: true, message: this.$t('Store_cannot_be_empty'), trigger: 'change' }],
           categoryId: [{ required: true, message: this.$t('Category_cannot_be_empty'), trigger: 'change',validator: validateCategory }]
         },
         productRules:{
@@ -602,7 +611,7 @@
             message: this.$t('请先选择门店')
           })
         }else{*/
-          allMerchandise(this.goods.shopId).then(response=>{
+        allMerchandise().then(response=>{
             this.merchandise = response.data.data
             this.accessoryForm = { groupName: '', name: '', price: 0.00 }
             this.accessoryVisiable = true
@@ -754,6 +763,11 @@
         console.log(finalGoods)
         this.$refs['goodsForm'].validate((valid) => {
           this.$refs['product'].validate((validproduct)=>{
+            //当不是门店人员添加时不需要验证库存
+            if(!this.$store.getters.shop){
+              validproduct = true
+              finalGoods.products = []
+            }
             if (valid && validproduct) {
             publishGoods(finalGoods)
             // batchCreate(finalGoods)

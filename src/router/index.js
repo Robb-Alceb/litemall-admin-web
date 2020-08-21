@@ -481,7 +481,72 @@ export const asyncRouterMap = [
       }
     ]
   },
-
+  {
+    path: '/subscribe',
+    component: Layout,
+    redirect: 'noredirect',
+    alwaysShow: true,
+    name: 'subscribe',
+    meta: {
+      title: '订阅管理',
+      icon: 'chart'
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/subscribe/list'),
+        name: 'subscribeList',
+        meta: {
+          perms: ['GET /admin/subscribe/list'],
+          title: '订阅配置列表',
+          noCache: true
+        },
+      },
+      {
+        path: 'users',
+        component: () => import('@/views/subscribe/users'),
+        name: 'users',
+        meta: {
+          perms: ['GET /admin/subscribe/users'],
+          title: '订阅用户列表',
+          noCache: true
+        },
+      },
+      {
+        path: 'user/detail',
+        component: () => import('@/views/subscribe/userDetail'),
+        name: 'userDetail',
+        meta: {
+          perms: ['GET /admin/subscribe/user/detail'],
+          title: '订阅用户详情',
+          noCache: true
+        },
+        hidden: true
+      },
+      {
+        path: 'detail',
+        component: () => import('@/views/subscribe/edit'),
+        name: '编辑订阅配置',
+        meta: {
+          perms: ['GET /admin/subscribe/read'],
+          title: '编辑订阅配置',
+          noCache: true
+        },
+        hidden: true
+      },
+      {
+        path: 'create',
+        component: () => import('@/views/subscribe/create'),
+        name: '添加订阅配置',
+        meta: {
+          perms: ['GET /admin/subscribe/create'],
+          title: '添加订阅配置',
+          noCache: true
+        },
+        hidden: true
+      }
+    ]
+  },
   {
     path: '/promotion',
     component: Layout,

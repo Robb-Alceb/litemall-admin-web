@@ -14,7 +14,11 @@
     <el-table v-loading="listLoading" :data="list" :element-loading-text="$t('Searching')" border fit highlight-current-row>
 <!--      <el-table-column align="center" width="100px" :label="$t('Member_ID')" prop="id" sortable="custom"/>-->
 
-      <el-table-column align="center" :label="$t('区域名')" prop="regionNameCn" sortable="custom"/>
+      <el-table-column align="center" :label="$t('区域名')" prop="regionNameCn" sortable="custom">
+        <template slot-scope="scope">
+          <el-tag >{{ scope.row.name || scope.row.regionNameCn || scope.row.regionNameEn }}</el-tag>
+        </template>
+      </el-table-column>
 
 <!--      <el-table-column align="center" :label="$t('税率名称')" prop="name" sortable="custom"/>-->
 

@@ -211,7 +211,8 @@ export default {
 
     const orderSourceMap = {
       1: '手机app',
-      2: this.$t('门店下单')
+      2: this.$t('门店下单'),
+      4: this.$t('客户订阅')
     }
     return {
       statusMap,

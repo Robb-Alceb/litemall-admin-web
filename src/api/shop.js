@@ -155,3 +155,12 @@ export function purchaseApplying(data) {
     data
   })
 }
+
+
+
+export function shopOps() {
+  return request({
+    url: '/shop/ops',
+    method: 'get',
+  })
+}

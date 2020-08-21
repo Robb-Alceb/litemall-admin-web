@@ -144,3 +144,34 @@ export function batchCreate(data) {
     data
   })
 }
+
+export function readGoodsProduct(params) {
+  return request({
+    url: '/goods/readGoodsProduct',
+    method: 'get',
+    params: params
+  })
+}
+
+export function updateGoodsProduct(data) {
+  return request({
+    url: '/goods/updateGoodsProduct',
+    method: 'put',
+    data
+  })
+}
+
+export function addGoodsProduct(data) {
+  return request({
+    url: '/goods/addGoodsProduct',
+    method: 'post',
+    data
+  })
+}
+
+export function goodsOps() {
+  return request({
+    url: '/goods/goodsOps',
+    method: 'get',
+  })
+}

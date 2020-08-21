@@ -31,7 +31,8 @@
 
       <el-table-column align="center" :label="$t('销售价')" prop="sellingPrice">
         <template slot-scope="scope">
-          <el-tag style="cursor: pointer;" :title="$t('修改销售价')" @click="handleChangeSellingPrice(scope.row)">{{scope.row.sellingPrice}}</el-tag>
+          <el-tag v-shop="false">{{scope.row.sellingPrice}}</el-tag>
+          <el-tag v-shop="true" style="cursor: pointer;" :title="$t('修改销售价')" @click="handleChangeSellingPrice(scope.row)">{{scope.row.sellingPrice}}</el-tag>
         </template>
       </el-table-column>
 
@@ -67,7 +68,7 @@
     <el-dialog :visible.sync="shipDialogVisible" :title="$t('修改销售价')">
       <el-form ref="merchandiseForm" :rules="rules" :model="merchandiseForm" status-icon label-position="left" label-width="120px" style="width: 400px; margin-left:50px;">
         <el-form-item label="销售价格" prop="number">
-          <el-input v-model.number="merchandiseForm.number"/>
+          <el-input v-model.number="merchandiseForm.sellingPrice"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -105,10 +106,10 @@ export default {
       shipDialogVisible: false,
       merchandiseForm: {
         merchandiseId: undefined,
-        number: undefined
+        sellingPrice: undefined
       },
       rules: {
-        number: [
+        sellingPrice: [
           { required: true, message: this.$t('Amount_cannot_be_empty'), trigger: 'change' },
           { type: 'number', message: this.$t('Amount_must_be_a_number'), trigger: 'change' }
         ]
@@ -206,8 +207,7 @@ export default {
         })
         return
       }
-      this.merchandiseForm.merchandiseId = row.id
-      this.merchandiseForm.sellingPrice = row.sellingPrice
+      this.merchandiseForm.sellingPrice += ""
       this.shipDialogVisible = !this.shipDialogVisible
     }
   }
